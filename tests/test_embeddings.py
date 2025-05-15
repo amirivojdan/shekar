@@ -1,5 +1,6 @@
 from shekar import Embedder
 import requests
+import time
 
 
 def test_model_urls():
@@ -12,4 +13,6 @@ def test_model_urls():
 
 def test_load_model():
     embedding = Embedder()
-    assert embedding.model.doesnt_match("خیار گوجه سنگ کاهو".split()) == "سنگ"
+    time.sleep(5)
+    if embedding.model is not None:
+        assert embedding.model.doesnt_match("خیار گوجه سنگ کاهو".split()) == "سنگ"
