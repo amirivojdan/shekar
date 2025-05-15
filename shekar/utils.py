@@ -1,6 +1,5 @@
 import re
 from pathlib import Path
-import polars as pl
 
 data_root_path = Path(__file__).parent / "data"
 
@@ -62,12 +61,6 @@ def is_informal(text, threshold=1) -> bool:
 
     classification = True if match_count >= threshold else False
     return classification
-
-
-def load_vocab():
-    # Read the vocabulary table from the parquet file using Polars
-    vocab = pl.read_csv(vocab_csv_path)
-    return vocab
 
 
 def load_verbs():
