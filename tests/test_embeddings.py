@@ -1,4 +1,3 @@
-import pytest
 from shekar import Embedder
 import requests
 

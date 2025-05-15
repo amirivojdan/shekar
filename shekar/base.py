@@ -6,15 +6,15 @@ import regex as re
 class BaseTransformer(ABC):
     @abstractmethod
     def transform(self, X):
-        pass
+        raise NotImplementedError("Subclasses must implement transform()")
 
     @abstractmethod
     def fit(self, X, y=None):
-        pass
+        raise NotImplementedError("Subclasses must implement fit()")
 
-    @abstractmethod
     def fit_transform(self, X, y=None):
-        pass
+        self.fit(X, y)
+        return self.transform(X)
 
     def __call__(self, *args, **kwds):
         return self.fit_transform(*args, **kwds)
@@ -23,7 +23,7 @@ class BaseTransformer(ABC):
 class BaseTextTransformer(BaseTransformer):
     @abstractmethod
     def _function(self, X: str, y=None) -> str:
-        pass
+        raise NotImplementedError("Subclasses must implement _function()")
 
     def transform(self, X: Iterable[str] | str) -> Iterable[str] | str:
         if isinstance(X, str):
@@ -43,6 +43,19 @@ class BaseTextTransformer(BaseTransformer):
     def _compile_patterns(
         cls, mappings: Iterable[tuple[str, str]]
     ) -> List[tuple[re.Pattern, str]]:
+        """
+        Compiles a list of regex patterns and their corresponding replacement strings.
+        This method takes an iterable of tuples, where each tuple contains a regex pattern
+        string and a replacement string. It compiles the regex patterns into `re.Pattern`
+        objects and pairs them with their respective replacement strings.
+        Args:
+            cls: The class on which this method is called.
+            mappings (Iterable[tuple[str, str]]): An iterable of tuples, where each tuple
+                consists of a regex pattern string and a replacement string.
+        Returns:
+            List[tuple[re.Pattern, str]]: A list of tuples, where each tuple contains a
+            compiled regex pattern (`re.Pattern`) and its corresponding replacement string.
+        """
         compiled_patterns = [
             (re.compile(pattern), replacement) for pattern, replacement in mappings
         ]

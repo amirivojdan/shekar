@@ -5,11 +5,8 @@ import polars as pl
 data_root_path = Path(__file__).parent / "data"
 
 vocab_csv_path = data_root_path / "vocab.csv"
-vocab_parquet_path = data_root_path / "vocab.parquet"
 verbs_csv_path = data_root_path / "verbs.csv"
-verbs_parquet_path = data_root_path / "verbs.parquet"
 stopwords_csv_path = data_root_path / "stopwords.csv"
-stopwords_parquet_path = data_root_path / "stopwords.parquet"
 
 
 diacritics = "ًٌٍَُِّْ"
@@ -74,12 +71,16 @@ def load_vocab():
 
 
 def load_verbs():
-    verbs = pl.read_csv(verbs_csv_path)
+    # Read the verbs from the CSV file
+    with open(verbs_csv_path, "r", encoding="utf-8") as file:
+        verbs = [line.strip().split(",") for line in file.read().splitlines()]
     return verbs
 
 
 def loadstopwords():
-    stopwords = pl.read_csv(stopwords_csv_path)
+    # Read the stopwords from the text file
+    with open(stopwords_csv_path, "r", encoding="utf-8") as file:
+        stopwords = [line.strip() for line in file.read().splitlines()]
     return stopwords
 
 

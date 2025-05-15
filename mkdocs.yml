@@ -27,11 +27,23 @@ nav:
     - Overview: index.md
     - Installation: getting_started/installation.md
     - Quick Start: getting_started/quick_start.md
-  - Usage: 
+    - Preprocessing: tutorials/preprocessing.md
+    - Pipeline: tutorials/pipeline.md
     - Tokenization: tutorials/tokenization.md
     - Normalization: tutorials/normalization.md
+    - Embeddings: tutorials/embedding.md
     
+
+plugins:
+  - termynal:
+      title: bash
+      buttons: macos
+      prompt_literal_start:
+        - "$"
+
 markdown_extensions:
+  - admonition
+  - codehilite
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -39,3 +51,6 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.emoji
