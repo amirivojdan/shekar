@@ -12,10 +12,10 @@ from shekar.preprocessing import (
 @pytest.fixture
 def mock_pipeline():
     steps = [
-        ("removeEmoji", EmojiRemover()),
-        ("removePunct", PunctuationRemover()),
+        EmojiRemover(),
+        PunctuationRemover(),
     ]
-    return Pipeline(steps)
+    return Pipeline(steps=steps)
 
 
 def test_pipeline_fit(mock_pipeline):
@@ -103,9 +103,10 @@ def test_pipeline_or_with_pipeline(mock_pipeline):
 
     assert len(combined.steps) == len(mock_pipeline.steps) + len(other_pipeline.steps)
 
-    assert combined.steps[0][0] == "removeEmoji"
-    assert combined.steps[1][0] == "removePunct"
-    assert combined.steps[2][0] == "htmlRemover"
+    assert combined.steps[-1][0] == "htmlRemover"
+    assert isinstance(combined.steps[-1][1], HTMLTagRemover)
+    assert combined.steps[-2][0] == mock_pipeline.steps[-1][0]
+    assert isinstance(combined.steps[-2][1], type(mock_pipeline.steps[-1][1]))
 
 
 def test_pipeline_or_with_transformer(mock_pipeline):

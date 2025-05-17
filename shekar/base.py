@@ -27,8 +27,8 @@ class BaseTransformer(ABC):
         elif isinstance(value, BaseTransformer):
             return Pipeline(
                 steps=[
-                    (self.__class__.__name__, self),
-                    (value.__class__.__name__, value),
+                    self,
+                    value,
                 ]
             )
         else:
@@ -44,8 +44,8 @@ class BaseTransformer(ABC):
         elif isinstance(value, BaseTransformer):
             return Pipeline(
                 steps=[
-                    (value.__class__.__name__, value),
-                    (self.__class__.__name__, self),
+                    value,
+                    self,
                 ]
             )
         else:
