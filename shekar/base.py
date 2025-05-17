@@ -19,6 +19,40 @@ class BaseTransformer(ABC):
     def __call__(self, *args, **kwds):
         return self.fit_transform(*args, **kwds)
 
+    def __or__(self, value):
+        from shekar.pipeline import Pipeline
+
+        if isinstance(value, Pipeline):
+            return Pipeline(steps=[(self.__class__.__name__, self)] + value.steps)
+        elif isinstance(value, BaseTransformer):
+            return Pipeline(
+                steps=[
+                    (self.__class__.__name__, self),
+                    (value.__class__.__name__, value),
+                ]
+            )
+        else:
+            raise TypeError(
+                f"Unsupported type for pipeline concatenation: {type(value)}"
+            )
+
+    def __ror__(self, value):
+        from shekar.pipeline import Pipeline
+
+        if isinstance(value, Pipeline):
+            return Pipeline(steps=value.steps + [(self.__class__.__name__, self)])
+        elif isinstance(value, BaseTransformer):
+            return Pipeline(
+                steps=[
+                    (value.__class__.__name__, value),
+                    (self.__class__.__name__, self),
+                ]
+            )
+        else:
+            raise TypeError(
+                f"Unsupported type for pipeline concatenation: {type(value)}"
+            )
+
 
 class BaseTextTransformer(BaseTransformer):
     @abstractmethod

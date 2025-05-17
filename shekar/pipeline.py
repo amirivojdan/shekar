@@ -95,6 +95,16 @@ class Pipeline(BaseTransformer):
                 f"Unsupported type for pipeline concatenation: {type(other)}"
             )
 
+    def __ror__(self, other):
+        if isinstance(other, Pipeline):
+            return Pipeline(other.steps + self.steps)
+        elif isinstance(other, BaseTransformer):
+            return Pipeline([(other.__class__.__name__, other)] + self.steps)
+        else:
+            raise TypeError(
+                f"Unsupported type for pipeline concatenation: {type(other)}"
+            )
+
     def on_args(self, param_names):
         """
         Returns a decorator that applies this pipeline to one or more function arguments.

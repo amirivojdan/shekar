@@ -1,5 +1,6 @@
 import pytest
 from shekar.pipeline import Pipeline
+
 from shekar.preprocessing import (
     EmojiRemover,
     PunctuationRemover,
