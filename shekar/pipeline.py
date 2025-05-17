@@ -85,6 +85,16 @@ class Pipeline(BaseTransformer):
     def __call__(self, X):
         return self.fit_transform(X)
 
+    def __or__(self, other):
+        if isinstance(other, Pipeline):
+            return Pipeline(self.steps + other.steps)
+        elif isinstance(other, BaseTransformer):
+            return Pipeline(self.steps + [(other.__class__.__name__, other)])
+        else:
+            raise TypeError(
+                f"Unsupported type for pipeline concatenation: {type(other)}"
+            )
+
     def on_args(self, param_names):
         """
         Returns a decorator that applies this pipeline to one or more function arguments.
