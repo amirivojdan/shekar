@@ -132,3 +132,18 @@ def test_pipeline_or_invalid_type(mock_pipeline):
         match="Unsupported type for pipeline concatenation: <class 'int'>",
     ):
         _ = mock_pipeline | 123
+
+
+def test_pipeline_str(mock_pipeline):
+    assert (
+        str(mock_pipeline)
+        == "Pipeline(steps=[('EmojiRemover', EmojiRemover()), ('PunctuationRemover', PunctuationRemover())])"
+    )
+
+
+def test_pipeline_repr(mock_pipeline):
+    print(repr(mock_pipeline))
+    assert (
+        repr(mock_pipeline)
+        == "Pipeline(steps=[('EmojiRemover', EmojiRemover()), ('PunctuationRemover', PunctuationRemover())])"
+    )

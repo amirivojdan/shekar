@@ -125,6 +125,15 @@ class Pipeline(BaseTransformer):
                 f"Unsupported type for pipeline concatenation: {type(other)}"
             )
 
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        steps_repr = ", ".join(
+            f"({repr(name)}, {repr(step)})" for name, step in self.steps
+        )
+        return f"Pipeline(steps=[{steps_repr}])"
+
     def on_args(self, param_names):
         """
         Returns a decorator that applies this pipeline to one or more function arguments.
