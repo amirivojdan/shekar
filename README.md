@@ -29,7 +29,7 @@ To install the package, you can use **`pip`**. Run the following command:
 $ pip install shekar
 ```
 
-### Preprocessing with Shekar
+## Preprocessing
 
 The `shekar.preprocessing` module provides a rich set of building blocks for cleaning, normalizing, and transforming Persian text. These classes form the foundation of text preprocessing workflows and can be used independently or combined in a `Pipeline`.
 
