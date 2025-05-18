@@ -2,6 +2,7 @@
 ![Shekar](https://amirivojdan.io/wp-content/uploads/2025/01/shekar-lib.png)
 ![PyPI - Version](https://img.shields.io/pypi/v/shekar?color=00A693)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml?color=00A693)
+![Codecov](https://img.shields.io/codecov/c/github/amirivojdan/shekar?color=00A693)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/shekar?color=00A693)
 ![PyPI - License](https://img.shields.io/pypi/l/shekar?color=00A693)
 
