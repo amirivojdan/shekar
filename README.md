@@ -1,24 +1,15 @@
 
 ![Shekar](https://amirivojdan.io/wp-content/uploads/2025/01/shekar-lib.png)
+![PyPI - Version](https://img.shields.io/pypi/v/shekar?color=00A693)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml?color=00A693)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/shekar?color=00A693)
+![PyPI - License](https://img.shields.io/pypi/l/shekar?color=00A693)
 
 <p align="center">
     <em>Simplifying Persian NLP for Everyone</em>
 </p>
 
-<p align="center">
- <a href="https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml" target="_blank">
- <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml?color=00A693">
-</a>
-<a href="https://pypi.org/project/shekar" target="_blank">
-    <img src="https://img.shields.io/pypi/v/shekar?color=00A693" alt="Package version">
-</a>
-
-<a href="https://pypi.org/project/shekar" target="_blank">
-    <img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Famirivojdan%2Fshekar%2Frefs%2Fheads%2Fmain%2Fpyproject.toml&color=00A693" alt="Supported Python versions">
-</a>
-</p>
-
-Shekar (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
+**Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
 The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression.
 ## Installation
 
