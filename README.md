@@ -118,6 +118,29 @@ print(process_text("تو را من چشم👀 در راهم!"))
 "تو را من چشم در راهم"
 ```
 
+## SentenceTokenizer
+
+The `SentenceTokenizer` class is designed to split a given text into individual sentences. This class is particularly useful in natural language processing tasks where understanding the structure and meaning of sentences is important. The `SentenceTokenizer` class can handle various punctuation marks and language-specific rules to accurately identify sentence boundaries.
+
+Below is an example of how to use the `SentenceTokenizer`:
+
+```python
+
+from shekar.tokenizers import SentenceTokenizer
+
+text = "هدف ما کمک به یکدیگر است! ما می‌توانیم با هم کار کنیم."
+tokenizer = SentenceTokenizer()
+sentences = tokenizer.tokenize(text)
+
+for sentence in sentences:
+    print(sentence)
+```
+
+```output
+هدف ما کمک به یکدیگر است!
+ما می‌توانیم با هم کار کنیم.
+```
+
 ## Word Embeddings
 
 The **`Embedder`** class provides a simple interface for loading and using pre-trained word embeddings. It supports FastText word vectors and allows retrieving word representations and finding similar words.
