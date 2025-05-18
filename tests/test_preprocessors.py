@@ -310,3 +310,7 @@ def test_remove_html_tags():
     input_text = "<a href='https://example.com'>Example</a>"
     expected_output = "Example"
     assert html_tag_remover(input_text) == expected_output
+
+    input_text = "خدایا! خدایا، <b>کویرم!</b>"
+    result = html_tag_remover(input_text)
+    assert result == "خدایا! خدایا، کویرم!"

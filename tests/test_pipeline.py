@@ -1,15 +1,21 @@
 import pytest
 from shekar.pipeline import Pipeline
-from shekar.preprocessing import EmojiRemover, PunctuationRemover
+
+from shekar.preprocessing import (
+    EmojiRemover,
+    PunctuationRemover,
+    HTMLTagRemover,
+    NonPersianRemover,
+)
 
 
 @pytest.fixture
 def mock_pipeline():
     steps = [
-        ("removeEmoji", EmojiRemover()),
-        ("removePunct", PunctuationRemover()),
+        EmojiRemover(),
+        PunctuationRemover(),
     ]
-    return Pipeline(steps)
+    return Pipeline(steps=steps)
 
 
 def test_pipeline_fit(mock_pipeline):
@@ -85,3 +91,59 @@ def test_pipeline_on_args_invalid_type(mock_pipeline):
         @mock_pipeline.on_args([123])  # invalid param name: int instead of str
         def process_text(text):
             return text
+
+        process_text("ایران سرای من است")
+
+
+def test_pipeline_or_with_pipeline(mock_pipeline):
+    # Pipline | Pipeline
+    other_pipeline = Pipeline([("htmlRemover", HTMLTagRemover())])
+    combined = mock_pipeline | other_pipeline
+    assert isinstance(combined, Pipeline)
+
+    assert len(combined.steps) == len(mock_pipeline.steps) + len(other_pipeline.steps)
+
+    assert combined.steps[-1][0] == "htmlRemover"
+    assert isinstance(combined.steps[-1][1], HTMLTagRemover)
+    assert combined.steps[-2][0] == mock_pipeline.steps[-1][0]
+    assert isinstance(combined.steps[-2][1], type(mock_pipeline.steps[-1][1]))
+
+
+def test_pipeline_or_with_transformer(mock_pipeline):
+    # Pipline | Transformer
+    htmlRemover = HTMLTagRemover()
+    nonPersianRemover = NonPersianRemover()
+    combined = mock_pipeline | htmlRemover | nonPersianRemover
+    assert isinstance(combined, Pipeline)
+    assert len(combined.steps) == len(mock_pipeline.steps) + 2
+    assert combined.steps[-1][0] == nonPersianRemover.__class__.__name__
+    assert combined.steps[-1][1] is nonPersianRemover
+    assert combined.steps[-2][0] == htmlRemover.__class__.__name__
+    assert combined.steps[-2][1] is htmlRemover
+
+    input_text = "خدایا! خدایا، <b>کویرم!</b>"
+    result = combined(input_text)
+    assert result == "خدایا خدایا کویرم"
+
+
+def test_pipeline_or_invalid_type(mock_pipeline):
+    with pytest.raises(
+        TypeError,
+        match="Unsupported type for pipeline concatenation: <class 'int'>",
+    ):
+        _ = mock_pipeline | 123
+
+
+def test_pipeline_str(mock_pipeline):
+    assert (
+        str(mock_pipeline)
+        == "Pipeline(steps=[('EmojiRemover', EmojiRemover()), ('PunctuationRemover', PunctuationRemover())])"
+    )
+
+
+def test_pipeline_repr(mock_pipeline):
+    print(repr(mock_pipeline))
+    assert (
+        repr(mock_pipeline)
+        == "Pipeline(steps=[('EmojiRemover', EmojiRemover()), ('PunctuationRemover', PunctuationRemover())])"
+    )

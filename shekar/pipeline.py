@@ -27,9 +27,10 @@ class Pipeline(BaseTransformer):
             Allows the pipeline to be called as a function, fitting and transforming the input data X.
 
     Attributes:
-        steps (list[tuple[str, BaseTransformer]]): A list of tuples where each tuple contains a
-            string (name of the step) and an instance of a BaseTransformer.
-
+        steps (list[tuple[str, BaseTransformer]]) or list[BaseTransformer]:
+            A list of tuples where each tuple contains a string (name of the step) and an instance
+            of a BaseTransformer. If only BaseTransformer instances are provided, they are wrapped
+            in tuples with their class names as the step names.
     Example:
 
         >>> pipeline = Pipeline([
@@ -51,8 +52,27 @@ class Pipeline(BaseTransformer):
         باز هم مرغ سحر بر سر منبر گل
     """
 
-    def __init__(self, steps: list[tuple[str, BaseTransformer]]):
-        self.steps = steps
+    def __init__(
+        self, steps: Iterable[tuple[str, BaseTransformer]] | Iterable[BaseTransformer]
+    ):
+        if isinstance(steps, Iterable) and all(
+            isinstance(step, BaseTransformer) for step in steps
+        ):
+            self.steps = [(step.__class__.__name__, step) for step in steps]
+
+        elif isinstance(steps, Iterable) and all(
+            isinstance(step, tuple)
+            and len(step) == 2
+            and isinstance(step[1], BaseTransformer)
+            and isinstance(step[0], str)
+            for step in steps
+        ):
+            self.steps = steps
+
+        else:
+            raise TypeError(
+                "steps must be a list of tuples (name, transformer) or a list of transformers."
+            )
 
     def fit(self, X, y=None):
         for name, step in self.steps:
@@ -84,6 +104,35 @@ class Pipeline(BaseTransformer):
 
     def __call__(self, X):
         return self.fit_transform(X)
+
+    def __or__(self, other):
+        if isinstance(other, Pipeline):
+            return Pipeline(self.steps + other.steps)
+        elif isinstance(other, BaseTransformer):
+            return Pipeline(self.steps + [(other.__class__.__name__, other)])
+        else:
+            raise TypeError(
+                f"Unsupported type for pipeline concatenation: {type(other)}"
+            )
+
+    def __ror__(self, other):
+        if isinstance(other, Pipeline):
+            return Pipeline(other.steps + self.steps)
+        elif isinstance(other, BaseTransformer):
+            return Pipeline([(other.__class__.__name__, other)] + self.steps)
+        else:
+            raise TypeError(
+                f"Unsupported type for pipeline concatenation: {type(other)}"
+            )
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        steps_repr = ", ".join(
+            f"({repr(name)}, {repr(step)})" for name, step in self.steps
+        )
+        return f"Pipeline(steps=[{steps_repr}])"
 
     def on_args(self, param_names):
         """
