@@ -23,6 +23,8 @@ $ pip install shekar
 
 ## Preprocessing
 
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
+
 The `shekar.preprocessing` module provides a rich set of building blocks for cleaning, normalizing, and transforming Persian text. These classes form the foundation of text preprocessing workflows and can be used independently or combined in a `Pipeline`.
 
 Here are some of the key text transformers available in the module:
