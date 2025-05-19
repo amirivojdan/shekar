@@ -13,6 +13,8 @@ from .transformations import (
     RedundantCharacterRemover,
     NonPersianRemover,
     HTMLTagRemover,
+    MentionRemover,
+    HashtagRemover,
     PunctuationSpacingStandardizer,
 )
 
@@ -32,4 +34,6 @@ __all__ = [
     "NonPersianRemover",
     "HTMLTagRemover",
     "PunctuationSpacingStandardizer",
+    "MentionRemover",
+    "HashtagRemover",
 ]
