@@ -1,4 +1,4 @@
-# Preprocessing Components
+# Preprocessing
 
 The `shekar.preprocessing` module offers a suite of tools designed to clean and standardize Persian (and mixed) text for NLP tasks. These tools include removers, normalizers, and maskers. Below is a detailed guide to each class.
 

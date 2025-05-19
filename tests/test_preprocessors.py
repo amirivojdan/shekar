@@ -14,6 +14,7 @@ from shekar.preprocessing import (
     ArabicUnicodeNormalizer,
     StopwordRemover,
     PunctuationRemover,
+    PunctuationSpacingStandardizer,
 )
 
 
@@ -314,3 +315,29 @@ def test_remove_html_tags():
     input_text = "خدایا! خدایا، <b>کویرم!</b>"
     result = html_tag_remover(input_text)
     assert result == "خدایا! خدایا، کویرم!"
+
+
+def test_punctuation_spacings():
+    batch_input = []
+    batch_expected_output = []
+    punct_space_standardizer = PunctuationSpacingStandardizer()
+    input_text = "سلام!چطوری؟"
+    expected_output = "سلام! چطوری؟ "
+    assert punct_space_standardizer(input_text) == expected_output
+
+    batch_input.append(input_text)
+    batch_expected_output.append(expected_output)
+
+    input_text = "شرکت « گوگل »اعلام کرد ."
+    expected_output = "شرکت «گوگل» اعلام کرد. "
+
+    assert punct_space_standardizer.fit_transform(input_text) == expected_output
+
+    batch_input.append(input_text)
+    batch_expected_output.append(expected_output)
+
+    assert list(punct_space_standardizer(batch_input)) == batch_expected_output
+    assert (
+        list(punct_space_standardizer.fit_transform(batch_input))
+        == batch_expected_output
+    )
