@@ -14,6 +14,9 @@ from shekar.preprocessing import (
     ArabicUnicodeNormalizer,
     StopwordRemover,
     PunctuationRemover,
+    MentionRemover,
+    HashtagRemover,
+    PunctuationSpacingStandardizer,
 )
 
 
@@ -314,3 +317,51 @@ def test_remove_html_tags():
     input_text = "خدایا! خدایا، <b>کویرم!</b>"
     result = html_tag_remover(input_text)
     assert result == "خدایا! خدایا، کویرم!"
+
+
+def test_punctuation_spacings():
+    batch_input = []
+    batch_expected_output = []
+    punct_space_standardizer = PunctuationSpacingStandardizer()
+    input_text = "سلام!چطوری؟"
+    expected_output = "سلام! چطوری؟ "
+    assert punct_space_standardizer(input_text) == expected_output
+
+    batch_input.append(input_text)
+    batch_expected_output.append(expected_output)
+
+    input_text = "شرکت « گوگل »اعلام کرد ."
+    expected_output = "شرکت «گوگل» اعلام کرد. "
+
+    assert punct_space_standardizer.fit_transform(input_text) == expected_output
+
+    batch_input.append(input_text)
+    batch_expected_output.append(expected_output)
+
+    assert list(punct_space_standardizer(batch_input)) == batch_expected_output
+    assert (
+        list(punct_space_standardizer.fit_transform(batch_input))
+        == batch_expected_output
+    )
+
+
+def test_mention_remover():
+    mention_remover = MentionRemover()
+    input_text = "@user شما خبر دارید؟"
+    expected_output = " شما خبر دارید؟"
+    assert mention_remover(input_text) == expected_output
+
+    input_text = "@user سلام رفقا @user"
+    expected_output = " سلام رفقا "
+    assert mention_remover.fit_transform(input_text) == expected_output
+
+
+def test_hashtag_remover():
+    hashtag_remover = HashtagRemover()
+    input_text = "#پیشرفت_علمی در راستای توسعه"
+    expected_output = " در راستای توسعه"
+    assert hashtag_remover(input_text) == expected_output
+
+    input_text = "روز #کودک شاد باد."
+    expected_output = "روز  شاد باد."
+    assert hashtag_remover.fit_transform(input_text) == expected_output

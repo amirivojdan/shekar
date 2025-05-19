@@ -12,18 +12,18 @@ diacritics = "ًٌٍَُِّْ"
 persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ"
 persian_digits = "۰۱۲۳۴۵۶۷۸۹"
 special_signs = "-٪@/#"
-punctuation_singles = ".!؟،:؛"
-punctuation_oppenings = r">{[\(«"
-punctuation_closings = r"<}]\)»"
+punctuation_singles = ".!؟…،:؛"
+punctuation_openers = r">{[\(«"
+punctuation_closers = r"<}]\)»"
 punctuations = (
-    punctuation_singles + punctuation_oppenings + punctuation_closings + special_signs
+    punctuation_singles + punctuation_openers + punctuation_closers + special_signs
 )
 
 spaces = "\u200c" + " "
 right_to_left_mark = "\u200f"
 arabic_numbers = "٠١٢٣٤٥٦٧٨٩"
-punc_after = r".\.:!،؛؟»\]\)\}"
-punc_before = r"«\[\(\{"
+
+no_joiner_letters = "دۀذاأآورژز"
 
 
 def is_informal(text, threshold=1) -> bool:
