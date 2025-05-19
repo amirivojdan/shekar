@@ -1,5 +1,7 @@
 # Preprocessing
 
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
+
 The `shekar.preprocessing` module offers a suite of tools designed to clean and standardize Persian (and mixed) text for NLP tasks. These tools include removers, normalizers, and maskers. Below is a detailed guide to each class.
 
 ---

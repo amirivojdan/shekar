@@ -28,8 +28,13 @@ jobs:
         run: uv pip install -r pyproject.toml --all-extras
 
       - name: Install Pytest
-        run: uv pip install pytest
+        run: uv pip install pytest pytest-cov
 
       - name: Run Tests
-        run: uv run pytest
+        run: uv run pytest --cov --cov-branch --cov-report=xml
+      
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
         
