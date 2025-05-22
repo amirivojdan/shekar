@@ -181,9 +181,8 @@ wordCloud = WordCloud(
         color_map="Set2",
     )
 
-# if shows disconnect words, try again with bidi_reshape=False
-# image = wordCloud.generate(word_freqs, bidi_reshape=False)
-image = wordCloud.generate(word_freqs)
+# if shows disconnect words, try again with bidi_reshape=True
+image = wordCloud.generate(word_freqs, bidi_reshape=False)
 image.show()
 ```
 
