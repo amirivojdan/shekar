@@ -163,21 +163,27 @@ clean_text = preprocessing_pipeline(html_content)
 word_tokenizer = WordTokenizer()
 tokens = word_tokenizer(clean_text)
 
-counwords = Counter()
-for word in tokens:
-  counwords[word] += 1
 
-worCloud = WordCloud(
+word_freqs = Counter()
+for word in tokens:
+    word_freqs[word] += 1
+
+
+wordCloud = WordCloud(
         mask="Iran",
+        width=1000,
+        height=500,
         max_font_size=220,
         min_font_size=5,
         bg_color="white",
         contour_color="black",
-        contour_width=5,
-        color_map="Greens",
+        contour_width=3,
+        color_map="Set2",
     )
 
-image = worCloud.generate(counwords)
+# if shows disconnect words, try again with bidi_reshape=False
+# image = wordCloud.generate(word_freq, bidi_reshape=False)
+image = wordCloud.generate(word_freqs)
 image.show()
 ```
 

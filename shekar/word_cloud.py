@@ -5,11 +5,16 @@ from bidi import get_display
 from PIL import Image
 import numpy as np
 from typing import Counter
-from shekar import utils
 import os
-
+from shekar import data
+from importlib import resources 
 
 class WordCloud:
+    """
+    A class to generate word clouds from Persian text using the WordCloud library.
+    This class provides functionality to create visually appealing word clouds
+    with various customization options such as font, color map, and mask.
+    """
     def __init__(
         self,
         mask: str | None = None,
@@ -24,9 +29,18 @@ class WordCloud:
         max_font_size: int = 80,
         horizontal_ratio: float = 0.75,
     ):
-        masks_path = utils.data_root_path / "masks"
+        self.predefined_masks = {
+                "Iran": "iran.png",
+                "Head": "head.png",
+                "Heart": "heart.png",
+                "Bulb": "bulb.png",
+                "Cat": "cat.png",
+                "Cloud": "cloud.png",
+            }
+
+         
         if font == "parastoo" or font == "sahel":
-            font_path = utils.data_root_path / "fonts" / f"{font}.ttf"
+            font_path = resources.files(data).joinpath("fonts") / f"{font}.ttf"
         elif os.path.exists(font):
             font_path = font
         else:
@@ -35,18 +49,10 @@ class WordCloud:
             )
         
         if isinstance(mask, str):
-            if mask == "Iran":
-                self.mask = np.array(Image.open(masks_path / "iran.png"))
-            elif mask == "Head":
-                self.mask = np.array(Image.open(masks_path / "head.png"))
-            elif mask == "Heart":
-                self.mask = np.array(Image.open(masks_path / "heart.png"))
-            elif mask == "Bulb":
-                self.mask = np.array(Image.open(masks_path / "bulb.png"))
-            elif mask == "Cat":
-                self.mask = np.array(Image.open(masks_path / "cat.png"))
-            elif mask == "Cloud":
-                self.mask = np.array(Image.open(masks_path / "cloud.png"))
+            
+            if mask in self.predefined_masks:
+                mask_path = resources.files(data).joinpath("masks") / self.predefined_masks[mask]
+                self.mask = np.array(Image.open(mask_path))
             elif os.path.exists(mask):
                 self.mask = np.array(Image.open(mask))
             else:
@@ -73,9 +79,14 @@ class WordCloud:
             colormap=color_map,
         )
 
-    def generate(self, frequencies: Counter) -> Image:
+    def generate(self, frequencies: Counter, bidi_reshape: bool = True) -> Image:
         """
-        Generate a word cloud from a dictionary of words and their frequencies.
+        Generates a word cloud image from the given frequencies.
+        Args:
+            frequencies (Counter): A dictionary of words and their frequencies.
+            bidi_reshape (bool): Whether to apply bidirectional reshaping for Persian text.
+        Returns:
+            Image: The generated word cloud PIL image.
         """
         if not isinstance(frequencies, Counter):
             raise ValueError(
@@ -85,13 +96,12 @@ class WordCloud:
         if not frequencies:
             raise ValueError("Frequencies dictionary is empty.")
         
-
-        frequencies = {
-            get_display(arabic_reshaper.reshape(k)): float(v)
+        reshaped_frequencies = {
+            (get_display(arabic_reshaper.reshape(k)) if bidi_reshape else k): float(v)
             for k, v in frequencies.items()
             if v > 0
         }
 
-        wordcloud = self.wc.generate_from_frequencies(frequencies)
+        wordcloud = self.wc.generate_from_frequencies(reshaped_frequencies)
         image = wordcloud.to_image()
         return image

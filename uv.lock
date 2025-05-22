@@ -1529,7 +1529,7 @@ wheels = [
 
 [[package]]
 name = "shekar"
-version = "0.1.13"
+version = "0.1.15"
 source = { editable = "." }
 dependencies = [
     { name = "arabic-reshaper" },

@@ -4,7 +4,8 @@ from collections import Counter
 from shekar import WordCloud
 import numpy as np
 import os
-from shekar import utils
+from importlib import resources
+from shekar import data
 
 @pytest.fixture
 def wordcloud_instance():
@@ -15,7 +16,7 @@ def test_wordcloud_default_initialization(wordcloud_instance):
     assert wordcloud_instance.mask is None
 
 def test_wordcloud_custom_mask():
-    mask_path = utils.data_root_path / "masks" / "iran.png"
+    mask_path = resources.files(data).joinpath("masks") / "iran.png"
     if not os.path.exists(mask_path):
         pytest.skip("Custom mask file does not exist.")
     wc_instance = WordCloud(mask=str(mask_path))
