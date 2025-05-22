@@ -138,29 +138,51 @@ for sentence in sentences:
 ```
 
 
-## Word Embeddings
+## WordCloud
 
-The **`Embedder`** class provides a simple interface for loading and using pre-trained word embeddings. It supports FastText word vectors and allows retrieving word representations and finding similar words.
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)
 
-The following pre-trained models are available for use:
-
-- `fasttext-d300-w5-cbow-naab`: Trained on the Naab corpus with 300-dimensional word vectors.
-- `fasttext-d100-w10-cbow-blogs`: Trained on Persian blog texts with 100-dimensional word vectors.
+The WordCloud class offers an easy way to create visually rich Persian word clouds. It supports reshaping and right-to-left rendering, Persian fonts, color maps, and custom shape masks for accurate and elegant visualization of word frequencies.
 
 ```python
+import requests
+from collections import Counter
 
-from shekar import Embedder
+from shekar import WordCloud
+from shekar import WordTokenizer
+from shekar.preprocessing import (
+  HTMLTagRemover,
+  PunctuationRemover,
+  StopWordRemover,
+  NonPersianRemover,
+)
+preprocessing_pipeline = HTMLTagRemover() | PunctuationRemover() | StopWordRemover() | NonPersianRemover()
 
-# Load pre-trained embeddings
-embedder = Embedder(model_name="fasttext-d100-w10-cbow-blogs")
 
-# Retrieve word vector
-word = "کتاب"
-vector = embedder[word]
-print(f"Vector for {word}: {vector}")
+url = f"https://ganjoor.net/ferdousi/shahname/siavosh/sh9"
+response = requests.get(url)
+html_content = response.text
+clean_text = preprocessing_pipeline(html_content)
 
-# Find similar words
-similar_words = embedder.most_similar(word, topn=5)
-print(f"Words similar to {word}: {similar_words}")
+word_tokenizer = WordTokenizer()
+tokens = word_tokenizer(clean_text)
 
+counwords = Counter()
+for word in tokens:
+  counwords[word] += 1
+
+worCloud = WordCloud(
+        mask="Iran",
+        max_font_size=220,
+        min_font_size=5,
+        bg_color="white",
+        contour_color="black",
+        contour_width=5,
+        color_map="Greens",
+    )
+
+image = worCloud.generate(counwords)
+image.show()
 ```
+
+![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)

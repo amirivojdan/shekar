@@ -31,7 +31,6 @@ nav:
     - Pipeline: tutorials/pipeline.md
     - Tokenization: tutorials/tokenization.md
     - Normalization: tutorials/normalization.md
-    - Embeddings: tutorials/embedding.md
     
 
 plugins:

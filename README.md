@@ -134,29 +134,6 @@ for sentence in sentences:
 ما می‌توانیم با هم کار کنیم.
 ```
 
-## Word Embeddings
-
-The **`Embedder`** class provides a simple interface for loading and using pre-trained word embeddings. It supports FastText word vectors and allows retrieving word representations and finding similar words.
-
-The following pre-trained models are available for use:
-
-- `fasttext-d300-w5-cbow-naab`: Trained on the Naab corpus with 300-dimensional word vectors.
-- `fasttext-d100-w10-cbow-blogs`: Trained on Persian blog texts with 100-dimensional word vectors.
-
-```python
-from shekar import Embedder
-
-embedder = Embedder(model_name="fasttext-d100-w10-cbow-blogs")
-
-word = "کتاب"
-vector = embedder[word]
-print(f"Vector for {word}: {vector}")
-
-similar_words = embedder.most_similar(word, topn=5)
-print(f"Words similar to {word}: {similar_words}")
-
-```
-
 ## WordCloud
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)

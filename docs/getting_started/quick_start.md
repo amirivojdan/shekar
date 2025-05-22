@@ -72,20 +72,6 @@ for s in sentences:
 
 ---
 
-## 5. Load and Use Word Embeddings
-
-Use the `Embedder` class to load FastText-based word vectors and find similar words.
-
-```python
-from shekar import Embedder
-
-embedder = Embedder(model_name="fasttext-d100-w10-cbow-blogs")
-print(embedder["کتاب"])  # Word vector
-print(embedder.most_similar("کتاب", topn=3))  # Top 3 similar words
-```
-
----
-
 ## Summary
 
 | Task           | Tool / Class         |
@@ -94,6 +80,6 @@ print(embedder.most_similar("کتاب", topn=3))  # Top 3 similar words
 | Clean text     | `shekar.preprocessing` |
 | Create pipeline| `Pipeline`           |
 | Tokenize       | `SentenceTokenizer`  |
-| Word vectors   | `Embedder`           |
+| Word Cloud   | `WordCloud`           |
 
 All components work with both single strings and lists. Pipelines are composable and can be reused, tested, or applied dynamically via decorators.
