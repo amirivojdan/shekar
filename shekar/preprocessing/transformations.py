@@ -521,7 +521,7 @@ class SpacingStandardizer(BaseTextTransformer):
         return self._map_patterns(text, self._patterns).strip()
 
 
-class StopwordRemover(BaseTextTransformer):
+class StopWordRemover(BaseTextTransformer):
     """
     A text transformation class for removing Persian stopwords from the text.
 
@@ -529,7 +529,7 @@ class StopwordRemover(BaseTextTransformer):
     and remove Persian stopwords from the text. It uses a predefined list of stopwords
     to filter out common words that do not contribute significant meaning to the text.
 
-    The `StopwordRemover` class includes `fit` and `fit_transform` methods, and it
+    The `StopWordRemover` class includes `fit` and `fit_transform` methods, and it
     is callable, allowing direct application to text data.
 
     Args:
@@ -549,7 +549,7 @@ class StopwordRemover(BaseTextTransformer):
             Allows the class to be called as a function, applying the transformation
             to the input text.
     Example:
-        >>> stopword_remover = StopwordRemover(stopwords=["و", "به", "از"])
+        >>> stopword_remover = StopWordRemover(stopwords=["و", "به", "از"])
         >>> cleaned_text = stopword_remover("این یک متن نمونه است و به شما کمک می‌کند.")
         >>> print(cleaned_text)
         "این یک متن نمونه است شما کمک می‌کند."
@@ -596,10 +596,10 @@ class HTMLTagRemover(BaseTextTransformer):
         "این یک متن نمونه است."
     """
 
-    def __init__(self):
+    def __init__(self, replace_with: str = " "):
         super().__init__()
         self._html_tag_mappings = [
-            (r"<[^>]+>", ""),
+            (r"<[^>]+>", replace_with),
         ]
 
         self._patterns = self._compile_patterns(self._html_tag_mappings)
@@ -640,10 +640,10 @@ class MentionRemover(BaseTextTransformer):
         "سلام ! چطوری؟"
     """
 
-    def __init__(self):
+    def __init__(self, replace_with: str = " "):
         super().__init__()
         self._mention_mappings = [
-            (r"@([^\s]+)", ""),
+            (r"@([^\s]+)", replace_with),
         ]
 
         self._patterns = self._compile_patterns(self._mention_mappings)
@@ -683,10 +683,10 @@ class HashtagRemover(BaseTextTransformer):
         "سلام خوش_آمدید"
     """
 
-    def __init__(self):
+    def __init__(self, replace_with: str = " "):
         super().__init__()
         self._hashtag_mappings = [
-            (r"#([^\s]+)", ""),
+            (r"#([^\s]+)", replace_with),
         ]
 
         self._patterns = self._compile_patterns(self._hashtag_mappings)

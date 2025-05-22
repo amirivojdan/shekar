@@ -12,7 +12,7 @@ from shekar.preprocessing import (
     HTMLTagRemover,
     RedundantCharacterRemover,
     ArabicUnicodeNormalizer,
-    StopwordRemover,
+    StopWordRemover,
     PunctuationRemover,
     MentionRemover,
     HashtagRemover,
@@ -256,7 +256,7 @@ def test_remove_diacritics():
 
 
 def test_remove_stopwords():
-    stopword_remover = StopwordRemover()
+    stopword_remover = StopWordRemover()
     input_text = "این یک جملهٔ نمونه است"
     expected_output = "جملهٔ نمونه"
     assert stopword_remover(input_text) == expected_output
@@ -301,7 +301,7 @@ def test_remove_non_persian():
 
 
 def test_remove_html_tags():
-    html_tag_remover = HTMLTagRemover()
+    html_tag_remover = HTMLTagRemover(replace_with="")
     input_text = "<p>گل صدبرگ به پیش تو فرو ریخت ز خجلت!</p>"
     expected_output = "گل صدبرگ به پیش تو فرو ریخت ز خجلت!"
     assert html_tag_remover(input_text) == expected_output
@@ -346,7 +346,7 @@ def test_punctuation_spacings():
 
 
 def test_mention_remover():
-    mention_remover = MentionRemover()
+    mention_remover = MentionRemover(replace_with="")
     input_text = "@user شما خبر دارید؟"
     expected_output = " شما خبر دارید؟"
     assert mention_remover(input_text) == expected_output
@@ -357,7 +357,7 @@ def test_mention_remover():
 
 
 def test_hashtag_remover():
-    hashtag_remover = HashtagRemover()
+    hashtag_remover = HashtagRemover(replace_with="")
     input_text = "#پیشرفت_علمی در راستای توسعه"
     expected_output = " در راستای توسعه"
     assert hashtag_remover(input_text) == expected_output
