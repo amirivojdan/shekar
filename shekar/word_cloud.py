@@ -5,9 +5,9 @@ from bidi import get_display
 from PIL import Image
 import numpy as np
 from typing import Counter
-from shekar import utils
 import os
-
+from shekar import data
+from importlib import resources 
 
 class WordCloud:
     def __init__(
@@ -24,9 +24,18 @@ class WordCloud:
         max_font_size: int = 80,
         horizontal_ratio: float = 0.75,
     ):
-        masks_path = utils.data_root_path / "masks"
+        self.predefined_masks = {
+                "Iran": "iran.png",
+                "Head": "head.png",
+                "Heart": "heart.png",
+                "Bulb": "bulb.png",
+                "Cat": "cat.png",
+                "Cloud": "cloud.png",
+            }
+
+         
         if font == "parastoo" or font == "sahel":
-            font_path = utils.data_root_path / "fonts" / f"{font}.ttf"
+            font_path = resources.files(data).joinpath("fonts") / f"{font}.ttf"
         elif os.path.exists(font):
             font_path = font
         else:
@@ -35,18 +44,10 @@ class WordCloud:
             )
         
         if isinstance(mask, str):
-            if mask == "Iran":
-                self.mask = np.array(Image.open(masks_path / "iran.png"))
-            elif mask == "Head":
-                self.mask = np.array(Image.open(masks_path / "head.png"))
-            elif mask == "Heart":
-                self.mask = np.array(Image.open(masks_path / "heart.png"))
-            elif mask == "Bulb":
-                self.mask = np.array(Image.open(masks_path / "bulb.png"))
-            elif mask == "Cat":
-                self.mask = np.array(Image.open(masks_path / "cat.png"))
-            elif mask == "Cloud":
-                self.mask = np.array(Image.open(masks_path / "cloud.png"))
+            
+            if mask in self.predefined_masks:
+                mask_path = resources.files(data).joinpath("masks") / self.predefined_masks[mask]
+                self.mask = np.array(Image.open(mask_path))
             elif os.path.exists(mask):
                 self.mask = np.array(Image.open(mask))
             else:

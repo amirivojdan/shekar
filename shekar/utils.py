@@ -1,11 +1,12 @@
 import re
-from pathlib import Path
+from importlib import resources
+from shekar import data
 
-data_root_path = Path(__file__).parent / "data"
+data_root = resources.files(data)
 
-vocab_csv_path = data_root_path / "vocab.csv"
-verbs_csv_path = data_root_path / "verbs.csv"
-stopwords_csv_path = data_root_path / "stopwords.csv"
+vocab_csv_path = data_root.joinpath("vocab.csv") 
+verbs_csv_path = data_root.joinpath("verbs.csv")
+stopwords_csv_path = data_root.joinpath("stopwords.csv")
 
 
 diacritics = "ًٌٍَُِّْ"
