@@ -133,7 +133,7 @@ for sentence in sentences:
 هدف ما کمک به یکدیگر است!
 ما می‌توانیم با هم کار کنیم.
 ```
- 
+
 ## WordCloud
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)
