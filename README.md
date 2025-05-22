@@ -182,7 +182,7 @@ wordCloud = WordCloud(
     )
 
 # if shows disconnect words, try again with bidi_reshape=False
-# image = wordCloud.generate(word_freq, bidi_reshape=False)
+# image = wordCloud.generate(word_freqs, bidi_reshape=False)
 image = wordCloud.generate(word_freqs)
 image.show()
 ```
