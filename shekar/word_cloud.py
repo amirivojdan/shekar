@@ -10,6 +10,11 @@ from shekar import data
 from importlib import resources 
 
 class WordCloud:
+    """
+    A class to generate word clouds from Persian text using the WordCloud library.
+    This class provides functionality to create visually appealing word clouds
+    with various customization options such as font, color map, and mask.
+    """
     def __init__(
         self,
         mask: str | None = None,
@@ -74,9 +79,14 @@ class WordCloud:
             colormap=color_map,
         )
 
-    def generate(self, frequencies: Counter) -> Image:
+    def generate(self, frequencies: Counter, bidi_reshape: bool = True) -> Image:
         """
-        Generate a word cloud from a dictionary of words and their frequencies.
+        Generates a word cloud image from the given frequencies.
+        Args:
+            frequencies (Counter): A dictionary of words and their frequencies.
+            bidi_reshape (bool): Whether to apply bidirectional reshaping for Persian text.
+        Returns:
+            Image: The generated word cloud PIL image.
         """
         if not isinstance(frequencies, Counter):
             raise ValueError(
@@ -86,13 +96,12 @@ class WordCloud:
         if not frequencies:
             raise ValueError("Frequencies dictionary is empty.")
         
-
-        frequencies = {
-            get_display(arabic_reshaper.reshape(k)): float(v)
+        reshaped_frequencies = {
+            (get_display(arabic_reshaper.reshape(k)) if bidi_reshape else k): float(v)
             for k, v in frequencies.items()
             if v > 0
         }
 
-        wordcloud = self.wc.generate_from_frequencies(frequencies)
+        wordcloud = self.wc.generate_from_frequencies(reshaped_frequencies)
         image = wordcloud.to_image()
         return image
