@@ -1,6 +1,7 @@
 from .pipeline import Pipeline
 from .base import BaseTransformer, BaseTextTransformer
 from .spell_checker import SpellChecker
+from .word_cloud import WordCloud
 from .normalizer import Normalizer
 from .embeddings import Embedder
 from .tokenizers import (
@@ -17,4 +18,5 @@ __all__ = [
     "Embedder",
     "WordTokenizer",
     "SentenceTokenizer",
+    "WordCloud",
 ]

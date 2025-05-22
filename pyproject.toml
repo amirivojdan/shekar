@@ -11,10 +11,15 @@ license = "MIT"
 authors = [{ name = "Ahmad Amirivojdan", email = "amirivojdan@gmail.com" }]
 requires-python = ">=3.10"
 dependencies = [
+    "arabic-reshaper>=3.0.0",
     "emoji>=2.14.1",
     "gensim>=4.3.3",
+    "pillow>=11.2.1",
+    "pip>=25.1.1",
+    "python-bidi>=0.6.6",
     "regex>=2024.11.6",
     "requests>=2.32.3",
+    "wordcloud>=1.9.4",
 ]
 
 [dependency-groups]

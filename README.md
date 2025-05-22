@@ -48,16 +48,16 @@ Shekar's `Pipeline` class allows you to chain multiple text preprocessing steps 
 Example: 
 
 ```python
-from shekar.preprocessing import EmojiRemover, PunctuationRemover, AlphabetNormalizer
+from shekar.preprocessing import EmojiRemover, PunctuationRemover
 
-text = "ایران سرای من است! 🌍😊"
-pipeline = EmojiRemover() | PunctuationRemover() | WhitespaceStripper()
+text = "ز ایران دلش یاد کرد و بسوخت! 🌍🇮🇷"
+pipeline = EmojiRemover() | PunctuationRemover()
 output = pipeline(text)
 print(output)
 ```
 
 ```shell
-ایران سرای من است
+ز ایران دلش یاد کرد و بسوخت
 ```
 
 Note that **`Pipeline`** objects are **callable**, meaning you can use them like functions to process input data directly.
@@ -72,7 +72,7 @@ from shekar import Normalizer
 normalizer = Normalizer()
 
 text = "ۿدف ما ػمګ بۀ ێڪډيڱڕ أښټ"
-text = normalizer(text) # Output: هدف ما کمک به یکدیگر است
+text = normalizer(text) 
 print(text)
 ```
 ```shell
@@ -119,7 +119,6 @@ The `SentenceTokenizer` class is designed to split a given text into individual 
 Below is an example of how to use the `SentenceTokenizer`:
 
 ```python
-
 from shekar.tokenizers import SentenceTokenizer
 
 text = "هدف ما کمک به یکدیگر است! ما می‌توانیم با هم کار کنیم."
@@ -145,19 +144,64 @@ The following pre-trained models are available for use:
 - `fasttext-d100-w10-cbow-blogs`: Trained on Persian blog texts with 100-dimensional word vectors.
 
 ```python
-
 from shekar import Embedder
 
-# Load pre-trained embeddings
 embedder = Embedder(model_name="fasttext-d100-w10-cbow-blogs")
 
-# Retrieve word vector
 word = "کتاب"
 vector = embedder[word]
 print(f"Vector for {word}: {vector}")
 
-# Find similar words
 similar_words = embedder.most_similar(word, topn=5)
 print(f"Words similar to {word}: {similar_words}")
 
 ```
+
+## WordCloud
+
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)
+
+The WordCloud class offers an easy way to create visually rich Persian word clouds. It supports reshaping and right-to-left rendering, Persian fonts, color maps, and custom shape masks for accurate and elegant visualization of word frequencies.
+
+```python
+import requests
+from collections import Counter
+
+from shekar import WordCloud
+from shekar import WordTokenizer
+from shekar.preprocessing import (
+  HTMLTagRemover,
+  PunctuationRemover,
+  StopWordRemover,
+  NonPersianRemover,
+)
+preprocessing_pipeline = HTMLTagRemover() | PunctuationRemover() | StopWordRemover() | NonPersianRemover()
+
+
+url = f"https://ganjoor.net/ferdousi/shahname/siavosh/sh9"
+response = requests.get(url)
+html_content = response.text
+clean_text = preprocessing_pipeline(html_content)
+
+word_tokenizer = WordTokenizer()
+tokens = word_tokenizer(clean_text)
+
+counwords = Counter()
+for word in tokens:
+  counwords[word] += 1
+
+worCloud = WordCloud(
+        mask="Iran",
+        max_font_size=220,
+        min_font_size=5,
+        bg_color="white",
+        contour_color="black",
+        contour_width=5,
+        color_map="Greens",
+    )
+
+image = worCloud.generate(counwords)
+image.show()
+```
+
+![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)
