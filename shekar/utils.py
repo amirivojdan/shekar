@@ -8,9 +8,9 @@ vocab_csv_path = data_root.joinpath("vocab.csv")
 verbs_csv_path = data_root.joinpath("verbs.csv")
 stopwords_csv_path = data_root.joinpath("stopwords.csv")
 
-
+ZWNJ = "\u200c"
 diacritics = "ًٌٍَُِّْ"
-persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ"
+persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
 persian_digits = "۰۱۲۳۴۵۶۷۸۹"
 special_signs = "-٪@/#"
 punctuation_singles = ".!؟…،:؛"

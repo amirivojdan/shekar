@@ -1,6 +1,5 @@
 from typing import Iterable
 from shekar.base import BaseTextTransformer
-from shekar.tokenizers import WordTokenizer
 import shekar.utils as utils
 import re
 import html
@@ -314,7 +313,7 @@ class PunctuationRemover(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._punctuation_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class DiacriticsRemover(BaseTextTransformer):
@@ -357,7 +356,7 @@ class DiacriticsRemover(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._diacritic_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class EmojiRemover(BaseTextTransformer):
@@ -392,7 +391,7 @@ class EmojiRemover(BaseTextTransformer):
         super().__init__()
 
     def _function(self, text: str) -> str:
-        return emoji.replace_emoji(text, replace="")
+        return emoji.replace_emoji(text, replace="").strip()
 
 
 class EmailMasker(BaseTextTransformer):
@@ -438,7 +437,7 @@ class EmailMasker(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._email_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class URLMasker(BaseTextTransformer):
@@ -483,7 +482,7 @@ class URLMasker(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._url_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class SpacingStandardizer(BaseTextTransformer):
@@ -555,14 +554,23 @@ class StopWordRemover(BaseTextTransformer):
         "این یک متن نمونه است شما کمک می‌کند."
     """
 
-    def __init__(self, stopwords: Iterable[str] = None):
+    def __init__(self, stopwords: Iterable[str] = None, replace_with: str = ""):
         super().__init__()
         self.stopwords = stopwords or utils.stopwords
-        self._word_tokenzer = WordTokenizer()
+        self.letters = utils.persian_letters
+        self.replace_with = replace_with
+        self._stopword_mappings = []
+        for stopword in self.stopwords:
+            escaped_word = re.escape(stopword)
+            self._stopword_mappings.append(
+                (rf"(?<![{self.letters}]){escaped_word}(?![{self.letters}])", replace_with)
+            )
+
+        self._patterns = self._compile_patterns(self._stopword_mappings)
+
 
     def _function(self, text: str) -> str:
-        words = self._word_tokenzer(text)
-        return " ".join([word for word in words if word not in self.stopwords])
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class HTMLTagRemover(BaseTextTransformer):
@@ -606,7 +614,7 @@ class HTMLTagRemover(BaseTextTransformer):
 
     def _function(self, text: str) -> str:
         text = html.unescape(text)
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class MentionRemover(BaseTextTransformer):
@@ -649,7 +657,7 @@ class MentionRemover(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._mention_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class HashtagRemover(BaseTextTransformer):
@@ -692,7 +700,7 @@ class HashtagRemover(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._hashtag_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class RedundantCharacterRemover(BaseTextTransformer):
@@ -736,7 +744,7 @@ class RedundantCharacterRemover(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._redundant_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class NonPersianRemover(BaseTextTransformer):
@@ -797,7 +805,7 @@ class NonPersianRemover(BaseTextTransformer):
         self._patterns = self._compile_patterns(self._filter_mappings)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns)
+        return self._map_patterns(text, self._patterns).strip()
 
 
 class PunctuationSpacingStandardizer(BaseTextTransformer):

@@ -90,11 +90,11 @@ def test_mask_email():
     email_masker = EmailMasker(mask="")
 
     input_text = "ایمیل من: she.kar@shekar.panir.io"
-    expected_output = "ایمیل من: "
+    expected_output = "ایمیل من:"
     assert email_masker(input_text) == expected_output
 
     input_text = "ایمیل من: she+kar@she-kar.io"
-    expected_output = "ایمیل من: "
+    expected_output = "ایمیل من:"
     assert email_masker.fit_transform(input_text) == expected_output
 
 
@@ -102,11 +102,11 @@ def test_mask_url():
     url_masker = URLMasker(mask="")
 
     input_text = "لینک: https://shekar.parsi-shekar.com"
-    expected_output = "لینک: "
+    expected_output = "لینک:"
     assert url_masker(input_text) == expected_output
 
     input_text = "لینک: http://shekar2qand.com/id=2"
-    expected_output = "لینک: "
+    expected_output = "لینک:"
     assert url_masker.fit_transform(input_text) == expected_output
 
 
@@ -277,7 +277,7 @@ def test_remove_non_persian():
     assert non_persian_remover(input_text) == expected_output
 
     input_text = "What you seek is seeking you!"
-    expected_output = "     !"
+    expected_output = "!"
     assert non_persian_remover(input_text) == expected_output
 
     input_text = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسماً panic attack کردم!"
@@ -348,18 +348,18 @@ def test_punctuation_spacings():
 def test_mention_remover():
     mention_remover = MentionRemover(replace_with="")
     input_text = "@user شما خبر دارید؟"
-    expected_output = " شما خبر دارید؟"
+    expected_output = "شما خبر دارید؟"
     assert mention_remover(input_text) == expected_output
 
     input_text = "@user سلام رفقا @user"
-    expected_output = " سلام رفقا "
+    expected_output = "سلام رفقا"
     assert mention_remover.fit_transform(input_text) == expected_output
 
 
 def test_hashtag_remover():
     hashtag_remover = HashtagRemover(replace_with="")
     input_text = "#پیشرفت_علمی در راستای توسعه"
-    expected_output = " در راستای توسعه"
+    expected_output = "در راستای توسعه"
     assert hashtag_remover(input_text) == expected_output
 
     input_text = "روز #کودک شاد باد."
