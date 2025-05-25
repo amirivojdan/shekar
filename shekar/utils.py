@@ -9,12 +9,13 @@ verbs_csv_path = data_root.joinpath("verbs.csv")
 stopwords_csv_path = data_root.joinpath("stopwords.csv")
 
 ZWNJ = "\u200c"
+newline = "\n"
 diacritics = "ًٌٍَُِّْ"
 persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
 persian_digits = "۰۱۲۳۴۵۶۷۸۹"
 english_digits = "0123456789"
 special_signs = "-٪@/#"
-end_sentence_punctuations = ".؟!؛"
+end_sentence_punctuations = ".؟!؛" + newline
 single_punctuations = "…،:" + end_sentence_punctuations
 opener_punctuations = r">{[\(«"
 closer_punctuations = r"<}]\)»"
