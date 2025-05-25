@@ -12,17 +12,20 @@ ZWNJ = "\u200c"
 diacritics = "ًٌٍَُِّْ"
 persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
 persian_digits = "۰۱۲۳۴۵۶۷۸۹"
+english_digits = "0123456789"
 special_signs = "-٪@/#"
-punctuation_singles = ".!؟…،:؛"
-punctuation_openers = r">{[\(«"
-punctuation_closers = r"<}]\)»"
+end_sentence_punctuations = ".؟!؛"
+single_punctuations = "…،:" + end_sentence_punctuations
+opener_punctuations = r">{[\(«"
+closer_punctuations = r"<}]\)»"
 punctuations = (
-    punctuation_singles + punctuation_openers + punctuation_closers + special_signs
+    single_punctuations + opener_punctuations + closer_punctuations + special_signs
 )
 
 spaces = "\u200c" + " "
 right_to_left_mark = "\u200f"
-arabic_numbers = "٠١٢٣٤٥٦٧٨٩"
+arabic_digits = "٠١٢٣٤٥٦٧٨٩"
+numbers = persian_digits + english_digits + arabic_digits
 
 no_joiner_letters = "دۀذاأآورژز"
 
@@ -76,6 +79,7 @@ def loadstopwords():
     with open(stopwords_csv_path, "r", encoding="utf-8") as file:
         stopwords = [line.strip() for line in file.read().splitlines()]
     return stopwords
+
 
 
 verbs = load_verbs()

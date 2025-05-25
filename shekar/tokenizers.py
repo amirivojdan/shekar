@@ -18,7 +18,7 @@ class SentenceTokenizer:
     """
 
     def __init__(self) -> None:
-        self.pattern = re.compile(f"([{re.escape(utils.punctuations)}]+)", re.UNICODE)
+        self.pattern = re.compile(f"([{re.escape(utils.end_sentence_punctuations)}]+)", re.UNICODE)
 
     def tokenize(self, text: str) -> List[str]:
         """

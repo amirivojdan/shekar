@@ -1,4 +1,5 @@
 from .transformations import (
+    Flatten,
     AlphabetNormalizer,
     PunctuationNormalizer,
     NumericNormalizer,
@@ -15,10 +16,13 @@ from .transformations import (
     HTMLTagRemover,
     MentionRemover,
     HashtagRemover,
+    DigitRemover,
     PunctuationSpacingStandardizer,
+    NGramExtractor,
 )
 
 __all__ = [
+    "Flatten",
     "AlphabetNormalizer",
     "PunctuationNormalizer",
     "NumericNormalizer",
@@ -36,4 +40,6 @@ __all__ = [
     "PunctuationSpacingStandardizer",
     "MentionRemover",
     "HashtagRemover",
+    "DigitRemover",
+    "NGramExtractor",
 ]
