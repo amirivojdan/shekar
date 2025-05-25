@@ -163,11 +163,7 @@ clean_text = preprocessing_pipeline(html_content)
 word_tokenizer = WordTokenizer()
 tokens = word_tokenizer(clean_text)
 
-
-word_freqs = Counter()
-for word in tokens:
-    word_freqs[word] += 1
-
+word_freqs = Counter(tokens)
 
 wordCloud = WordCloud(
         mask="Iran",
