@@ -12,6 +12,25 @@
 
 **Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
 The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression.
+
+
+### Table of Contents
+
+- [Installation](#installation)
+- [Preprocessing](#preprocessing)
+  - [Component Overview](#component-overview)
+  - [Using Pipelines](#using-pipelines)
+  - [Normalizer](#normalizer)
+  - [Batch Processing](#batch-processing)
+  - [Decorator Support](#decorator-support)
+- [Tokenization](#tokenization)
+  - [WordTokenizer](#wordtokenizer)
+  - [SentenceTokenizer](#sentencetokenizer)
+- [Keyword Extraction](#keyword-extraction)
+- [WordCloud](#wordcloud)
+
+---
+
 ## Installation
 
 To install the package, you can use **`pip`**. Run the following command:
@@ -23,29 +42,71 @@ $ pip install shekar
 
 ## Preprocessing
 
-[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
 
-The `shekar.preprocessing` module provides a rich set of building blocks for cleaning, normalizing, and transforming Persian text. These classes form the foundation of text preprocessing workflows and can be used independently or combined in a `Pipeline`.
+Shekar provides a modular, composable system for Persian text preprocessing through `filters`, `normalizers`, `standardizers`, and `maskers`. You can use these independently or combine them using the `Pipeline` class and the `|` operator.
 
-Here are some of the key text transformers available in the module:
+---
 
-- **`SpacingStandardizer`**: Removes extra spaces and adjusts spacing around punctuation.
-- **`AlphabetNormalizer`**: Converts Arabic characters to standard Persian forms.
-- **`NumericNormalizer`**: Converts English and Arabic numerals into Persian digits.
-- **`PunctuationNormalizer`**: Standardizes punctuation symbols.
-- **`EmojiRemover`**: Removes emojis.
-- **`EmailMasker` / `URLMasker`**: Mask or remove emails and URLs.
-- **`DiacriticsRemover`**: Removes Persian/Arabic diacritics.
-- **`PunctuationRemover`**: Removes all punctuation characters.
-- **`RedundantCharacterRemover`**: Shrinks repeated characters like "سسسلام".
-- **`ArabicUnicodeNormalizer`**: Converts Arabic presentation forms (e.g., ﷽) into Persian equivalents.
-- **`StopwordRemover`**: Removes frequent Persian stopwords.
-- **`NonPersianRemover`**: Removes all non-Persian content (optionally keeps English).
-- **`HTMLTagRemover`**: Cleans HTML tags but retains content.
 
-Shekar's `Pipeline` class allows you to chain multiple text preprocessing steps together into a seamless and reusable workflow. Inspired by Unix-style piping, Shekar also supports the `|` operator for combining transformers, making your code not only more readable but also expressive and modular.
+### Component Overview
 
-Example: 
+<details>
+<summary>Filters / Removers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `DiacriticFilter` | `DiacriticRemover`, `RemoveDiacritics` | Removes Persian/Arabic diacritics |
+| `EmojiFilter` | `EmojiRemover`, `RemoveEmojis` | Removes emojis |
+| `NonPersianLetterFilter` | `NonPersianRemover`, `RemoveNonPersianLetters` | Removes all non-Persian content (optionally keeps English) |
+| `PunctuationFilter` | `PunctuationRemover`, `RemovePunctuations` | Removes all punctuation characters |
+| `StopWordFilter` | `StopWordRemover`, `RemoveStopWords` | Removes frequent Persian stopwords |
+| `DigitFilter` | `DigitRemover`, `RemoveDigits` | Removes all digit characters |
+| `RepeatedLetterFilter` | `RepeatedLetterRemover`, `RemoveRepeatedLetters` | Shrinks repeated letters (e.g. "سسسلام") |
+| `HTMLTagFilter` | `HTMLRemover`, `RemoveHTMLTags` | Removes HTML tags but retains content |
+| `HashtagFilter` | `HashtagRemover`, `RemoveHashtags` | Removes hashtags |
+| `MentionFilter` | `MentionRemover`, `RemoveMentions` | Removes @mentions |
+
+</details>
+
+<details>
+<summary>Normalizers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `DigitNormalizer` | `NormalizeDigits` | Converts English/Arabic digits to Persian |
+| `PunctuationNormalizer` | `NormalizePunctuations` | Standardizes punctuation symbols |
+| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
+| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g. ﷽) with Persian equivalents |
+
+</details>
+
+<details>
+<summary>Standardizers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `SpacingStandardizer` | `StandardizeSpacings` | Removes extra spaces and fixes spacing around words |
+| `PunctuationSpacingStandardizer` | `StandardizePunctuationSpacings` | Adjusts spacing around punctuation marks |
+
+</details>
+
+<details>
+<summary>Maskers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `EmailMasker` | `MaskEmails` | Masks or removes email addresses |
+| `URLMasker` | `MaskURLs` | Masks or removes URLs |
+
+</details>
+
+---
+
+### Using Pipelines
+
+You can combine any of the preprocessing components using the `|` operator:
 
 ```python
 from shekar.preprocessing import EmojiRemover, PunctuationRemover
@@ -60,27 +121,29 @@ print(output)
 ز ایران دلش یاد کرد و بسوخت
 ```
 
-Note that **`Pipeline`** objects are **callable**, meaning you can use them like functions to process input data directly.
+---
 
-#### Normalization
+### Normalizer
 
-The **`Normalizer`** is built on top of the **`Pipeline`** class, meaning it inherits all its features, including batch processing, argument decorators, and callability. This makes the Normalizer both powerful and flexible: you can use it directly for comprehensive Persian text normalization.
+The built-in `Normalizer` class wraps the most common filters and normalizers:
 
 ```python
-
 from shekar import Normalizer
-normalizer = Normalizer()
 
+normalizer = Normalizer()
 text = "ۿدف ما ػمګ بۀ ێڪډيڱڕ أښټ"
-text = normalizer(text) 
-print(text)
+print(normalizer(text))
 ```
+
 ```shell
 هدف ما کمک به یکدیگر است
 ```
 
-#### Batch Support
-You can apply the normalizer/pipeline to a list of strings to enable batch processing.
+---
+
+### Batch Processing
+
+Both `Normalizer` and `Pipeline` support memory-efficient batch processing:
 
 ```python
 texts = [
@@ -88,7 +151,6 @@ texts = [
     "تو را من چشم👀 در راهم!"
 ]
 outputs = normalizer.fit_transform(texts)
-# outputs = normalizer(texts) # Normalizer is callable! 
 print(list(outputs))
 ```
 
@@ -96,10 +158,12 @@ print(list(outputs))
 ["پرنده‌های  قفسی عادت دارن به بی‌کسی", "تو را من چشم در راهم"]
 ```
 
-Keep in mind that the result is a **generator**, not a list. This makes the pipeline more memory-efficient, especially when processing large datasets. You can convert the output to a list if needed:
+---
 
-#### Normalizer/Pipeline Decorator
-Use pipeline decorator to transform specific arguments.
+### Decorator Support
+
+Use `.on_args(...)` to apply the pipeline to specific function arguments:
+
 ```python
 @normalizer.on_args(["text"])
 def process_text(text):
@@ -109,10 +173,31 @@ print(process_text("تو را من چشم👀 در راهم!"))
 ```
 
 ```shell
-"تو را من چشم در راهم"
+تو را من چشم در راهم
 ```
 
-## SentenceTokenizer
+## Tokenization
+
+### WordTokenizer
+The WordTokenizer class in Shekar is a simple, rule-based tokenizer for Persian that splits text based on punctuation and whitespace using Unicode-aware regular expressions.
+
+```python
+from shekar import WordTokenizer
+
+tokenizer = WordTokenizer()
+
+text = "چه سیب‌های قشنگی! حیات نشئهٔ تنهایی است."
+tokens = tokenizer.tokenize(text)
+print(tokens)
+
+```
+
+```shell
+["چه", "سیب‌های", "قشنگی", "!", "حیات", "نشئهٔ", "تنهایی", "است", "."]
+
+```
+
+### SentenceTokenizer
 
 The `SentenceTokenizer` class is designed to split a given text into individual sentences. This class is particularly useful in natural language processing tasks where understanding the structure and meaning of sentences is important. The `SentenceTokenizer` class can handle various punctuation marks and language-specific rules to accurately identify sentence boundaries.
 
@@ -133,6 +218,8 @@ for sentence in sentences:
 هدف ما کمک به یکدیگر است!
 ما می‌توانیم با هم کار کنیم.
 ```
+
+## Keyword Extraction
 
 ## WordCloud
 

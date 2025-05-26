@@ -1,4 +1,4 @@
-from shekar import WordTokenizer, SentenceTokenizer
+from shekar import WordTokenizer
 
 
 def test_word_tokenizer():
