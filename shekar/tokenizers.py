@@ -1,6 +1,6 @@
 import re
 from typing import List
-from shekar import utils
+from shekar import data
 
 
 class SentenceTokenizer:
@@ -18,7 +18,7 @@ class SentenceTokenizer:
     """
 
     def __init__(self) -> None:
-        self.pattern = re.compile(f"([{re.escape(utils.end_sentence_punctuations)}]+)", re.UNICODE)
+        self.pattern = re.compile(f"([{re.escape(data.end_sentence_punctuations)}]+)", re.UNICODE)
 
     def tokenize(self, text: str) -> List[str]:
         """
@@ -54,7 +54,7 @@ class WordTokenizer:
     """
 
     def __init__(self) -> None:
-        self.pattern = re.compile(rf"([{re.escape(utils.punctuations)}])|\s+")
+        self.pattern = re.compile(rf"([{re.escape(data.punctuations)}])|\s+")
 
     def tokenize(self, text: str) -> List[str]:
         """

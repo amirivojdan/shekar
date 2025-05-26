@@ -3,15 +3,15 @@ from shekar import Pipeline
 from shekar.preprocessing import (
     PunctuationNormalizer,
     AlphabetNormalizer,
-    NumericNormalizer,
+    DigitNormalizer,
     SpacingStandardizer,
-    EmojiRemover,
+    EmojiFilter,
     EmailMasker,
     URLMasker,
-    DiacriticsRemover,
-    NonPersianRemover,
-    HTMLTagRemover,
-    RedundantCharacterRemover,
+    DiacriticFilter,
+    NonPersianLetterFilter,
+    HTMLTagFilter,
+    RepeatedLetterFilter,
     ArabicUnicodeNormalizer,
 )
 
@@ -20,17 +20,17 @@ class Normalizer(Pipeline):
     def __init__(self, steps=None):
         if steps is None:
             steps = [
-                ("AlphaNumericUnifier", AlphabetNormalizer()),
+                ("AlphabetNormalizer", AlphabetNormalizer()),
                 ("ArabicUnicodeNormalizer", ArabicUnicodeNormalizer()),
-                ("NumericNormalizer", NumericNormalizer()),
-                ("PunctuationUnifier", PunctuationNormalizer()),
+                ("DigitNormalizer", DigitNormalizer()),
+                ("PunctuationNormalizer", PunctuationNormalizer()),
                 ("EmailMasker", EmailMasker(mask="")),
                 ("URLMasker", URLMasker(mask="")),
-                ("EmojiRemover", EmojiRemover()),
-                ("HTMLTagRemover", HTMLTagRemover()),
-                ("DiacriticsRemover", DiacriticsRemover()),
-                ("RedundantCharacterRemover", RedundantCharacterRemover()),
-                ("NonPersianRemover", NonPersianRemover()),
+                ("EmojiFilter", EmojiFilter()),
+                ("HTMLTagFilter", HTMLTagFilter()),
+                ("DiacriticFilter", DiacriticFilter()),
+                ("RepeatedLetterFilter", RepeatedLetterFilter()),
+                ("NonPersianLetterFilter", NonPersianLetterFilter()),
                 ("SpacingStandardizer", SpacingStandardizer()),
             ]
         super().__init__(steps=steps)

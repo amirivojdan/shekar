@@ -1,22 +1,22 @@
 # test_base_transformer.py
 import pytest
-from shekar.base import BaseTransformer
+from shekar.base import BaseTransform
 from shekar.pipeline import Pipeline
 
 
 # Covers the abstract NotImplementedError lines directly
 def test_transform_abstract_error():
     with pytest.raises(NotImplementedError):
-        BaseTransformer.transform(None, [1, 2, 3])  # directly call on class
+        BaseTransform.transform(None, [1, 2, 3])  # directly call on class
 
 
 def test_fit_abstract_error():
     with pytest.raises(NotImplementedError):
-        BaseTransformer.fit(None, [1, 2, 3])  # directly call on class
+        BaseTransform.fit(None, [1, 2, 3])  # directly call on class
 
 
 # Covers fit_transform and __call__ via a concrete subclass
-class DummyTransformer(BaseTransformer):
+class DummyTransformer(BaseTransform):
     def fit(self, X, y=None):
         self.was_fitted = True
         return self
@@ -26,7 +26,7 @@ class DummyTransformer(BaseTransformer):
         return X
 
 
-class DummyTransformerA(BaseTransformer):
+class DummyTransformerA(BaseTransform):
     def fit(self, X, y=None):
         return self
 
@@ -34,7 +34,7 @@ class DummyTransformerA(BaseTransformer):
         return X
 
 
-class DummyTransformerB(BaseTransformer):
+class DummyTransformerB(BaseTransform):
     def fit(self, X, y=None):
         return self
 

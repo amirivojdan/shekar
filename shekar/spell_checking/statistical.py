@@ -1,9 +1,16 @@
 from collections import Counter
 from shekar.tokenizers import WordTokenizer
-from shekar import utils
+from shekar import data
 
 
-class SpellChecker:
+class StatisticalSpellChecker:
+    """
+        A statistical spell checker using Levenshtein distance and word frequencies.
+
+        This class suggests corrections for misspelled Persian words based on edit distance 
+        and corpus-based word frequencies.
+    """
+
     def __init__(
         self,
         n_edit=2,
@@ -31,12 +38,12 @@ class SpellChecker:
         inserts = [
             word[:i] + c + word[i:]
             for i in range(len(word) + 1)
-            for c in utils.persian_letters
+            for c in data.persian_letters
         ]
         replaces = [
             word[:i] + c + word[i + 1 :]
             for i in range(len(word))
-            for c in utils.persian_letters
+            for c in data.persian_letters
         ]
         transposes = [
             word[:i] + word[i + 1] + word[i] + word[i + 2 :]

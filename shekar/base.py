@@ -3,7 +3,7 @@ from typing import Iterable, List
 import regex as re
 
 
-class BaseTransformer(ABC):
+class BaseTransform(ABC):
     @abstractmethod
     def transform(self, X):
         raise NotImplementedError("Subclasses must implement transform()")
@@ -24,7 +24,7 @@ class BaseTransformer(ABC):
 
         if isinstance(value, Pipeline):
             return Pipeline(steps=[(self.__class__.__name__, self)] + value.steps)
-        elif isinstance(value, BaseTransformer):
+        elif isinstance(value, BaseTransform):
             return Pipeline(
                 steps=[
                     self,
@@ -41,7 +41,7 @@ class BaseTransformer(ABC):
 
         if isinstance(value, Pipeline):
             return Pipeline(steps=value.steps + [(self.__class__.__name__, self)])
-        elif isinstance(value, BaseTransformer):
+        elif isinstance(value, BaseTransform):
             return Pipeline(
                 steps=[
                     value,
@@ -60,7 +60,7 @@ class BaseTransformer(ABC):
         return f"{self.__class__.__name__}()"
 
 
-class BaseTextTransformer(BaseTransformer):
+class BaseTextTransform(BaseTransform):
     @abstractmethod
     def _function(self, X: str, y=None) -> str:
         raise NotImplementedError("Subclasses must implement _function()")

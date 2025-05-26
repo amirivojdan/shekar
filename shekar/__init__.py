@@ -1,20 +1,22 @@
 from .pipeline import Pipeline
-from .base import BaseTransformer, BaseTextTransformer
-from .spell_checker import SpellChecker
+from .base import BaseTransform, BaseTextTransform
 from .word_cloud import WordCloud
 from .normalizer import Normalizer
 from .tokenizers import (
     WordTokenizer,
     SentenceTokenizer,
 )
+from .keyword_extraction.rake import RAKE
+from .spell_checking.statistical import StatisticalSpellChecker
 
 __all__ = [
     "Pipeline",
-    "BaseTransformer",
-    "BaseTextTransformer",
-    "SpellChecker",
+    "BaseTransform",
+    "BaseTextTransform",
     "Normalizer",
     "WordTokenizer",
     "SentenceTokenizer",
     "WordCloud",
+    "RAKE",
+    "StatisticalSpellChecker",
 ]

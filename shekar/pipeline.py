@@ -1,10 +1,10 @@
-from .base import BaseTransformer
+from .base import BaseTransform
 from typing import Iterable
 from functools import wraps
 from inspect import signature
 
 
-class Pipeline(BaseTransformer):
+class Pipeline(BaseTransform):
     """
     A class for creating a pipeline of transformations using a sequence of BaseTransformer steps.
     The Pipeline class allows chaining multiple transformation steps, where each step is an instance
@@ -53,17 +53,17 @@ class Pipeline(BaseTransformer):
     """
 
     def __init__(
-        self, steps: Iterable[tuple[str, BaseTransformer]] | Iterable[BaseTransformer]
+        self, steps: Iterable[tuple[str, BaseTransform]] | Iterable[BaseTransform]
     ):
         if isinstance(steps, Iterable) and all(
-            isinstance(step, BaseTransformer) for step in steps
+            isinstance(step, BaseTransform) for step in steps
         ):
             self.steps = [(step.__class__.__name__, step) for step in steps]
 
         elif isinstance(steps, Iterable) and all(
             isinstance(step, tuple)
             and len(step) == 2
-            and isinstance(step[1], BaseTransformer)
+            and isinstance(step[1], BaseTransform)
             and isinstance(step[0], str)
             for step in steps
         ):
@@ -108,7 +108,7 @@ class Pipeline(BaseTransformer):
     def __or__(self, other):
         if isinstance(other, Pipeline):
             return Pipeline(self.steps + other.steps)
-        elif isinstance(other, BaseTransformer):
+        elif isinstance(other, BaseTransform):
             return Pipeline(self.steps + [(other.__class__.__name__, other)])
         else:
             raise TypeError(
@@ -118,7 +118,7 @@ class Pipeline(BaseTransformer):
     def __ror__(self, other):
         if isinstance(other, Pipeline):
             return Pipeline(other.steps + self.steps)
-        elif isinstance(other, BaseTransformer):
+        elif isinstance(other, BaseTransform):
             return Pipeline([(other.__class__.__name__, other)] + self.steps)
         else:
             raise TypeError(

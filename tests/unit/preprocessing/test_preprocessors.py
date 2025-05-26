@@ -1,27 +1,29 @@
 import pytest
  
 from shekar.preprocessing import (
-    
-    Flatten,
     PunctuationNormalizer,
     AlphabetNormalizer,
-    NumericNormalizer,
+    DigitNormalizer,
     SpacingStandardizer,
-    EmojiRemover,
+    EmojiFilter,
     EmailMasker,
     URLMasker,
-    DiacriticsRemover,
-    NonPersianRemover,
-    HTMLTagRemover,
-    RedundantCharacterRemover,
+    DiacriticFilter,
+    NonPersianLetterFilter,
+    HTMLTagFilter,
+    RepeatedLetterFilter,
     ArabicUnicodeNormalizer,
-    StopWordRemover,
-    PunctuationRemover,
-    DigitRemover,
-    MentionRemover,
-    HashtagRemover,
+    StopWordFilter,
+    PunctuationFilter,
+    DigitFilter,
+    MentionFilter,
+    HashtagFilter,
     PunctuationSpacingStandardizer,
+)
+
+from shekar.transforms import (
     NGramExtractor,
+    Flatten,
 )
 
 
@@ -116,7 +118,7 @@ def test_mask_url():
 
 
 def test_normalize_numbers():
-    numeric_normalizer = NumericNormalizer()
+    numeric_normalizer = DigitNormalizer()
     input_text = "٠١٢٣٤٥٦٧٨٩ ⒕34"
     expected_output = "۰۱۲۳۴۵۶۷۸۹ ۱۴۳۴"
     assert numeric_normalizer(input_text) == expected_output
@@ -211,121 +213,121 @@ def test_unify_arabic_unicode():
 
 
 def test_remove_punctuations():
-    punc_remover = PunctuationRemover()
+    punc_Filter = PunctuationFilter()
 
     input_text = "اصفهان، نصف جهان!"
     expected_output = "اصفهان نصف جهان"
-    assert punc_remover(input_text) == expected_output
+    assert punc_Filter(input_text) == expected_output
 
     input_text = "فردوسی، شاعر بزرگ ایرانی است."
     expected_output = "فردوسی شاعر بزرگ ایرانی است"
-    assert punc_remover.fit_transform(input_text) == expected_output
+    assert punc_Filter.fit_transform(input_text) == expected_output
 
 
 def test_remove_redundant_characters():
-    redundant_character_remover = RedundantCharacterRemover()
+    redundant_character_Filter = RepeatedLetterFilter()
     input_text = "سلامم"
     expected_output = "سلامم"
-    assert redundant_character_remover(input_text) == expected_output
+    assert redundant_character_Filter(input_text) == expected_output
 
     input_text = "سلاممممممممممم"
     expected_output = "سلامم"
-    assert redundant_character_remover.fit_transform(input_text) == expected_output
+    assert redundant_character_Filter.fit_transform(input_text) == expected_output
 
     input_text = "روزی باغ ســـــــــــــــــــبــــــــــــــــــز بود"
     expected_output = "روزی باغ سبز بود"
-    assert redundant_character_remover(input_text) == expected_output
+    assert redundant_character_Filter(input_text) == expected_output
 
 
 def test_remove_emojis():
-    emoji_remover = EmojiRemover()
+    emoji_Filter = EmojiFilter()
     input_text = "😊🇮🇷سلام گلای تو خونه!🎉🎉🎊🎈"
     expected_output = "سلام گلای تو خونه!"
-    assert emoji_remover(input_text) == expected_output
+    assert emoji_Filter(input_text) == expected_output
 
     input_text = "🌹باز هم مرغ سحر🐔 بر سر منبر گل"
     expected_output = "باز هم مرغ سحر بر سر منبر گل"
 
-    assert emoji_remover.fit_transform(input_text) == expected_output
+    assert emoji_Filter.fit_transform(input_text) == expected_output
 
 
 def test_remove_diacritics():
-    diacritics_remover = DiacriticsRemover()
+    diacritics_Filter = DiacriticFilter()
     input_text = "مَنْ"
     expected_output = "من"
-    assert diacritics_remover(input_text) == expected_output
+    assert diacritics_Filter(input_text) == expected_output
 
     input_text = "کُجا نِشانِ قَدَم ناتَمام خواهَد ماند؟"
     expected_output = "کجا نشان قدم ناتمام خواهد ماند؟"
-    assert diacritics_remover.fit_transform(input_text) == expected_output
+    assert diacritics_Filter.fit_transform(input_text) == expected_output
 
 
 def test_remove_stopwords():
-    stopword_remover = StopWordRemover()
+    stopword_Filter = StopWordFilter()
     input_text = "این یک جملهٔ نمونه است"
     expected_output = "جملهٔ نمونه"
-    assert stopword_remover(input_text) == expected_output
+    assert stopword_Filter(input_text) == expected_output
 
     input_text = "وی خاطرنشان کرد"
     expected_output = ""
-    assert stopword_remover(input_text) == expected_output
+    assert stopword_Filter(input_text) == expected_output
 
     input_text = "بهتر از ایران کجا می‌شود بود"
     expected_output = "ایران"
-    assert stopword_remover(input_text) == expected_output
+    assert stopword_Filter(input_text) == expected_output
 
-    stopword_remover = StopWordRemover(replace_with="|")
+    stopword_Filter = StopWordFilter(replace_with="|")
     input_text = "ایران ما زیباتر از تمام جهان"
     expected_output = "ایران | زیباتر | | جهان"
-    assert stopword_remover(input_text) == expected_output
+    assert stopword_Filter(input_text) == expected_output
 
 
 def test_remove_non_persian():
-    non_persian_remover = NonPersianRemover()
+    non_persian_Filter = NonPersianLetterFilter()
     input_text = "با یه گل بهار نمی‌شه"
     expected_output = "با یه گل بهار نمی‌شه"
-    assert non_persian_remover(input_text) == expected_output
+    assert non_persian_Filter(input_text) == expected_output
 
     input_text = "What you seek is seeking you!"
     expected_output = "!"
-    assert non_persian_remover(input_text) == expected_output
+    assert non_persian_Filter(input_text) == expected_output
 
     input_text = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسماً panic attack کردم!"
     expected_output = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسما   کردم!"
-    assert non_persian_remover(input_text) == expected_output
+    assert non_persian_Filter(input_text) == expected_output
 
-    non_persian_remover = NonPersianRemover(keep_english=True)
+    non_persian_Filter = NonPersianLetterFilter(keep_english=True)
 
     input_text = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسماً panic attack کردم!"
     expected_output = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسما panic attack کردم!"
-    assert non_persian_remover(input_text) == expected_output
+    assert non_persian_Filter(input_text) == expected_output
 
     input_text = "100 سال به این سال‌ها"
     expected_output = "100 سال به این سال‌ها"
-    assert non_persian_remover(input_text) == expected_output
+    assert non_persian_Filter(input_text) == expected_output
 
-    non_persian_remover = NonPersianRemover(keep_diacritics=True)
+    non_persian_Filter = NonPersianLetterFilter(keep_diacritics=True)
     input_text = "گُلِ مَنو اَذیَت نَکُنین!"
     expected_output = "گُلِ مَنو اَذیَت نَکُنین!"
-    assert non_persian_remover(input_text) == expected_output
+    assert non_persian_Filter(input_text) == expected_output
 
 
 def test_remove_html_tags():
-    html_tag_remover = HTMLTagRemover(replace_with="")
+    html_tag_Filter = HTMLTagFilter(replace_with="")
     input_text = "<p>گل صدبرگ به پیش تو فرو ریخت ز خجلت!</p>"
     expected_output = "گل صدبرگ به پیش تو فرو ریخت ز خجلت!"
-    assert html_tag_remover(input_text) == expected_output
+    assert html_tag_Filter(input_text) == expected_output
 
     input_text = "<div>آنجا ببر مرا که شرابم نمی‌برد!</div>"
     expected_output = "آنجا ببر مرا که شرابم نمی‌برد!"
-    assert html_tag_remover.fit_transform(input_text) == expected_output
+    assert html_tag_Filter.fit_transform(input_text) == expected_output
 
     input_text = "<a href='https://example.com'>Example</a>"
     expected_output = "Example"
-    assert html_tag_remover(input_text) == expected_output
+    assert html_tag_Filter(input_text) == expected_output
 
     input_text = "خدایا! خدایا، <b>کویرم!</b>"
-    result = html_tag_remover(input_text)
+    result = html_tag_Filter(input_text)
     assert result == "خدایا! خدایا، کویرم!"
 
 
@@ -355,26 +357,26 @@ def test_punctuation_spacings():
     )
 
 
-def test_mention_remover():
-    mention_remover = MentionRemover(replace_with="")
+def test_mention_Filter():
+    mention_Filter = MentionFilter(replace_with="")
     input_text = "@user شما خبر دارید؟"
     expected_output = "شما خبر دارید؟"
-    assert mention_remover(input_text) == expected_output
+    assert mention_Filter(input_text) == expected_output
 
     input_text = "@user سلام رفقا @user"
     expected_output = "سلام رفقا"
-    assert mention_remover.fit_transform(input_text) == expected_output
+    assert mention_Filter.fit_transform(input_text) == expected_output
 
 
-def test_hashtag_remover():
-    hashtag_remover = HashtagRemover(replace_with="")
+def test_hashtag_Filter():
+    hashtag_Filter = HashtagFilter(replace_with="")
     input_text = "#پیشرفت_علمی در راستای توسعه"
     expected_output = "در راستای توسعه"
-    assert hashtag_remover(input_text) == expected_output
+    assert hashtag_Filter(input_text) == expected_output
 
     input_text = "روز #کودک شاد باد."
     expected_output = "روز  شاد باد."
-    assert hashtag_remover.fit_transform(input_text) == expected_output
+    assert hashtag_Filter.fit_transform(input_text) == expected_output
 
 def test_ngram_extractor():
     ngram_extractor = NGramExtractor(range=(1, 2))
@@ -481,41 +483,41 @@ def test_flatten():
     expected_output = ["سلام", "دوست", "خوبی؟", "چطوری؟", "من خوبم", "شما چطورید؟"]
     assert list(flatten(input_text)) == expected_output
 
-def test_digit_remover():
+def test_digit_Filter():
         
-        digit_remover = DigitRemover()
+        digit_Filter = DigitFilter()
         
         input_text = "قیمت این محصول ۱۲۳۴۵ تومان است"
         expected_output = "قیمت این محصول  تومان است"
-        assert digit_remover(input_text) == expected_output
+        assert digit_Filter(input_text) == expected_output
         
         input_text = "سفارش شما با کد 98765 ثبت شد"
         expected_output = "سفارش شما با کد  ثبت شد"
-        assert digit_remover(input_text) == expected_output
+        assert digit_Filter(input_text) == expected_output
         
         input_text = "کد پستی ۱۰۴۵۶-32901 را وارد کنید"
         expected_output = "کد پستی - را وارد کنید"
-        assert digit_remover.fit_transform(input_text) == expected_output
+        assert digit_Filter.fit_transform(input_text) == expected_output
         
         input_text = "سلام، چطوری دوست من؟"
         expected_output = "سلام، چطوری دوست من؟"
-        assert digit_remover(input_text) == expected_output
+        assert digit_Filter(input_text) == expected_output
         
-        digit_remover_custom = DigitRemover(replace_with="X")
+        digit_Filter_custom = DigitFilter(replace_with="X")
         input_text = "سال ۱۴۰۲ با موفقیت به پایان رسید"
         expected_output = "سال XXXX با موفقیت به پایان رسید"
-        assert digit_remover_custom(input_text) == expected_output
+        assert digit_Filter_custom(input_text) == expected_output
         
         input_texts = ["شماره ۱۲۳۴", "کد 5678", "بدون عدد"]
         expected_outputs = ["شماره", "کد", "بدون عدد"]
-        assert list(digit_remover(input_texts)) == expected_outputs
-        assert list(digit_remover.fit_transform(input_texts)) == expected_outputs
+        assert list(digit_Filter(input_texts)) == expected_outputs
+        assert list(digit_Filter.fit_transform(input_texts)) == expected_outputs
         
         input_text = "نرخ تورم ۲۴.۵ درصد اعلام شد"
         expected_output = "نرخ تورم . درصد اعلام شد"
-        assert digit_remover(input_text) == expected_output
+        assert digit_Filter(input_text) == expected_output
         
         input_text = 12345
         expected_output = "Input must be a string or a Iterable of strings."
         with pytest.raises(ValueError, match=expected_output):
-            digit_remover(input_text)
+            digit_Filter(input_text)

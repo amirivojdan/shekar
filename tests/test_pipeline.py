@@ -2,18 +2,18 @@ import pytest
 from shekar.pipeline import Pipeline
 
 from shekar.preprocessing import (
-    EmojiRemover,
-    PunctuationRemover,
-    HTMLTagRemover,
-    NonPersianRemover,
+    EmojiFilter,
+    PunctuationFilter,
+    HTMLTagFilter,
+    NonPersianLetterFilter,
 )
 
 
 @pytest.fixture
 def mock_pipeline():
     steps = [
-        EmojiRemover(),
-        PunctuationRemover(),
+        EmojiFilter(),
+        PunctuationFilter(),
     ]
     return Pipeline(steps=steps)
 
@@ -97,22 +97,22 @@ def test_pipeline_on_args_invalid_type(mock_pipeline):
 
 def test_pipeline_or_with_pipeline(mock_pipeline):
     # Pipline | Pipeline
-    other_pipeline = Pipeline([("htmlRemover", HTMLTagRemover())])
+    other_pipeline = Pipeline([("htmlFilter", HTMLTagFilter())])
     combined = mock_pipeline | other_pipeline
     assert isinstance(combined, Pipeline)
 
     assert len(combined.steps) == len(mock_pipeline.steps) + len(other_pipeline.steps)
 
-    assert combined.steps[-1][0] == "htmlRemover"
-    assert isinstance(combined.steps[-1][1], HTMLTagRemover)
+    assert combined.steps[-1][0] == "htmlFilter"
+    assert isinstance(combined.steps[-1][1], HTMLTagFilter)
     assert combined.steps[-2][0] == mock_pipeline.steps[-1][0]
     assert isinstance(combined.steps[-2][1], type(mock_pipeline.steps[-1][1]))
 
 
 def test_pipeline_or_with_transformer(mock_pipeline):
     # Pipline | Transformer
-    htmlRemover = HTMLTagRemover()
-    nonPersianRemover = NonPersianRemover()
+    htmlRemover = HTMLTagFilter()
+    nonPersianRemover = NonPersianLetterFilter()
     combined = mock_pipeline | htmlRemover | nonPersianRemover
     assert isinstance(combined, Pipeline)
     assert len(combined.steps) == len(mock_pipeline.steps) + 2
@@ -137,7 +137,7 @@ def test_pipeline_or_invalid_type(mock_pipeline):
 def test_pipeline_str(mock_pipeline):
     assert (
         str(mock_pipeline)
-        == "Pipeline(steps=[('EmojiRemover', EmojiRemover()), ('PunctuationRemover', PunctuationRemover())])"
+        == "Pipeline(steps=[('EmojiFilter', EmojiFilter()), ('PunctuationFilter', PunctuationFilter())])"
     )
 
 
@@ -145,5 +145,5 @@ def test_pipeline_repr(mock_pipeline):
     print(repr(mock_pipeline))
     assert (
         repr(mock_pipeline)
-        == "Pipeline(steps=[('EmojiRemover', EmojiRemover()), ('PunctuationRemover', PunctuationRemover())])"
+        == "Pipeline(steps=[('EmojiFilter', EmojiFilter()), ('PunctuationFilter', PunctuationFilter())])"
     )
