@@ -46,7 +46,7 @@ class NGramExtractor(BaseTextTransform):
 
 
     def _function(self, text: str) -> list[str]:
-        tokens = self.word_tokenizer(text)
+        tokens = list(self.word_tokenizer(text))
         ngrams = []
         for n in range(self.range[0], self.range[1] + 1):
             ngrams.extend(
