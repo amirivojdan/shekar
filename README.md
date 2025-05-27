@@ -218,6 +218,30 @@ for sentence in sentences:
 
 ## Keyword Extraction
 
+The **shekar.keyword_extraction** module provides tools for automatically identifying and extracting key terms and phrases from Persian text. These algorithms help identify the most important concepts and topics within documents.
+
+```python
+from shekar.keyword_extraction import RAKE
+
+input_text = (
+    "زبان فارسی یکی از زبان‌های مهم منطقه و جهان است که تاریخچه‌ای کهن دارد. "
+    "زبان فارسی با داشتن ادبیاتی غنی و شاعرانی برجسته، نقشی بی‌بدیل در گسترش فرهنگ ایرانی ایفا کرده است. "
+    "از دوران فردوسی و شاهنامه تا دوران معاصر، زبان فارسی همواره ابزار بیان اندیشه، احساس و هنر بوده است. "
+)
+
+extractor = RAKE(max_length=2, top_n=5)
+keywords = extractor(input_text)
+
+for kw in keywords:
+    print(kw)
+```
+```output
+فرهنگ ایرانی
+گسترش فرهنگ
+ایرانی ایفا
+زبان فارسی
+تاریخچه‌ای کهن
+```
 ## WordCloud
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)
