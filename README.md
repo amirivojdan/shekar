@@ -13,6 +13,7 @@
 **Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
 The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression.
 
+---
 
 ### Table of Contents
 
@@ -42,13 +43,11 @@ $ pip install shekar
 
 ## Preprocessing
 
-[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
 
 Shekar provides a modular, composable system for Persian text preprocessing through `filters`, `normalizers`, `standardizers`, and `maskers`. You can use these independently or combine them using the `Pipeline` class and the `|` operator.
 
 ---
-
 
 ### Component Overview
 
@@ -187,14 +186,12 @@ from shekar import WordTokenizer
 tokenizer = WordTokenizer()
 
 text = "چه سیب‌های قشنگی! حیات نشئهٔ تنهایی است."
-tokens = tokenizer.tokenize(text)
+tokens = list(tokenizer(text))
 print(tokens)
-
 ```
 
 ```shell
 ["چه", "سیب‌های", "قشنگی", "!", "حیات", "نشئهٔ", "تنهایی", "است", "."]
-
 ```
 
 ### SentenceTokenizer
@@ -208,7 +205,7 @@ from shekar.tokenizers import SentenceTokenizer
 
 text = "هدف ما کمک به یکدیگر است! ما می‌توانیم با هم کار کنیم."
 tokenizer = SentenceTokenizer()
-sentences = tokenizer.tokenize(text)
+sentences = tokenizer(text)
 
 for sentence in sentences:
     print(sentence)
