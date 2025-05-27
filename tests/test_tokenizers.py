@@ -16,12 +16,12 @@ def test_word_tokenizer():
         ".",
     ]
     print(tokenizer.tokenize(text))
-    assert tokenizer.tokenize(text) == expected_output
+    assert list(tokenizer.tokenize(text)) == expected_output
 
     text = "سلام دنیا"
     expected_output = ["سلام", "دنیا"]
-    assert tokenizer.tokenize(text) == expected_output
+    assert list(tokenizer.tokenize(text)) == expected_output
 
     text = "این یک متن آزمایشی است."
     expected_output = ["این", "یک", "متن", "آزمایشی", "است", "."]
-    assert tokenizer.tokenize(text) == expected_output
+    assert list(tokenizer.tokenize(text)) == expected_output
