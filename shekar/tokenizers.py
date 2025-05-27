@@ -1,9 +1,9 @@
 import re
-from typing import List
-from shekar import data
+from typing import Iterable, List
+from shekar import data, BaseTextTransform
 
 
-class SentenceTokenizer:
+class SentenceTokenizer(BaseTextTransform):
     """
     A class used to tokenize text into sentences based on punctuation marks.
     Attributes:
@@ -17,10 +17,11 @@ class SentenceTokenizer:
         ['.چه سیب‌های قشنگی!', 'حیات نشئه تنهایی است']
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
+        super().__init__()
         self.pattern = re.compile(f"([{re.escape(data.end_sentence_punctuations)}]+)", re.UNICODE)
-
-    def tokenize(self, text: str) -> List[str]:
+        
+    def _function(self, text: str) -> Iterable[str]:
         """
         Tokenizes the input text into a list of sentences.
 
@@ -30,18 +31,28 @@ class SentenceTokenizer:
         Returns:
             List[str]: A list of tokenized sentences.
         """
-        text = re.sub(r"\s+", " ", text)
+        
         tokens = self.pattern.split(text)
-        sentences = [
-            tokens[i].strip() + tokens[i + 1].strip()
-            for i in range(0, len(tokens) - 1, 2)
-        ]
+        for i in range(0, len(tokens) - 1, 2):
+            if tokens[i].strip() or tokens[i + 1].strip():
+                yield tokens[i].strip() + tokens[i + 1].strip()
         if len(tokens) % 2 == 1 and tokens[-1].strip():
-            sentences.append(tokens[-1].strip())
-        return sentences
+            yield tokens[-1].strip()
+    
+    def tokenize(self, text: str) -> Iterable[str]:
+        """
+        Tokenizes the input text into a list of sentences.
+
+        Args:
+            text (str): The input text to be tokenized.
+
+        Returns:
+            List[str]: A list of tokenized sentences.
+        """
+        return self._function(text)
 
 
-class WordTokenizer:
+class WordTokenizer(BaseTextTransform):
     """
     A class used to tokenize text into words based on spaces and punctuation marks.
     Methods:
@@ -53,10 +64,23 @@ class WordTokenizer:
         ['چه', 'سیب‌های', 'قشنگی', '!', 'حیات', 'نشئه', 'تنهایی', 'است', '.']
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
+        super().__init__()
         self.pattern = re.compile(rf"([{re.escape(data.punctuations)}])|\s+")
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, text: str) -> Iterable[str]:
+        """
+        Tokenizes the input text into a list of words, keeping punctuations as separate tokens.
+
+        Args:
+            text (str): The input text to be tokenized.
+
+        Returns:
+            Iterable[str]: A Iterable of tokenized words and punctuations.
+        """
+        return self._function(text)
+        
+    def _function(self, text: str) -> Iterable[str]:
         """
         Tokenizes the input text into a list of words, keeping punctuations as separate tokens.
 
@@ -67,7 +91,5 @@ class WordTokenizer:
             List[str]: A list of tokenized words and punctuations.
         """
         tokens = self.pattern.split(text)
-        return [token for token in tokens if token and not token.isspace()]
-
-    def __call__(self, *args, **kwds):
-        return self.tokenize(*args, **kwds)
+        return (token for token in tokens if token and not token.isspace())
+ 

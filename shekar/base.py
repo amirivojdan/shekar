@@ -62,7 +62,7 @@ class BaseTransform(ABC):
 
 class BaseTextTransform(BaseTransform):
     @abstractmethod
-    def _function(self, X: str, y=None) -> str:
+    def _function(self, X: str, y=None) -> Iterable[str] | str:
         raise NotImplementedError("Subclasses must implement _function()")
 
     def transform(self, X: Iterable[str] | str) -> Iterable[str] | str:
