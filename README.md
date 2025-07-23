@@ -7,7 +7,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/shekar?color=00A693)
 
 <p align="center">
-    <em>Simplifying Persian NLP for Everyone</em>
+    <em>Simplifying Persian NLP for Modern Applications</em>
 </p>
 
 **Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
