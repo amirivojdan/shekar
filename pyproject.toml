@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shekar"
-version = "0.1.16"
+version = "0.1.17"
 description = "Simplifying Persian NLP for Everyone"
 readme = "README.md"
 license = "MIT"
@@ -13,11 +13,12 @@ requires-python = ">=3.10"
 dependencies = [
     "arabic-reshaper>=3.0.0",
     "emoji>=2.14.1",
+    "numpy>=1.24.4",
+    "onnxruntime>=1.22.1",
     "pillow>=11.2.1",
-    "pip>=25.1.1",
     "python-bidi>=0.6.6",
     "regex>=2024.11.6",
-    "requests>=2.32.3",
+    "tokenizers>=0.21.2",
     "wordcloud>=1.9.4",
 ]
 
