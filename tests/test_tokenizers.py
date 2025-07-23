@@ -1,4 +1,4 @@
-from shekar import WordTokenizer
+from shekar.tokenization import WordTokenizer
 
 
 def test_word_tokenizer():

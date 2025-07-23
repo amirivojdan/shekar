@@ -1,3 +1,3 @@
 from .statistical import StatisticalSpellChecker
-
-__all__ = ["StatisticalSpellChecker"]
+from .base import SpellChecker
+__all__ = ["StatisticalSpellChecker", "SpellChecker"]
