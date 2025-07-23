@@ -1,5 +1,5 @@
 import pytest
-from shekar.tokenizers import SentenceTokenizer
+from shekar.tokenization.tokenizers import SentenceTokenizer
 
 
 @pytest.fixture

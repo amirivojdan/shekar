@@ -1,5 +1,5 @@
 from collections import Counter
-from shekar.tokenizers import WordTokenizer
+from shekar.tokenization import WordTokenizer
 from shekar import data
 
 

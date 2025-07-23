@@ -1,5 +1,5 @@
 from shekar.base import BaseTextTransform
-from shekar.tokenizers import WordTokenizer
+from shekar.tokenization import WordTokenizer
 
  
 class NGramExtractor(BaseTextTransform):

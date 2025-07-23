@@ -11,7 +11,8 @@ from shekar.transforms import (
 )
 
 from collections import defaultdict
-from shekar.tokenizers import SentenceTokenizer, WordTokenizer
+from shekar.tokenization import SentenceTokenizer, WordTokenizer
+
 
 class RAKE(BaseTransform):
     """
