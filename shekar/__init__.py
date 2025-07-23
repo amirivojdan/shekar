@@ -1,6 +1,6 @@
 from .pipeline import Pipeline
 from .base import BaseTransform, BaseTextTransform
-from .word_cloud import WordCloud
+from .visualization import WordCloud
 from .normalizer import Normalizer
 from .tokenization import Tokenizer
 from .keyword_extraction import KeywordExtractor
