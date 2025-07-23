@@ -1,5 +1,8 @@
-from .albert_ner import AlbertNER
+from .albert import AlbertNER
+from .base import NER
+
 
 __all__ = [
-    "AlbertNER"
+    "AlbertNER",
+    "NER"
 ]
