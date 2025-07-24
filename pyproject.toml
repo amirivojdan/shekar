@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "shekar"
 version = "0.1.17"
-description = "Simplifying Persian NLP for Everyone"
+description = "Simplifying Persian NLP for Modern Applications"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Ahmad Amirivojdan", email = "amirivojdan@gmail.com" }]
