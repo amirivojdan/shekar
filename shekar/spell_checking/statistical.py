@@ -1,9 +1,9 @@
 from collections import Counter
+from shekar.base import BaseTransform
 from shekar.tokenization import WordTokenizer
 from shekar import data
 
-
-class StatisticalSpellChecker:
+class StatisticalSpellChecker(BaseTransform):
     """
         A statistical spell checker using Levenshtein distance and word frequencies.
 
@@ -25,7 +25,9 @@ class StatisticalSpellChecker:
 
         if words is None:
             # Load the default words from data directory
-            pass
+            
+            test_words = "سلام بر شما این یک متن تستی است".split()
+            words = Counter(test_words)
 
         self.tokenizer = WordTokenizer()
         self.n_words = sum(words.values())
@@ -90,3 +92,22 @@ class StatisticalSpellChecker:
     def correct_text(self, text):
         tokens = self.tokenizer.tokenize(text)
         return " ".join(self.correct(token)[0] for token in tokens)
+
+    def fit(self, X, y=None):
+        for text in X:
+            tokens = self.tokenizer.tokenize(text)
+            self.words.update(Counter(tokens))
+        self.n_words = sum(self.words.values())
+        return self
+    
+    def transform(self, X: str) -> str:
+        """
+        Correct a given text using the spell checker.
+        
+        Args:
+            X (str): The input text to be corrected.
+        
+        Returns:
+            str: The corrected text.
+        """
+        return self.correct_text(X)

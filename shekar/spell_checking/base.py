@@ -6,12 +6,12 @@ SPELL_CHECKING_REGISTRY = {
 }
 
 class SpellChecker(BaseTransform):
-    def __init__(self, model: str = "statistical", model_path=None):
+    def __init__(self, model: str = "statistical"):
         model = model.lower()
         if model not in SPELL_CHECKING_REGISTRY:
             raise ValueError(f"Unknown spell checking model '{model}'. Available: {list(SPELL_CHECKING_REGISTRY.keys())}")
 
-        self.model = SPELL_CHECKING_REGISTRY[model](model_path=model_path)
+        self.model = SPELL_CHECKING_REGISTRY[model]()
 
     def fit(self, X, y=None):
         return self.model.fit(X, y)
