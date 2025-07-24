@@ -27,6 +27,9 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Tokenization](#tokenization)
   - [WordTokenizer](#wordtokenizer)
   - [SentenceTokenizer](#sentencetokenizer)
+- [Named Entity Recognition (NER)](#named-entity-recognition-ner)
+  - [Basic Usage](#basic-usage)
+  - [Using NER in a Pipeline](#using-ner-in-a-pipeline)
 - [Keyword Extraction](#keyword-extraction)
 - [WordCloud](#wordcloud)
 
@@ -215,6 +218,68 @@ for sentence in sentences:
 هدف ما کمک به یکدیگر است!
 ما می‌توانیم با هم کار کنیم.
 ```
+
+## Named Entity Recognition (NER)
+
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/ner.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/ner.ipynb)
+
+The `NER` module in **Shekar** offers a fast, quantized Named Entity Recognition pipeline using a fine-tuned ALBERT model in ONNX format. It detects common Persian entities such as persons, locations, organizations, and dates. This model is designed for efficient inference and can be easily combined with other preprocessing steps.
+
+---
+
+### Basic Usage
+
+```python
+from shekar import NER
+from shekar import Normalizer
+
+input_text = (
+    "شاهرخ مسکوب به سالِ ۱۳۰۴ در بابل زاده شد و دوره ابتدایی را در تهران و در مدرسه علمیه پشت "
+    "مسجد سپهسالار گذراند. از کلاس پنجم ابتدایی مطالعه رمان و آثار ادبی را شروع کرد. از همان زمان "
+    "در دبیرستان ادب اصفهان ادامه تحصیل داد. پس از پایان تحصیلات دبیرستان در سال ۱۳۲۴ از اصفهان به تهران رفت و "
+    "در رشته حقوق دانشگاه تهران مشغول به تحصیل شد."
+)
+
+normalizer = Normalizer()
+normalized_text = normalizer(input_text)
+
+albert_ner = NER()
+entities = albert_ner(normalized_text)
+
+for text, label in entities:
+    print(f"{text} → {label}")
+```
+
+```output
+شاهرخ مسکوب → PER
+سال ۱۳۰۴ → DAT
+بابل → LOC
+دوره ابتدایی → DAT
+تهران → LOC
+مدرسه علمیه → LOC
+مسجد سپهسالار → LOC
+دبیرستان ادب اصفهان → LOC
+در سال ۱۳۲۴ → DAT
+اصفهان → LOC
+تهران → LOC
+دانشگاه تهران → ORG
+فرانسه → LOC
+```
+
+### Using NER in a Pipeline
+
+You can seamlessly chain `NER` with other components using the `|` operator:
+
+```python
+ner_pipeline = normalizer | albert_ner
+entities = ner_pipeline(input_text)
+
+print("\n🧾 Extracted Named Entities using Pipeline:")
+for text, label in entities:
+    print(f"{text} → {label}")
+```
+
+This chaining enables clean and readable code, letting you build custom NLP flows with preprocessing and tagging in one pass.
 
 ## Keyword Extraction
 
