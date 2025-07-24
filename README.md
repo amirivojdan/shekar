@@ -274,7 +274,6 @@ You can seamlessly chain `NER` with other components using the `|` operator:
 ner_pipeline = normalizer | albert_ner
 entities = ner_pipeline(input_text)
 
-print("\n🧾 Extracted Named Entities using Pipeline:")
 for text, label in entities:
     print(f"{text} → {label}")
 ```
