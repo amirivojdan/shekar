@@ -8,9 +8,12 @@ class BaseTransform(ABC):
     def transform(self, X):
         raise NotImplementedError("Subclasses must implement transform()")
 
-    @abstractmethod
     def fit(self, X, y=None):
-        raise NotImplementedError("Subclasses must implement fit()")
+        """
+        Fit the transform to the data. This method can be overridden by subclasses
+        if they need to perform any fitting operation.
+        """
+        return self
 
     def fit_transform(self, X, y=None):
         self.fit(X, y)

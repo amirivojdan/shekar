@@ -19,8 +19,6 @@ class AlbertTokenizer(BaseTransform):
 
         self.tokenizer = Tokenizer.from_file(str(model_path))
 
-    def fit(self, X, y=None):
-        return self
     
     def transform(self, X: str) -> dict:
         """

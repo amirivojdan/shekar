@@ -70,8 +70,6 @@ class AlbertNER(BaseTransform):
 
         return entities
 
-    def fit(self, X, y=None):
-        return self
     
     def transform(self, X:str)-> list:
         inputs = self.tokenizer.fit_transform(X)

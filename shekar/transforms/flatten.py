@@ -25,5 +25,3 @@ class Flatten(BaseTransform):
         
         return _flatten(X)
     
-    def fit(self, X, y=None):
-        return self

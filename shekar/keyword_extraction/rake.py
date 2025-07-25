@@ -62,8 +62,6 @@ class RAKE(BaseTransform):
             candidates[phrase] = sum(word_scores.get(word, 0) for word in words)
         return candidates
 
-    def fit(self, X, y=None):
-        return self
 
     def transform(self, X: str) -> list[str]:
         phrases = self._extract_phrases(X)

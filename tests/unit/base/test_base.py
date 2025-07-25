@@ -10,11 +10,6 @@ def test_transform_abstract_error():
         BaseTransform.transform(None, [1, 2, 3])  # directly call on class
 
 
-def test_fit_abstract_error():
-    with pytest.raises(NotImplementedError):
-        BaseTransform.fit(None, [1, 2, 3])  # directly call on class
-
-
 # Covers fit_transform and __call__ via a concrete subclass
 class DummyTransformer(BaseTransform):
     def fit(self, X, y=None):
