@@ -387,6 +387,23 @@ class Conjugator:
         else:
             return [f"{past_stem}ه {negation_prefix}{auxiliary}{suffix} شد" for suffix in self._present_personal_suffixes]
 
+    def imperative(self, present_stem: str, negative: bool = False) -> List[str]:
+        """
+        Generates the imperative tense conjugations for a given verb stem in Persian.
+        
+        Args:
+            present_stem (str, optional): The stem of the verb in the present tense.           
+            negative (bool, optional): If True, generates the negative form of the verb. Defaults to False.
+        Returns:
+            List[str]: A list containing all conjugated forms of the verb in the imperative tense.
+        Example:
+            imperative("شناس")
+            # Returns: ['بشناس', 'بشناسید']
+            imperative("شناس", negative=True)
+            # Returns: ['نشناس', 'نشناسید']
+        """
+        prefix = "ب" if not negative else "ن"
+        return [f"{prefix}{present_stem}", f"{prefix}{present_stem}ید"]
 
     def conjugate(self, past_stem: str, present_stem: str = ""):
         """
@@ -401,48 +418,52 @@ class Conjugator:
             dict: A list containing all conjugated forms of the verb in different tenses.
         """
         conjugations = []
-        
-        conjugations.extend(self.simple_past(past_stem))
-        conjugations.extend(self.simple_past(past_stem, negative=True))
-        conjugations.extend(self.simple_past(past_stem, passive=True))
-        conjugations.extend(self.simple_past(past_stem, negative=True, passive=True))
+        if past_stem:
+            infinitive = past_stem + "ن"
+            past_participle = past_stem + "ه"
+            conjugations.append(infinitive)
+            conjugations.append(past_participle)
+            conjugations.extend(self.simple_past(past_stem))
+            conjugations.extend(self.simple_past(past_stem, negative=True))
+            conjugations.extend(self.simple_past(past_stem, passive=True))
+            conjugations.extend(self.simple_past(past_stem, negative=True, passive=True))
 
-        conjugations.extend(self.present_perfect(past_stem))
-        conjugations.extend(self.present_perfect(past_stem, negative=True))
-        conjugations.extend(self.present_perfect(past_stem, passive=True))
-        conjugations.extend(self.present_perfect(past_stem, negative=True, passive=True))
+            conjugations.extend(self.present_perfect(past_stem))
+            conjugations.extend(self.present_perfect(past_stem, negative=True))
+            conjugations.extend(self.present_perfect(past_stem, passive=True))
+            conjugations.extend(self.present_perfect(past_stem, negative=True, passive=True))
 
-        conjugations.extend(self.past_continuous(past_stem))
-        conjugations.extend(self.past_continuous(past_stem, negative=True))
-        conjugations.extend(self.past_continuous(past_stem, passive=True))
-        conjugations.extend(self.past_continuous(past_stem, negative=True, passive=True))
-        
-        conjugations.extend(self.present_perfect_continuous(past_stem))
-        conjugations.extend(self.present_perfect_continuous(past_stem, negative=True))
-        conjugations.extend(self.present_perfect_continuous(past_stem, passive=True))
-        conjugations.extend(self.present_perfect_continuous(past_stem, negative=True, passive=True))
-        
-        conjugations.extend(self.past_perfect(past_stem))
-        conjugations.extend(self.past_perfect(past_stem, negative=True))
-        conjugations.extend(self.past_perfect(past_stem, passive=True))
-        conjugations.extend(self.past_perfect(past_stem, negative=True, passive=True))
+            conjugations.extend(self.past_continuous(past_stem))
+            conjugations.extend(self.past_continuous(past_stem, negative=True))
+            conjugations.extend(self.past_continuous(past_stem, passive=True))
+            conjugations.extend(self.past_continuous(past_stem, negative=True, passive=True))
+            
+            conjugations.extend(self.present_perfect_continuous(past_stem))
+            conjugations.extend(self.present_perfect_continuous(past_stem, negative=True))
+            conjugations.extend(self.present_perfect_continuous(past_stem, passive=True))
+            conjugations.extend(self.present_perfect_continuous(past_stem, negative=True, passive=True))
+            
+            conjugations.extend(self.past_perfect(past_stem))
+            conjugations.extend(self.past_perfect(past_stem, negative=True))
+            conjugations.extend(self.past_perfect(past_stem, passive=True))
+            conjugations.extend(self.past_perfect(past_stem, negative=True, passive=True))
 
-        conjugations.extend(self.past_perfect_of_past_perfect(past_stem))
-        conjugations.extend(self.past_perfect_of_past_perfect(past_stem, negative=True))
-        conjugations.extend(self.past_perfect_of_past_perfect(past_stem, passive=True))
-        conjugations.extend(self.past_perfect_of_past_perfect(past_stem, negative=True, passive=True))
-        
-        conjugations.extend(self.past_subjunctive(past_stem))
-        conjugations.extend(self.past_subjunctive(past_stem, negative=True))
-        conjugations.extend(self.past_subjunctive(past_stem, passive=True))
-        conjugations.extend(self.past_subjunctive(past_stem, negative=True, passive=True))
-         
-        conjugations.extend(self.past_progressive(past_stem))
-        conjugations.extend(self.past_progressive(past_stem, passive=True))
-        
-        conjugations.extend(self.past_perfect_progressive(past_stem))
-        conjugations.extend(self.past_perfect_progressive(past_stem, passive=True))
-        
+            conjugations.extend(self.past_perfect_of_past_perfect(past_stem))
+            conjugations.extend(self.past_perfect_of_past_perfect(past_stem, negative=True))
+            conjugations.extend(self.past_perfect_of_past_perfect(past_stem, passive=True))
+            conjugations.extend(self.past_perfect_of_past_perfect(past_stem, negative=True, passive=True))
+            
+            conjugations.extend(self.past_subjunctive(past_stem))
+            conjugations.extend(self.past_subjunctive(past_stem, negative=True))
+            conjugations.extend(self.past_subjunctive(past_stem, passive=True))
+            conjugations.extend(self.past_subjunctive(past_stem, negative=True, passive=True))
+            
+            conjugations.extend(self.past_progressive(past_stem))
+            conjugations.extend(self.past_progressive(past_stem, passive=True))
+            
+            conjugations.extend(self.past_perfect_progressive(past_stem))
+            conjugations.extend(self.past_perfect_progressive(past_stem, passive=True))
+            
         
         
         # Present and future tenses (require present stem)
@@ -456,14 +477,12 @@ class Conjugator:
             conjugations.extend(self.present_indicative(past_stem, present_stem, negative=True))
             conjugations.extend(self.present_indicative(past_stem, present_stem, passive=True))
             conjugations.extend(self.present_indicative(past_stem, present_stem, negative=True, passive=True))
-
              
             conjugations.extend(self.present_subjunctive(past_stem, present_stem))
             conjugations.extend(self.present_subjunctive(past_stem, present_stem, negative=True))
             conjugations.extend(self.present_subjunctive(past_stem, present_stem, passive=True))
             conjugations.extend(self.present_subjunctive(past_stem, present_stem, negative=True, passive=True))
-
-             
+ 
             conjugations.extend(self.present_progressive(past_stem, present_stem))
             conjugations.extend(self.present_progressive(past_stem, present_stem, passive=True))
              
@@ -472,5 +491,7 @@ class Conjugator:
             conjugations.extend(self.future_simple(past_stem, passive=True))
             conjugations.extend(self.future_simple(past_stem, negative=True, passive=True))
 
+            conjugations.extend(self.imperative(present_stem))
+            conjugations.extend(self.imperative(present_stem, negative=True))
             
         return conjugations

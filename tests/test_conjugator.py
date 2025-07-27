@@ -712,13 +712,62 @@ class TestConjugator:
         # Test specifically focusing on third person plural
         assert result[5] == 'خواهند رفت'
 
+
+    def test_imperative_regular(self, conjugator):
+        # Test with example from docstring
+        result = conjugator.imperative("شناس")
+        expected = ['بشناس', 'بشناسید']
+        assert result == expected
+        
+        # Test with another verb
+        result = conjugator.imperative("خور")
+        expected = ['بخور', 'بخورید']
+        assert result == expected
+
+    def test_imperative_negative(self, conjugator):
+        # Test with example from docstring
+        result = conjugator.imperative("شناس", negative=True)
+        expected = ['نشناس', 'نشناسید']
+        assert result == expected
+        
+        # Test with another verb
+        result = conjugator.imperative("رو", negative=True)
+        expected = ['نرو', 'نروید']
+        assert result == expected
+
+    def test_imperative_empty_string(self, conjugator):
+        # Test with empty string
+        result = conjugator.imperative("")
+        expected = ['ب', 'بید']
+        assert result == expected
+        
+        result = conjugator.imperative("", negative=True)
+        expected = ['ن', 'نید']
+        assert result == expected
+
+    def test_imperative_special_verbs(self, conjugator):
+        # Test with common irregular verbs
+        result = conjugator.imperative("گوی")  # گفتن (to say)
+        expected = ['بگوی', 'بگویید']
+        assert result == expected
+        
+        result = conjugator.imperative("بین")  # دیدن (to see)
+        expected = ['ببین', 'ببینید']
+        assert result == expected
+        
+        result = conjugator.imperative("کن")  # کردن (to do)
+        expected = ['بکن', 'بکنید']
+        assert result == expected
+
+
+
     def test_conjugate(self, conjugator):
         # Test conjugation of a verb with both past and present stem
         result = conjugator.conjugate("شناخت", "شناس")
         
         # Check that we got the expected number of conjugations
         # 30 forms (past tenses) + 20 forms (present/future tenses) = 50 forms x 6 persons = 300 conjugated forms
-        assert len(result) == 300
+        assert len(result) == 306
         
         # Verify specific expected forms are present
         # Sample from each tense to ensure they're all included
@@ -748,7 +797,7 @@ class TestConjugator:
         result = conjugator.conjugate("شناخت")
         
         
-        assert len(result) == 192
+        assert len(result) == 194
         
         # Verify specific expected forms are present
         assert "شناختم" in result  # simple past
@@ -765,12 +814,14 @@ class TestConjugator:
         result = conjugator.conjugate("", "")
         
         # Should still produce conjugations with empty stems
-        assert len(result) == 192
+        assert len(result) == 0
         
-        # Check a few examples
-        assert "م" in result  # simple past with empty stem
-        assert "می‌م" in result  # past continuous with empty stem
-        assert "ه‌ام" in result  # present perfect with empty stem
+        result = conjugator.conjugate("", "شناس")
+        assert len(result) == 112
+
+        result = conjugator.conjugate("شناخت", "")
+        assert len(result) == 194
+        
         
     def test_conjugate_different_verbs(self, conjugator):
         # Test with different verbs to ensure general functionality
@@ -815,3 +866,4 @@ class TestConjugator:
             
         for form in future_simple:
             assert form in full_result
+
