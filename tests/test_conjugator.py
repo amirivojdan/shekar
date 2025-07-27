@@ -711,3 +711,107 @@ class TestConjugator:
         
         # Test specifically focusing on third person plural
         assert result[5] == 'خواهند رفت'
+
+    def test_conjugate(self, conjugator):
+        # Test conjugation of a verb with both past and present stem
+        result = conjugator.conjugate("شناخت", "شناس")
+        
+        # Check that we got the expected number of conjugations
+        # 30 forms (past tenses) + 20 forms (present/future tenses) = 50 forms x 6 persons = 300 conjugated forms
+        assert len(result) == 300
+        
+        # Verify specific expected forms are present
+        # Sample from each tense to ensure they're all included
+        assert "شناختم" in result  # simple past
+        assert "نشناختم" in result  # negative simple past
+        assert "شناخته شدم" in result  # passive simple past
+        assert "شناخته نشدم" in result  # negative passive simple past
+        
+        assert "شناخته‌ام" in result  # present perfect
+        assert "نشناخته‌ام" in result  # negative present perfect
+        assert "شناخته شده‌ام" in result  # passive present perfect
+        
+        assert "می‌شناختم" in result  # past continuous
+        assert "شناخته می‌شدم" in result  # passive past continuous
+        
+        assert "می‌شناسم" in result  # present indicative
+        assert "نمی‌شناسم" in result  # negative present indicative
+        
+        assert "بشناسم" in result  # present subjunctive
+        assert "نشناسم" in result  # negative present subjunctive
+        
+        assert "خواهم شناخت" in result  # future simple
+        assert "شناخته خواهم شد" in result  # passive future simple
+
+    def test_conjugate_past_only(self, conjugator):
+        # Test conjugation of a verb with only past stem
+        result = conjugator.conjugate("شناخت")
+        
+        
+        assert len(result) == 192
+        
+        # Verify specific expected forms are present
+        assert "شناختم" in result  # simple past
+        assert "شناخته‌ام" in result  # present perfect
+        assert "می‌شناختم" in result  # past continuous
+        assert "شناخته بودم" in result  # past perfect
+        
+        # Verify that no present/future forms are included
+        assert "می‌شناسم" not in result  # present indicative should not be present
+        assert "خواهم شناخت" not in result  # future simple should not be present
+
+    def test_conjugate_empty_strings(self, conjugator):
+        # Test with empty strings
+        result = conjugator.conjugate("", "")
+        
+        # Should still produce conjugations with empty stems
+        assert len(result) == 192
+        
+        # Check a few examples
+        assert "م" in result  # simple past with empty stem
+        assert "می‌م" in result  # past continuous with empty stem
+        assert "ه‌ام" in result  # present perfect with empty stem
+        
+    def test_conjugate_different_verbs(self, conjugator):
+        # Test with different verbs to ensure general functionality
+        
+        # Test with verb "رفتن" (to go)
+        result_go = conjugator.conjugate("رفت", "رو")
+        assert "رفتم" in result_go
+        assert "می‌روم" in result_go
+        assert "نخواهم رفت" in result_go
+        
+        # Test with verb "خوردن" (to eat)
+        result_eat = conjugator.conjugate("خورد", "خور")
+        assert "خوردم" in result_eat
+        assert "می‌خورم" in result_eat
+        assert "خواهم خورد" in result_eat
+        
+        # Test with verb "دیدن" (to see)
+        result_see = conjugator.conjugate("دید", "بین")
+        assert "دیدم" in result_see
+        assert "می‌بینم" in result_see
+        assert "دیده خواهم شد" in result_see
+
+    def test_conjugate_consistency(self, conjugator):
+        # Test that the conjugate method outputs match individual method outputs
+        past_stem = "شناخت"
+        present_stem = "شناس"
+        
+        # Get the full conjugation
+        full_result = conjugator.conjugate(past_stem, present_stem)
+        
+        # Get individual conjugations for comparison
+        simple_past = conjugator.simple_past(past_stem)
+        present_indicative = conjugator.present_indicative(past_stem, present_stem)
+        future_simple = conjugator.future_simple(past_stem)
+        
+        # Verify that individual conjugations are included in the full result
+        for form in simple_past:
+            assert form in full_result
+            
+        for form in present_indicative:
+            assert form in full_result
+            
+        for form in future_simple:
+            assert form in full_result
