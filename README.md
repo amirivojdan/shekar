@@ -27,6 +27,9 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Tokenization](#tokenization)
   - [WordTokenizer](#wordtokenizer)
   - [SentenceTokenizer](#sentencetokenizer)
+- [Embeddings](#embeddings)
+  - [Word Embeddings](#word-embeddings)
+  - [Sentence Embeddings](#sentence-embeddings)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
   - [Basic Usage](#basic-usage)
   - [Using NER in a Pipeline](#using-ner-in-a-pipeline)
@@ -217,6 +220,55 @@ for sentence in sentences:
 ```output
 هدف ما کمک به یکدیگر است!
 ما می‌توانیم با هم کار کنیم.
+```
+
+## Embeddings
+
+**Shekar** offers two main embedding classes:
+
+- **`WordEmbedder`**: Provides static word embeddings using pre-trained FastText models.
+- **`SentenceEmbedder`**: Provides contextual embeddings using a fine-tuned ALBERT model.
+
+Both classes share a consistent interface:
+
+- `embed(text)` returns a NumPy vector.
+- `transform(text)` is an alias for `embed(text)` to integrate with pipelines.
+
+---
+
+### Word Embeddings
+
+`WordEmbedder` supports two static FastText models:
+
+- **`fasttext-d100`**: A 100-dimensional CBOW model trained on [Persian Wikipedia](https://huggingface.co/datasets/codersan/Persian-Wikipedia-Corpus).
+- **`fasttext-d300`**: A 300-dimensional CBOW model trained on the large-scale [Naab dataset](https://huggingface.co/datasets/SLPL/naab).
+
+> **Note:** The word embeddings are static due to Gensim’s outdated dependencies, which can lead to compatibility issues. To ensure stability, the embeddings are stored as pre-computed vectors.
+
+```python
+from shekar.embeddings import WordEmbedder
+
+embedder = WordEmbedder(model="fasttext-d100")
+
+embedding = embedder("کتاب")
+print(embedding.shape)
+
+similar_words = embedder.most_similar("کتاب", top_n=5)
+print(similar_words)
+```
+
+### Sentence Embeddings
+SentenceEmbedder uses an ALBERT model trained with Masked Language Modeling (MLM) on the Naab dataset to generate high-quality contextual embeddings.
+The resulting embeddings are 768-dimensional vectors representing the semantic meaning of entire phrases or sentences.
+
+```python
+from shekar.embeddings import SentenceEmbedder
+
+embedder = SentenceEmbedder(model="albert")
+
+sentence = "کتاب‌ها دریچه‌ای به جهان دانش هستند."
+embedding = embedder(sentence)
+print(embedding.shape)  # (768,)
 ```
 
 ## Named Entity Recognition (NER)
