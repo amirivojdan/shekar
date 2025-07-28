@@ -2,7 +2,7 @@ from .pipeline import Pipeline
 from .base import BaseTransform, BaseTextTransform
 from .visualization import WordCloud
 from .normalizer import Normalizer
-from .tokenization import Tokenizer
+from .tokenization import WordTokenizer, SentenceTokenizer, Tokenizer
 from .keyword_extraction import KeywordExtractor
 from .ner import NER
 from .embeddings import WordEmbedder, SentenceEmbedder
@@ -21,5 +21,7 @@ __all__ = [
     "SpellChecker",
     "Tokenizer",
     "WordEmbedder",
-    "SentenceEmbedder"
+    "SentenceEmbedder",
+    "WordTokenizer",
+    "SentenceTokenizer",
 ]
