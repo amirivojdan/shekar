@@ -3,14 +3,17 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.x"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: ${{ matrix.python-version }}
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v4
@@ -25,7 +28,7 @@ jobs:
         run: uv venv
 
       - name: Install Dependencies
-        run: uv pip install -r pyproject.toml --all-extras
+        run: uv pip install -e . --all-extras
 
       - name: Install Pytest
         run: uv pip install pytest pytest-cov
