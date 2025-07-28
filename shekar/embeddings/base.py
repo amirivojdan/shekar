@@ -34,6 +34,15 @@ class BaseEmbedder(BaseTransform):
             np.ndarray: Vector representation of the input text.
         """
         pass
+
+    def transform(self, X: str) -> np.ndarray:
+        """ Transform the input text into its embedded vector representation.
+        Args:
+            X (str): Input text to be transformed.
+        Returns:
+            np.ndarray: Embedded vector representation of the input text.
+        """
+        return self.embed(X)
     
     def similarity(self, text1: str, text2: str) -> float:
         """ Calculate cosine similarity between two texts.
