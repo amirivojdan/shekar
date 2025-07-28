@@ -5,6 +5,7 @@ from .normalizer import Normalizer
 from .tokenization import Tokenizer
 from .keyword_extraction import KeywordExtractor
 from .ner import NER
+from .embeddings import WordEmbedder, SentenceEmbedder
 from .spell_checking import SpellChecker
 from .hub import Hub
 
@@ -18,5 +19,7 @@ __all__ = [
     "KeywordExtractor",
     "NER",
     "SpellChecker",
-    "Tokenizer"
+    "Tokenizer",
+    "WordEmbedder",
+    "SentenceEmbedder"
 ]
