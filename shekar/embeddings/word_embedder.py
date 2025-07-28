@@ -7,7 +7,7 @@ from .base import BaseEmbedder
 
 WORD_EMBEDDING_REGISTRY = {
     "fasttext-d100": "fasttext_d100_w5_v100k_cbow_wiki.bin",
-    "fasttext-d300": "fasttext_d300_w5_v200k_cbow_naab.bin",
+    "fasttext-d300": "fasttext_d300_w10_v250k_cbow_naab.bin",
 }
 
 class WordEmbedder(BaseEmbedder):
