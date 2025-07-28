@@ -28,7 +28,7 @@ jobs:
         run: uv venv
 
       - name: Install Dependencies
-        run: uv pip install -e . --all-extras
+        run: uv pip install -r pyproject.toml --all-extras
 
       - name: Install Pytest
         run: uv pip install pytest pytest-cov
