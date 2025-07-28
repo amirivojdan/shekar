@@ -5,6 +5,8 @@
 ![Codecov](https://img.shields.io/codecov/c/github/amirivojdan/shekar?color=00A693)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/shekar?color=00A693)
 ![PyPI - License](https://img.shields.io/pypi/l/shekar?color=00A693)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/shekar?color=00A693)
+
 
 <p align="center">
     <em>Simplifying Persian NLP for Modern Applications</em>
