@@ -1,4 +1,4 @@
-name: Publish
+name: Publish to PyPI
 
 on:
   release:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.x"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - name: Start Checkout
@@ -35,6 +35,9 @@ jobs:
       - name: setup venv
         run: uv venv
 
+      - name: Upgrade hatch
+        run: uv pip install --upgrade hatch hatchling
+
       - name: Install Dependencies
         run: uv pip install -r pyproject.toml --all-extras
 
@@ -47,39 +50,24 @@ jobs:
       - name: Build release distributions
         run: uv build
 
-      - name: Upload distributions
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
-
-  pypi-publish:
+  release:
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
     needs:
       - test-build
-    permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write
-
-    # Dedicated environments with protections for publishing are strongly recommended.
-    # For more information, see: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
-    environment:
-      name: pypi
-      # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
-      # url: https://pypi.org/p/YOURPROJECT
-      #
-      # ALTERNATIVE: if your GitHub Release name is the PyPI project version string
-      # ALTERNATIVE: exactly, uncomment the following line instead:
-      url: https://pypi.org/project/shekar/${{ github.event.release.name }}
-
     steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
+      - uses: actions/checkout@v4
 
-      - name: Publish release distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: dist/
+      - name: Install uv and setup the python version
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install the project
+        run: uv sync --all-groups
+
+      - name: Build wheel
+        run: uv build
+
+      - name: Publish package
+        run: uv publish
