@@ -32,6 +32,9 @@ jobs:
 
       - name: Install Dependencies
         run: uv pip install -r pyproject.toml --all-extras
+
+      - name: Install Ruff
+        run: uv pip install ruff
       
       - name: Run Ruff Format Check
         run: ruff format shekar tests --check --diff
