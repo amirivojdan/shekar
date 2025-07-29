@@ -37,10 +37,10 @@ jobs:
         run: uv pip install ruff
       
       - name: Run Ruff Format Check
-        run: ruff format shekar tests --check --diff
+        run: uv run ruff format shekar tests --check --diff
 
       - name: Run Ruff Lint
-        run: ruff check shekar tests
+        run: uv run ruff check shekar tests
 
       - name: Install Pytest
         run: uv pip install pytest pytest-cov
