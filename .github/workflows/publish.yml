@@ -18,6 +18,11 @@ jobs:
       - name: Start Checkout
         uses: actions/checkout@v4
 
+      - name: Run Ruff Lint and Format Check
+        uses: astral-sh/ruff-action@v3
+      - run: ruff check shekar tests
+      - run: ruff format shekar tests --check --diff
+
       - name: setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
