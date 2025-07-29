@@ -54,7 +54,8 @@ class Hub:
         elif Hub.compute_sha256_hash(model_path) != MODEL_HASHES[file_name]:
                     model_path.unlink(missing_ok=True)
                     raise ValueError(f"Hash mismatch for {file_name}. Expected {MODEL_HASHES[file_name]}, got {Hub.compute_sha256_hash(model_path)}")
-                
+        print(Hub.compute_sha256_hash(model_path))
+        print(model_path)
         return model_path
 
 
