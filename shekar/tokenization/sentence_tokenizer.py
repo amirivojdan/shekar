@@ -19,8 +19,10 @@ class SentenceTokenizer(BaseTextTransform):
 
     def __init__(self):
         super().__init__()
-        self.pattern = re.compile(f"([{re.escape(data.end_sentence_punctuations)}]+)", re.UNICODE)
-        
+        self.pattern = re.compile(
+            f"([{re.escape(data.end_sentence_punctuations)}]+)", re.UNICODE
+        )
+
     def _function(self, text: str) -> Iterable[str]:
         """
         Tokenizes the input text into a list of sentences.
@@ -31,14 +33,14 @@ class SentenceTokenizer(BaseTextTransform):
         Returns:
             List[str]: A list of tokenized sentences.
         """
-        
+
         tokens = self.pattern.split(text)
         for i in range(0, len(tokens) - 1, 2):
             if tokens[i].strip() or tokens[i + 1].strip():
                 yield tokens[i].strip() + tokens[i + 1].strip()
         if len(tokens) % 2 == 1 and tokens[-1].strip():
             yield tokens[-1].strip()
-    
+
     def tokenize(self, text: str) -> Iterable[str]:
         """
         Tokenizes the input text into a list of sentences.
@@ -50,4 +52,3 @@ class SentenceTokenizer(BaseTextTransform):
             List[str]: A list of tokenized sentences.
         """
         return self._function(text)
-

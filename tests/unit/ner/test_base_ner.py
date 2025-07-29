@@ -34,6 +34,7 @@ def test_ner_fit_returns_model():
     result = ner.fit(["متن تست"], [["O", "B-PER", "I-PER"]])
     assert result is ner.model
 
+
 def test_ner_detects_known_entities():
     ner = NER()
     text = "دکتر علی‌رضا امیری در دانشگاه تهران تدریس می‌کند."

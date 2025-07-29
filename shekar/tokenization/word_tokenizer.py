@@ -30,7 +30,7 @@ class WordTokenizer(BaseTextTransform):
             Iterable[str]: A Iterable of tokenized words and punctuations.
         """
         return self._function(text)
-        
+
     def _function(self, text: str) -> Iterable[str]:
         """
         Tokenizes the input text into a list of words, keeping punctuations as separate tokens.

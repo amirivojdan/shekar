@@ -2,10 +2,10 @@ from abc import abstractmethod
 from shekar.base import BaseTransform
 import numpy as np
 
-class BaseEmbedder(BaseTransform):
 
+class BaseEmbedder(BaseTransform):
     def _cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
-        """ Calculate cosine similarity between two vectors.
+        """Calculate cosine similarity between two vectors.
         Args:
             vec1 (np.ndarray): First vector.
             vec2 (np.ndarray): Second vector.
@@ -13,7 +13,11 @@ class BaseEmbedder(BaseTransform):
             float: Cosine similarity between the two vectors.
         """
 
-        if vec1 is None or not isinstance(vec1, np.ndarray) or (vec2 is None or not isinstance(vec2, np.ndarray)):
+        if (
+            vec1 is None
+            or not isinstance(vec1, np.ndarray)
+            or (vec2 is None or not isinstance(vec2, np.ndarray))
+        ):
             return 0.0
 
         dot_product = np.dot(vec1, vec2)
@@ -27,7 +31,7 @@ class BaseEmbedder(BaseTransform):
 
     @abstractmethod
     def embed(self, text: str) -> np.ndarray:
-        """ Embed a given text/token into a vector representation.
+        """Embed a given text/token into a vector representation.
         Args:
             text (str): Input text to be embedded.
         Returns:
@@ -36,16 +40,16 @@ class BaseEmbedder(BaseTransform):
         pass
 
     def transform(self, X: str) -> np.ndarray:
-        """ Transform the input text into its embedded vector representation.
+        """Transform the input text into its embedded vector representation.
         Args:
             X (str): Input text to be transformed.
         Returns:
             np.ndarray: Embedded vector representation of the input text.
         """
         return self.embed(X)
-    
+
     def similarity(self, text1: str, text2: str) -> float:
-        """ Calculate cosine similarity between two texts.
+        """Calculate cosine similarity between two texts.
         Args:
             text1 (str): First text.
             text2 (str): Second text.

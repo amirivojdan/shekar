@@ -1,6 +1,7 @@
 import emoji
 from shekar.base import BaseTextTransform
 
+
 class EmojiFilter(BaseTextTransform):
     """
     A text transformation class for removing emojis from the text.

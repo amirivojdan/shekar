@@ -10,8 +10,9 @@ WORD_EMBEDDING_REGISTRY = {
     "fasttext-d300": "fasttext_d300_w10_v250k_cbow_naab.bin",
 }
 
+
 class WordEmbedder(BaseEmbedder):
-    """ WordEmbedder class for embedding words using pre-trained models.
+    """WordEmbedder class for embedding words using pre-trained models.
     Args:
         model (str): Name of the word embedding model to use.
         model_path (str, optional): Path to the pre-trained model file. If None, it will be downloaded from the hub.
@@ -19,10 +20,12 @@ class WordEmbedder(BaseEmbedder):
         ValueError: If the specified model is not found in the registry.
     """
 
-    def __init__(self, model: str = "fasttext-d100", model_path=None, oov_strategy: str = "zero"):
-        """ Initialize the WordEmbedder with a specified model and path.
+    def __init__(
+        self, model: str = "fasttext-d100", model_path=None, oov_strategy: str = "zero"
+    ):
+        """Initialize the WordEmbedder with a specified model and path.
         Args:
-        
+
             model (str): Name of the word embedding model to use.
             model_path (str, optional): Path to the pre-trained model file. If None,
                 it will be downloaded from the hub.
@@ -35,7 +38,9 @@ class WordEmbedder(BaseEmbedder):
         self.oov_strategy = oov_strategy
         model = model.lower()
         if model not in WORD_EMBEDDING_REGISTRY:
-            raise ValueError(f"Unknown word embedding model '{model}'. Available: {list(WORD_EMBEDDING_REGISTRY.keys())}")
+            raise ValueError(
+                f"Unknown word embedding model '{model}'. Available: {list(WORD_EMBEDDING_REGISTRY.keys())}"
+            )
 
         resource_name = WORD_EMBEDDING_REGISTRY[model]
         if model_path is None or not Path(model_path).exists():
@@ -63,20 +68,19 @@ class WordEmbedder(BaseEmbedder):
                 return None
             elif self.oov_strategy == "error":
                 raise KeyError(f"Token '{token}' not found in the vocabulary.")
-    
-    def transform(self, X: str) -> np.ndarray:
-        return self.embed(X)    
 
-    
+    def transform(self, X: str) -> np.ndarray:
+        return self.embed(X)
+
     def most_similar(self, token: str, top_n: int = 5) -> list:
-        """ Find the most similar tokens to a given token.
+        """Find the most similar tokens to a given token.
         Args:
             token (str): The token to find similar tokens for.
             top_n (int): Number of similar tokens to return.
         Returns:
             list: List of tuples containing similar tokens and their similarity scores.
         """
-        
+
         vec = self.embed(token)
         if vec is None:
             return []

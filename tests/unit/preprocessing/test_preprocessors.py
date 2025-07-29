@@ -1,5 +1,5 @@
 import pytest
- 
+
 from shekar.preprocessing import (
     PunctuationNormalizer,
     AlphabetNormalizer,
@@ -378,6 +378,7 @@ def test_hashtag_Filter():
     expected_output = "روز  شاد باد."
     assert hashtag_Filter.fit_transform(input_text) == expected_output
 
+
 def test_ngram_extractor():
     ngram_extractor = NGramExtractor(range=(1, 2))
     input_text = "همان شهر ایرانش آمد به یاد"
@@ -412,7 +413,7 @@ def test_ngram_extractor():
         "با",
         "هم",
         "نمی‌سوزانند",
-        "."
+        ".",
     ]
     assert ngram_extractor(input_text) == expected_output
     assert ngram_extractor.fit_transform(input_text) == expected_output
@@ -430,41 +431,44 @@ def test_ngram_extractor():
     ngram_extractor = NGramExtractor(range=(3, 3))
     input_text = "این یک متن نمونه است"
     expected_output = [
-            "این یک متن",
-            "یک متن نمونه",
-            "متن نمونه است",
-        ]
+        "این یک متن",
+        "یک متن نمونه",
+        "متن نمونه است",
+    ]
     assert ngram_extractor(input_text) == expected_output
 
     ngram_extractor = NGramExtractor(range=(2, 2))
     input_text = [
-            "این یک متن",
-            "یک متن نمونه",
-            "متن نمونه است",
-        ]
+        "این یک متن",
+        "یک متن نمونه",
+        "متن نمونه است",
+    ]
     expected_output = [
-            ["این یک", "یک متن"],
-            ["یک متن", "متن نمونه"],
-            ["متن نمونه", "نمونه است"],
-        ]
+        ["این یک", "یک متن"],
+        ["یک متن", "متن نمونه"],
+        ["متن نمونه", "نمونه است"],
+    ]
     assert list(ngram_extractor(input_text)) == expected_output
     assert list(ngram_extractor.fit_transform(input_text)) == expected_output
-   
+
 
 def test_ngram_extractor_invalid_inputs():
-
-    with pytest.raises(TypeError, match="N-gram range must be a tuple tuple of integers."):
+    with pytest.raises(
+        TypeError, match="N-gram range must be a tuple tuple of integers."
+    ):
         NGramExtractor(range="invalid")
-            
+
     with pytest.raises(ValueError, match="N-gram range must be a tuple of length 2."):
         NGramExtractor(range=(1, 2, 3))
-            
+
     with pytest.raises(ValueError, match="N-gram range must be greater than 0."):
         NGramExtractor(range=(0, 2))
-            
-    with pytest.raises(ValueError, match="N-gram range must be in the form of \\(min, max\\)."):
+
+    with pytest.raises(
+        ValueError, match="N-gram range must be in the form of \\(min, max\\)."
+    ):
         NGramExtractor(range=(3, 1))
- 
+
 
 def test_flatten():
     flatten = Flatten()
@@ -483,41 +487,41 @@ def test_flatten():
     expected_output = ["سلام", "دوست", "خوبی؟", "چطوری؟", "من خوبم", "شما چطورید؟"]
     assert list(flatten(input_text)) == expected_output
 
+
 def test_digit_Filter():
-        
-        digit_Filter = DigitFilter()
-        
-        input_text = "قیمت این محصول ۱۲۳۴۵ تومان است"
-        expected_output = "قیمت این محصول  تومان است"
-        assert digit_Filter(input_text) == expected_output
-        
-        input_text = "سفارش شما با کد 98765 ثبت شد"
-        expected_output = "سفارش شما با کد  ثبت شد"
-        assert digit_Filter(input_text) == expected_output
-        
-        input_text = "کد پستی ۱۰۴۵۶-32901 را وارد کنید"
-        expected_output = "کد پستی - را وارد کنید"
-        assert digit_Filter.fit_transform(input_text) == expected_output
-        
-        input_text = "سلام، چطوری دوست من؟"
-        expected_output = "سلام، چطوری دوست من؟"
-        assert digit_Filter(input_text) == expected_output
-        
-        digit_Filter_custom = DigitFilter(replace_with="X")
-        input_text = "سال ۱۴۰۲ با موفقیت به پایان رسید"
-        expected_output = "سال XXXX با موفقیت به پایان رسید"
-        assert digit_Filter_custom(input_text) == expected_output
-        
-        input_texts = ["شماره ۱۲۳۴", "کد 5678", "بدون عدد"]
-        expected_outputs = ["شماره", "کد", "بدون عدد"]
-        assert list(digit_Filter(input_texts)) == expected_outputs
-        assert list(digit_Filter.fit_transform(input_texts)) == expected_outputs
-        
-        input_text = "نرخ تورم ۲۴.۵ درصد اعلام شد"
-        expected_output = "نرخ تورم . درصد اعلام شد"
-        assert digit_Filter(input_text) == expected_output
-        
-        input_text = 12345
-        expected_output = "Input must be a string or a Iterable of strings."
-        with pytest.raises(ValueError, match=expected_output):
-            digit_Filter(input_text)
+    digit_Filter = DigitFilter()
+
+    input_text = "قیمت این محصول ۱۲۳۴۵ تومان است"
+    expected_output = "قیمت این محصول  تومان است"
+    assert digit_Filter(input_text) == expected_output
+
+    input_text = "سفارش شما با کد 98765 ثبت شد"
+    expected_output = "سفارش شما با کد  ثبت شد"
+    assert digit_Filter(input_text) == expected_output
+
+    input_text = "کد پستی ۱۰۴۵۶-32901 را وارد کنید"
+    expected_output = "کد پستی - را وارد کنید"
+    assert digit_Filter.fit_transform(input_text) == expected_output
+
+    input_text = "سلام، چطوری دوست من؟"
+    expected_output = "سلام، چطوری دوست من؟"
+    assert digit_Filter(input_text) == expected_output
+
+    digit_Filter_custom = DigitFilter(replace_with="X")
+    input_text = "سال ۱۴۰۲ با موفقیت به پایان رسید"
+    expected_output = "سال XXXX با موفقیت به پایان رسید"
+    assert digit_Filter_custom(input_text) == expected_output
+
+    input_texts = ["شماره ۱۲۳۴", "کد 5678", "بدون عدد"]
+    expected_outputs = ["شماره", "کد", "بدون عدد"]
+    assert list(digit_Filter(input_texts)) == expected_outputs
+    assert list(digit_Filter.fit_transform(input_texts)) == expected_outputs
+
+    input_text = "نرخ تورم ۲۴.۵ درصد اعلام شد"
+    expected_output = "نرخ تورم . درصد اعلام شد"
+    assert digit_Filter(input_text) == expected_output
+
+    input_text = 12345
+    expected_output = "Input must be a string or a Iterable of strings."
+    with pytest.raises(ValueError, match=expected_output):
+        digit_Filter(input_text)

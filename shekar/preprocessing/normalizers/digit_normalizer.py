@@ -1,5 +1,6 @@
 from shekar.base import BaseTextTransform
 
+
 class DigitNormalizer(BaseTextTransform):
     """
     A text transformation class for normalizing Arabic, English, and other Unicode number signs to Persian numbers.

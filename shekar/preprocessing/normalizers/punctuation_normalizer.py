@@ -1,5 +1,6 @@
 from shekar.base import BaseTextTransform
 
+
 class PunctuationNormalizer(BaseTextTransform):
     """
     A text transformation class for normalizing punctuation marks in text.

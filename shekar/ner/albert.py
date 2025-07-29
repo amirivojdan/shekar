@@ -7,7 +7,7 @@ import numpy as np
 
 
 class AlbertNER(BaseTransform):
-    def __init__(self, model_path: str| Path = None):
+    def __init__(self, model_path: str | Path = None):
         super().__init__()
         resource_name = "albert_persian_ner_q8.onnx"
         if model_path is None or not Path(model_path).exists():
@@ -16,18 +16,20 @@ class AlbertNER(BaseTransform):
         self.session = onnxruntime.InferenceSession(model_path)
         self.tokenizer = AlbertTokenizer()
 
-        self.id2tag = {0: 'B-DAT',
-                        1: 'B-EVE',
-                        2: 'B-LOC',
-                        3: 'B-ORG',
-                        4: 'B-PER',
-                        5: 'I-DAT',
-                        6: 'I-EVE',
-                        7: 'I-LOC',
-                        8: 'I-ORG',
-                        9: 'I-PER',
-                        10: 'O'}
-        
+        self.id2tag = {
+            0: "B-DAT",
+            1: "B-EVE",
+            2: "B-LOC",
+            3: "B-ORG",
+            4: "B-PER",
+            5: "I-DAT",
+            6: "I-EVE",
+            7: "I-LOC",
+            8: "I-ORG",
+            9: "I-PER",
+            10: "O",
+        }
+
     def _aggregate_entities(self, tokens, predicted_tag_ids):
         entities = []
         current_entity = ""
@@ -70,13 +72,14 @@ class AlbertNER(BaseTransform):
 
         return entities
 
-    
-    def transform(self, X:str)-> list:
+    def transform(self, X: str) -> list:
         inputs = self.tokenizer.fit_transform(X)
         inputs.pop("token_type_ids", None)
         outputs = self.session.run(None, inputs)
         logits = outputs[0]
         predicted_tag_ids = np.argmax(logits, axis=-1)[0]
-        tokens = [self.tokenizer.tokenizer.id_to_token(id) for id in inputs["input_ids"][0]]
+        tokens = [
+            self.tokenizer.tokenizer.id_to_token(id) for id in inputs["input_ids"][0]
+        ]
         entities = self._aggregate_entities(tokens, predicted_tag_ids)
         return entities

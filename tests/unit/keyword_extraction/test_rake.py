@@ -1,4 +1,3 @@
-import pytest
 from shekar.keyword_extraction.rake import RAKE
 
 
@@ -17,7 +16,7 @@ def test_rake_fit_returns_self():
 def test_rake_extract_keywords_basic():
     rake = RAKE(top_n=5)
     text = "هوش مصنوعی یکی از مهم‌ترین فناوری‌های قرن حاضر است. یادگیری ماشین نیز زیرمجموعه‌ای از آن محسوب می‌شود."
-    
+
     keywords = rake.transform(text)
 
     assert isinstance(keywords, list)

@@ -2,6 +2,7 @@ from shekar.base import BaseTextTransform
 from shekar import data
 import re
 
+
 class PunctuationSpacingStandardizer(BaseTextTransform):
     """
     A text transformation class for standardizing spacing around punctuation marks in the text.
@@ -52,4 +53,3 @@ class PunctuationSpacingStandardizer(BaseTextTransform):
 
     def _function(self, text: str) -> str:
         return self._map_patterns(text, self._patterns)
-    

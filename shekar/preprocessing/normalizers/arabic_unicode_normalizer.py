@@ -1,5 +1,5 @@
-
 from shekar.base import BaseTextTransform
+
 
 class ArabicUnicodeNormalizer(BaseTextTransform):
     """

@@ -8,28 +8,29 @@ MODEL_HASHES = {
     "albert_persian_ner_q8.onnx": "a3d2b1d2c167abd01e6b663279d3f8c3bb1b3d0411f693515cd0b31a5a3d3e80",
     "albert_persian_mlm_embeddings.onnx": "6b2d987ba409fd6957764742e30bfbbe385ab33c210caeb313aa9a2eb9afa51a",
     "fasttext_d100_w5_v100k_cbow_wiki.bin": "27daf69dc030e028dda33465c488e25f72c2ea65a53b5c1e0695b883a8be061c",
-    "fasttext_d300_w10_v250k_cbow_naab.bin": "f1e2d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100"
+    "fasttext_d300_w10_v250k_cbow_naab.bin": "f1e2d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100",
 }
 
 
 class TqdmUpTo(tqdm):
     """Provides `update_to(n)` which uses `tqdm.update(delta_n)`."""
+
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
             self.total = tsize
         self.update(b * bsize - self.n)
 
+
 class Hub:
-    
     @staticmethod
     def compute_sha256_hash(path: str | Path, block_size=65536):
         """Compute the SHA-256 hash of a file."""
         sha256 = hashlib.sha256()
-        with open(path, 'rb') as f:
-            for block in iter(lambda: f.read(block_size), b''):
+        with open(path, "rb") as f:
+            for block in iter(lambda: f.read(block_size), b""):
                 sha256.update(block)
         return sha256.hexdigest()
-    
+
     @staticmethod
     def get_resource(file_name: str) -> Path:
         base_url = "https://shekar.ai/"
@@ -43,28 +44,25 @@ class Hub:
         cache_dir.mkdir(parents=True, exist_ok=True)
 
         if not model_path.exists():
-            
             if not Hub.download_file(base_url + file_name, model_path):
                 model_path.unlink(missing_ok=True)
                 raise FileNotFoundError(
                     f"Failed to download {file_name} from {base_url}. "
                     f"You can also download it manually from {base_url + file_name} and place it in {cache_dir}."
                 )
-            
-        elif Hub.compute_sha256_hash(model_path) != MODEL_HASHES[file_name]:
-                    model_path.unlink(missing_ok=True)
-                    raise ValueError(f"Hash mismatch for {file_name}. Expected {MODEL_HASHES[file_name]}, got {Hub.compute_sha256_hash(model_path)}")
-        print(Hub.compute_sha256_hash(model_path))
-        print(model_path)
-        return model_path
 
+        elif Hub.compute_sha256_hash(model_path) != MODEL_HASHES[file_name]:
+            model_path.unlink(missing_ok=True)
+            raise ValueError(
+                f"Hash mismatch for {file_name}. Expected {MODEL_HASHES[file_name]}, got {Hub.compute_sha256_hash(model_path)}"
+            )
+        return model_path
 
     @staticmethod
     def download_file(url: str, dest_path: Path) -> bool:
         try:
-            
             with TqdmUpTo(
-                unit='B',
+                unit="B",
                 unit_scale=True,
                 unit_divisor=1024,
                 miniters=1,
@@ -72,10 +70,7 @@ class Hub:
                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
             ) as t:
                 urllib.request.urlretrieve(
-                    url,
-                    filename=dest_path,
-                    reporthook=t.update_to,
-                    data=None
+                    url, filename=dest_path, reporthook=t.update_to, data=None
                 )
                 t.total = t.n
             return True

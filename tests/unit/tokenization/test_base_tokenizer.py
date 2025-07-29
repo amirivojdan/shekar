@@ -1,6 +1,12 @@
 import pytest
-from shekar.tokenization import Tokenizer, WordTokenizer, SentenceTokenizer, AlbertTokenizer
+from shekar.tokenization import (
+    Tokenizer,
+    WordTokenizer,
+    SentenceTokenizer,
+    AlbertTokenizer,
+)
 import collections.abc
+
 
 def test_tokenizer_default_model_is_word():
     tokenizer = Tokenizer()
@@ -32,6 +38,7 @@ def test_tokenizer_transform_returns_expected_type(model_name):
         assert isinstance(output, collections.abc.Iterable)
         output_list = list(output)
         assert all(isinstance(t, str) for t in output_list)
+
 
 @pytest.mark.parametrize("model_name", ["word", "sentence", "albert"])
 def test_tokenizer_fit_delegation(model_name):

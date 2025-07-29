@@ -1,9 +1,8 @@
 import pytest
 import numpy as np
 import pickle
-from pathlib import Path
 
-from shekar.embeddings.word_embedder import WordEmbedder, WORD_EMBEDDING_REGISTRY
+from shekar.embeddings.word_embedder import WordEmbedder
 
 
 @pytest.fixture
@@ -11,16 +10,14 @@ def dummy_model_path(tmp_path):
     """Create a dummy embedding model pickle file for testing."""
     model_data = {
         "words": ["سیب", "موز", "هلو"],
-        "embeddings": np.array([
-            [1.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0],
-            [1.0, 1.0, 0.0]
-        ], dtype=np.float32),
+        "embeddings": np.array(
+            [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0]], dtype=np.float32
+        ),
         "vector_size": 3,
         "window": 5,
         "model": "fasttext",
         "epochs": 10,
-        "dataset": "dummy"
+        "dataset": "dummy",
     }
     file_path = tmp_path / "dummy_model.pkl"
     with open(file_path, "wb") as f:
@@ -42,7 +39,9 @@ def test_embed_known_token(dummy_model_path):
 
 @pytest.mark.parametrize("oov_strategy", ["zero", "none", "error"])
 def test_embed_oov_strategies(dummy_model_path, oov_strategy):
-    we = WordEmbedder(model="fasttext-d100", model_path=dummy_model_path, oov_strategy=oov_strategy)
+    we = WordEmbedder(
+        model="fasttext-d100", model_path=dummy_model_path, oov_strategy=oov_strategy
+    )
     token = "ناشناخته"
     if oov_strategy == "zero":
         vec = we.embed(token)
@@ -81,5 +80,7 @@ def test_most_similar_returns_sorted_list(dummy_model_path):
 
 
 def test_most_similar_empty_for_oov(dummy_model_path):
-    we = WordEmbedder(model="fasttext-d100", model_path=dummy_model_path, oov_strategy="none")
+    we = WordEmbedder(
+        model="fasttext-d100", model_path=dummy_model_path, oov_strategy="none"
+    )
     assert we.most_similar("ناشناخته") == []

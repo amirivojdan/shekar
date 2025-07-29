@@ -1,14 +1,13 @@
-import re
 from importlib import resources
 from . import files as data
-from . import fonts 
+from . import fonts
 from . import masks
 
 resources_root = resources.files(data)
 fonts_root = resources.files(fonts)
 masks_root = resources.files(masks)
 
-vocab_csv_path = resources_root.joinpath("vocab.csv") 
+vocab_csv_path = resources_root.joinpath("vocab.csv")
 verbs_csv_path = resources_root.joinpath("verbs.csv")
 stopwords_csv_path = resources_root.joinpath("stopwords.csv")
 
@@ -47,7 +46,6 @@ def loadstopwords():
     with open(stopwords_csv_path, "r", encoding="utf-8") as file:
         stopwords = [line.strip() for line in file.read().splitlines()]
     return stopwords
-
 
 
 verbs = load_verbs()

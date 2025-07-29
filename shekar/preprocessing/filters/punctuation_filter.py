@@ -3,6 +3,7 @@ from shekar import data
 import re
 import string
 
+
 class PunctuationFilter(BaseTextTransform):
     """
     A text transformation class for filtering out specified punctuation characters from the text.
@@ -29,10 +30,10 @@ class PunctuationFilter(BaseTextTransform):
         >>> print(filtered_text)
         "دریغ است ایران که ویران شود"
     """
+
     def __init__(self, punctuations: str | None = None, replace_with: str = ""):
         super().__init__()
         if not punctuations:
-            
             self._punctuation_mappings = [
                 (rf"[{re.escape(data.punctuations)}]", replace_with),
                 (rf"[{re.escape(string.punctuation)}]", replace_with),

@@ -7,7 +7,8 @@ import numpy as np
 from typing import Counter
 import os
 from shekar import data
-from importlib import resources 
+from importlib import resources
+
 
 class WordCloud:
     """
@@ -15,6 +16,7 @@ class WordCloud:
     This class provides functionality to create visually appealing word clouds
     with various customization options such as font, color map, and mask.
     """
+
     def __init__(
         self,
         mask: str | None = None,
@@ -30,15 +32,14 @@ class WordCloud:
         horizontal_ratio: float = 0.75,
     ):
         self.predefined_masks = {
-                "Iran": "iran.png",
-                "Head": "head.png",
-                "Heart": "heart.png",
-                "Bulb": "bulb.png",
-                "Cat": "cat.png",
-                "Cloud": "cloud.png",
-            }
+            "Iran": "iran.png",
+            "Head": "head.png",
+            "Heart": "heart.png",
+            "Bulb": "bulb.png",
+            "Cat": "cat.png",
+            "Cloud": "cloud.png",
+        }
 
-         
         if font == "parastoo" or font == "sahel":
             font_path = resources.files(data).joinpath("fonts") / f"{font}.ttf"
         elif os.path.exists(font):
@@ -47,11 +48,13 @@ class WordCloud:
             raise FileNotFoundError(
                 f"Font file {font} not found. Please provide a valid font path."
             )
-        
+
         if isinstance(mask, str):
-            
             if mask in self.predefined_masks:
-                mask_path = resources.files(data).joinpath("masks") / self.predefined_masks[mask]
+                mask_path = (
+                    resources.files(data).joinpath("masks")
+                    / self.predefined_masks[mask]
+                )
                 self.mask = np.array(Image.open(mask_path))
             elif os.path.exists(mask):
                 self.mask = np.array(Image.open(mask))
@@ -92,10 +95,10 @@ class WordCloud:
             raise ValueError(
                 "Input must be a dictionary of words and their frequencies."
             )
-        
+
         if not frequencies:
             raise ValueError("Frequencies dictionary is empty.")
-        
+
         reshaped_frequencies = {
             (get_display(arabic_reshaper.reshape(k)) if bidi_reshape else k): float(v)
             for k, v in frequencies.items()

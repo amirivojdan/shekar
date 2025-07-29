@@ -10,7 +10,6 @@ MaskURLs = URLMasker
 __all__ = [
     "EmailMasker",
     "URLMasker",
-
     # aliases
     "MaskEmails",
     "MaskURLs",

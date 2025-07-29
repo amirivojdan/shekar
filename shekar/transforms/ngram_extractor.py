@@ -1,7 +1,7 @@
 from shekar.base import BaseTextTransform
 from shekar.tokenization import WordTokenizer
 
- 
+
 class NGramExtractor(BaseTextTransform):
     """
     A text transformation class for extracting n-grams from the text.
@@ -28,7 +28,6 @@ class NGramExtractor(BaseTextTransform):
         >>> print(ngrams)
         ["این", "یک", "متن", "نمونه", "است", "این یک", "یک متن", "متن نمونه", "نمونه است"]
     """
-     
 
     def __init__(self, range: tuple[int, int] = (1, 1)):
         super().__init__()
@@ -43,7 +42,6 @@ class NGramExtractor(BaseTextTransform):
 
         self.range = range
         self.word_tokenizer = WordTokenizer()
-
 
     def _function(self, text: str) -> list[str]:
         tokens = list(self.word_tokenizer(text))

@@ -14,7 +14,6 @@ __all__ = [
     "ArabicUnicodeNormalizer",
     "DigitNormalizer",
     "PunctuationNormalizer",
-
     # aliases
     "NormalizeDigits",
     "NormalizePunctuations",

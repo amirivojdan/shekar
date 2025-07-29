@@ -87,4 +87,3 @@ class AlphabetNormalizer(BaseTextTransform):
 
     def _function(self, X, y=None):
         return self._map_patterns(X, self._patterns)
-

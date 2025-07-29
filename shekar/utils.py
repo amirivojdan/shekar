@@ -1,5 +1,6 @@
 import re
 
+
 def is_informal(text, threshold=1) -> bool:
     """
     Classifies Persian text into formal or informal based on predefined regex patterns and counts the number of informal matches.

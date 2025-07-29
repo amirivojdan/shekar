@@ -45,7 +45,6 @@ __all__ = [
     "DigitFilter",
     "RepeatedLetterFilter",
     "HTMLTagFilter",
-    
     # aliases
     "DiacriticRemover",
     "EmojiRemover",
@@ -57,7 +56,6 @@ __all__ = [
     "DigitRemover",
     "RepeatedLetterRemover",
     "HTMLRemover"
-
     # action-based aliases
     "RemoveDiacritics",
     "RemoveEmojis",

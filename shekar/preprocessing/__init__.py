@@ -1,38 +1,36 @@
 from .filters import (
-DiacriticFilter,
-DigitFilter,
-EmojiFilter,
-HashtagFilter,
-HTMLTagFilter,
-MentionFilter,
-NonPersianLetterFilter,
-PunctuationFilter,
-RepeatedLetterFilter,
-StopWordFilter,
-
-# aliases
-DiacriticRemover,
-EmojiRemover,
-NonPersianRemover,
-PunctuationRemover,
-StopWordRemover,
-HashtagRemover,
-MentionRemover,
-DigitRemover,
-RepeatedLetterRemover,
-HTMLRemover,
-
-# action-based aliases
-RemoveDiacritics,
-RemoveEmojis,
-RemoveNonPersianLetters,
-RemovePunctuations,
-RemoveStopWords,
-RemoveHashtags,
-RemoveMentions,
-RemoveDigits,
-RemoveRepeatedLetters,
-RemoveHTMLTags,
+    DiacriticFilter,
+    DigitFilter,
+    EmojiFilter,
+    HashtagFilter,
+    HTMLTagFilter,
+    MentionFilter,
+    NonPersianLetterFilter,
+    PunctuationFilter,
+    RepeatedLetterFilter,
+    StopWordFilter,
+    # aliases
+    DiacriticRemover,
+    EmojiRemover,
+    NonPersianRemover,
+    PunctuationRemover,
+    StopWordRemover,
+    HashtagRemover,
+    MentionRemover,
+    DigitRemover,
+    RepeatedLetterRemover,
+    HTMLRemover,
+    # action-based aliases
+    RemoveDiacritics,
+    RemoveEmojis,
+    RemoveNonPersianLetters,
+    RemovePunctuations,
+    RemoveStopWords,
+    RemoveHashtags,
+    RemoveMentions,
+    RemoveDigits,
+    RemoveRepeatedLetters,
+    RemoveHTMLTags,
 )
 
 from .maskers import (
@@ -46,15 +44,14 @@ from .standardizers import (
     PunctuationSpacingStandardizer,
     SpacingStandardizer,
     StandardizeSpacings,
-    StandardizePunctuationSpacings
+    StandardizePunctuationSpacings,
 )
 
-from .normalizers import ( 
+from .normalizers import (
     AlphabetNormalizer,
     ArabicUnicodeNormalizer,
     DigitNormalizer,
     PunctuationNormalizer,
-
     NormalizeDigits,
     NormalizePunctuations,
     NormalizeArabicUnicodes,
@@ -73,7 +70,6 @@ __all__ = [
     "PunctuationFilter",
     "RepeatedLetterFilter",
     "StopWordFilter",
-
     # aliases
     "DiacriticRemover",
     "EmojiRemover",
@@ -85,7 +81,6 @@ __all__ = [
     "DigitRemover",
     "RepeatedLetterRemover",
     "HTMLRemover",
-
     # action-based aliases
     "RemoveDiacritics",
     "RemoveEmojis",
@@ -97,27 +92,23 @@ __all__ = [
     "RemoveDigits",
     "RemoveRepeatedLetters",
     "RemoveHTMLTags",
-
     # Maskers
-    "EmailMasker", 
-    "URLMasker", 
-    "MaskEmails", 
+    "EmailMasker",
+    "URLMasker",
+    "MaskEmails",
     "MaskURLs",
-
     # Standardizers
-    "PunctuationSpacingStandardizer", 
-    "SpacingStandardizer", 
-    "StandardizeSpacings", 
+    "PunctuationSpacingStandardizer",
+    "SpacingStandardizer",
+    "StandardizeSpacings",
     "StandardizePunctuationSpacings",
-
-     # Normalizers
-     'AlphabetNormalizer',
-     'ArabicUnicodeNormalizer',
-     'DigitNormalizer',
-     'PunctuationNormalizer',
-
-     'NormalizeDigits',
-     'NormalizePunctuations',
-     'NormalizeArabicUnicodes',
-     'NormalizeAlphabets',
+    # Normalizers
+    "AlphabetNormalizer",
+    "ArabicUnicodeNormalizer",
+    "DigitNormalizer",
+    "PunctuationNormalizer",
+    "NormalizeDigits",
+    "NormalizePunctuations",
+    "NormalizeArabicUnicodes",
+    "NormalizeAlphabets",
 ]

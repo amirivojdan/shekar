@@ -1,5 +1,6 @@
 from shekar.base import BaseTextTransform
 
+
 class EmailMasker(BaseTextTransform):
     """
     A text transformation class for masking email addresses in the text.
@@ -44,4 +45,3 @@ class EmailMasker(BaseTextTransform):
 
     def _function(self, text: str) -> str:
         return self._map_patterns(text, self._patterns).strip()
-

@@ -1,4 +1,3 @@
-import pytest
 from collections import Counter
 from shekar.spell_checking.statistical import StatisticalSpellChecker
 

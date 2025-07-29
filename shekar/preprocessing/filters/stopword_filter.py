@@ -2,7 +2,7 @@ from typing import Iterable
 from shekar.base import BaseTextTransform
 from shekar import data
 import re
- 
+
 
 class StopWordFilter(BaseTextTransform):
     """
@@ -47,11 +47,13 @@ class StopWordFilter(BaseTextTransform):
         for stopword in self.stopwords:
             escaped_word = re.escape(stopword)
             self._stopword_mappings.append(
-                (rf"(?<![{self.letters}]){escaped_word}(?![{self.letters}])", replace_with)
+                (
+                    rf"(?<![{self.letters}]){escaped_word}(?![{self.letters}])",
+                    replace_with,
+                )
             )
 
         self._patterns = self._compile_patterns(self._stopword_mappings)
-
 
     def _function(self, text: str) -> str:
         return self._map_patterns(text, self._patterns).strip()

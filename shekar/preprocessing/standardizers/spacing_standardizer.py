@@ -1,6 +1,7 @@
 from shekar.base import BaseTextTransform
 import re
- 
+
+
 class SpacingStandardizer(BaseTextTransform):
     """
     Standardizes spacing in the text regarding the offical Persian script standard published by the Iranian Academy of Language and Literature.

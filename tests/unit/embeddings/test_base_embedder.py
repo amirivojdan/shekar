@@ -1,4 +1,3 @@
-
 import numpy as np
 import pytest
 
@@ -8,6 +7,7 @@ from shekar.embeddings.base import BaseEmbedder
 
 class DummyEmbedder(BaseEmbedder):
     """A tiny concrete embedder for testing."""
+
     def __init__(self, table=None, dim=3):
         self.table = table or {}
         self.dim = dim
@@ -27,18 +27,21 @@ class DummyEmbedder(BaseEmbedder):
         return [self.embed(x) for x in X]
 
 
-
 def test_base_embedder_is_abstract():
     with pytest.raises(TypeError):
-        BaseEmbedder()  
+        BaseEmbedder()
 
 
 @pytest.mark.parametrize(
     "v1, v2, expected",
     [
-        (np.array([1.0, 0.0]), np.array([1.0, 0.0]), 1.0),       # identical
-        (np.array([1.0, 0.0]), np.array([0.0, 1.0]), 0.0),       # orthogonal
-        (np.array([1.0, 1.0]), np.array([2.0, 2.0]), 1.0),       # same direction different magnitude
+        (np.array([1.0, 0.0]), np.array([1.0, 0.0]), 1.0),  # identical
+        (np.array([1.0, 0.0]), np.array([0.0, 1.0]), 0.0),  # orthogonal
+        (
+            np.array([1.0, 1.0]),
+            np.array([2.0, 2.0]),
+            1.0,
+        ),  # same direction different magnitude
     ],
 )
 def test_cosine_similarity_basic(v1, v2, expected):
@@ -55,12 +58,15 @@ def test_cosine_similarity_with_zero_vector_returns_0():
     assert e._cosine_similarity(v2, v1) == 0.0
 
 
-@pytest.mark.parametrize("v1, v2", [
-    (None, np.array([1.0, 0.0])),
-    (np.array([1.0, 0.0]), None),
-    (None, None),
-    ([1.0, 0.0], np.array([1.0, 0.0])),   
-])
+@pytest.mark.parametrize(
+    "v1, v2",
+    [
+        (None, np.array([1.0, 0.0])),
+        (np.array([1.0, 0.0]), None),
+        (None, None),
+        ([1.0, 0.0], np.array([1.0, 0.0])),
+    ],
+)
 def test_cosine_similarity_invalid_inputs_return_0(v1, v2):
     e = DummyEmbedder()
     assert e._cosine_similarity(v1, v2) == 0.0

@@ -45,7 +45,9 @@ class RAKE(BaseTransform):
         word_frequency = defaultdict(int)
         word_degree = defaultdict(int)
         for phrase in phrases:
-            words = [w.strip() for w in self._word_tokenizer.tokenize(phrase) if len(w) > 2]
+            words = [
+                w.strip() for w in self._word_tokenizer.tokenize(phrase) if len(w) > 2
+            ]
             degree = len(words) - 1
             for word in words:
                 word_frequency[word] += 1
@@ -55,16 +57,24 @@ class RAKE(BaseTransform):
             for word in word_frequency
         }
 
-    def _generate_candidate_keyword_scores(self, phrases: list[str], word_scores: dict[str, float]) -> dict[str, float]:
+    def _generate_candidate_keyword_scores(
+        self, phrases: list[str], word_scores: dict[str, float]
+    ) -> dict[str, float]:
         candidates = {}
         for phrase in phrases:
-            words = [w.strip() for w in self._word_tokenizer.tokenize(phrase) if len(w) > 2]
+            words = [
+                w.strip() for w in self._word_tokenizer.tokenize(phrase) if len(w) > 2
+            ]
             candidates[phrase] = sum(word_scores.get(word, 0) for word in words)
         return candidates
-
 
     def transform(self, X: str) -> list[str]:
         phrases = self._extract_phrases(X)
         word_scores = self._calculate_word_scores(phrases)
         candidates = self._generate_candidate_keyword_scores(phrases, word_scores)
-        return [kw for kw, score in sorted(candidates.items(), key=lambda x: x[1], reverse=True)[:self.top_n]]
+        return [
+            kw
+            for kw, score in sorted(
+                candidates.items(), key=lambda x: x[1], reverse=True
+            )[: self.top_n]
+        ]

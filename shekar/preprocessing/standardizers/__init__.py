@@ -1,7 +1,7 @@
 from .punctuation_spacing_standardizer import PunctuationSpacingStandardizer
 from .spacing_standardizer import SpacingStandardizer
 
-#aliases 
+# aliases
 
 StandardizeSpacings = SpacingStandardizer
 StandardizePunctuationSpacings = PunctuationSpacingStandardizer
@@ -9,7 +9,6 @@ StandardizePunctuationSpacings = PunctuationSpacingStandardizer
 __all__ = [
     "PunctuationSpacingStandardizer",
     "SpacingStandardizer",
-
     # Aliases
     "StandardizeSpacings",
     "StandardizePunctuationSpacings",

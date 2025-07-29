@@ -1,5 +1,6 @@
 from typing import List
 
+
 class Conjugator:
     """
     A class to generate conjugations of Persian verbs in various tenses.
@@ -16,10 +17,9 @@ class Conjugator:
         self._past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ند"]
         self._present_personal_suffixes = ["م", "ی", "د", "یم", "ید", "ند"]
         self._perfect_personal_suffixes = ["‌ام", "‌ای", " است", "‌ایم", "‌اید", "‌اند"]
-    def simple_past(self,
-        past_stem: str, 
-        negative: bool = False, 
-        passive: bool = False
+
+    def simple_past(
+        self, past_stem: str, negative: bool = False, passive: bool = False
     ) -> List[str]:
         """
         Generates the simple past or passive simple past tense conjugations for a given verb stem in Persian.
@@ -30,7 +30,7 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) simple past tense for all persons.
         Example:
-            simple_past("شناخت") 
+            simple_past("شناخت")
             # Returns: ['شناختم', 'شناختی', 'شناخت', 'شناختیم', 'شناختید', 'شناختند']
             simple_past("شناخت", negative=True)
             # Returns: ['نشناختم', 'نشناختی', 'نشناخت', 'نشناختیم', 'نشناختید', 'نشناختند']
@@ -40,14 +40,21 @@ class Conjugator:
             # Returns: ['شناخته نشدم', 'شناخته نشدی', 'شناخته نشد', 'شناخته نشدیم', 'شناخته نشدید', 'شناخته نشدند']
         """
         negation_prefix = "ن" if negative else ""
-        if not passive:            
-            return [f"{negation_prefix}{past_stem}{suffix}" for suffix in self._past_personal_suffixes]
+        if not passive:
+            return [
+                f"{negation_prefix}{past_stem}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
         else:
             auxiliary = "شد"
-            return [f"{past_stem}ه {negation_prefix}{auxiliary}{suffix}" for suffix in self._past_personal_suffixes]
+            return [
+                f"{past_stem}ه {negation_prefix}{auxiliary}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
 
-
-    def present_perfect(self, past_stem: str, negative=False, passive=False) -> List[str]:
+    def present_perfect(
+        self, past_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the present perfect or passive present perfect tense conjugations for a given verb stem in Persian.
         Args:
@@ -57,7 +64,7 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) present perfect tense for all persons.
         Example:
-            present_perfect("شناخت") 
+            present_perfect("شناخت")
             # Returns: ['شناخته‌ام', 'شناخته‌ای', 'شناخته است', 'شناخته‌ایم', 'شناخته‌اید', 'شناخته‌اند']
             present_perfect("شناخت", negative=True)
             # Returns: ['نشناخته‌ام', 'نشناخته‌ای', 'نشناخته است', 'نشناخته‌ایم', 'نشناخته‌اید', 'نشناخته‌اند']
@@ -69,11 +76,19 @@ class Conjugator:
         neg = "ن" if negative else ""
         auxiliary = "شده"
         if not passive:
-            return [f"{neg}{past_stem}ه{suffix}" for suffix in self._perfect_personal_suffixes]
+            return [
+                f"{neg}{past_stem}ه{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
         else:
-            return [f"{past_stem}ه {neg}{auxiliary}{suffix}" for suffix in self._perfect_personal_suffixes]
-        
-    def past_continuous(self, past_stem: str, negative=False, passive=False) -> List[str]:
+            return [
+                f"{past_stem}ه {neg}{auxiliary}{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
+
+    def past_continuous(
+        self, past_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the past continuous or passive past continuous tense conjugations for a given verb stem in Persian.
         Args:
@@ -93,14 +108,22 @@ class Conjugator:
             # Returns: ['شناخته نمی‌شدم', 'شناخته نمی‌شدی', 'شناخته نمی‌شد', 'شناخته نمی‌شدیم', 'شناخته نمی‌شدید', 'شناخته نمی‌شدند']
         """
         negation_prefix = "ن" if negative else ""
-        mi="می‌"
+        mi = "می‌"
         if not passive:
-            return [f"{negation_prefix}{mi}{past_stem}{suffix}" for suffix in self._past_personal_suffixes]
+            return [
+                f"{negation_prefix}{mi}{past_stem}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
         else:
             auxiliary = "شد"
-            return [f"{past_stem}ه {negation_prefix}{mi}{auxiliary}{suffix}" for suffix in self._past_personal_suffixes]
-        
-    def present_perfect_continuous(self, past_stem: str, negative=False, passive=False) -> List[str]:
+            return [
+                f"{past_stem}ه {negation_prefix}{mi}{auxiliary}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
+
+    def present_perfect_continuous(
+        self, past_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the present perfect continuous or passive present perfect continuous tense conjugations for a given verb stem in Persian.
         Args:
@@ -123,11 +146,17 @@ class Conjugator:
         mi = "می‌"
 
         if not passive:
-            return [f"{negation_prefix}{mi}{past_stem}ه{suffix}" for suffix in self._perfect_personal_suffixes]
+            return [
+                f"{negation_prefix}{mi}{past_stem}ه{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
         else:
             auxiliary = "شده"
-            return [f"{past_stem}ه {negation_prefix}{mi}{auxiliary}{suffix}" for suffix in self._perfect_personal_suffixes]
-         
+            return [
+                f"{past_stem}ه {negation_prefix}{mi}{auxiliary}{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
+
     def past_perfect(self, past_stem: str, negative=False, passive=False) -> List[str]:
         """
         Generates the past perfect or passive past perfect tense conjugations for a given verb stem in Persian.
@@ -149,13 +178,21 @@ class Conjugator:
         """
         negation_prefix = "ن" if negative else ""
         auxiliary = "بود"
-        
+
         if not passive:
-            return [f"{negation_prefix}{past_stem}ه {auxiliary}{suffix}" for suffix in self._past_personal_suffixes]
+            return [
+                f"{negation_prefix}{past_stem}ه {auxiliary}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
         else:
-            return [f"{past_stem}ه {negation_prefix}شده {auxiliary}{suffix}" for suffix in self._past_personal_suffixes]
-        
-    def past_perfect_of_past_perfect(self, past_stem: str, negative=False, passive=False) -> List[str]:
+            return [
+                f"{past_stem}ه {negation_prefix}شده {auxiliary}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
+
+    def past_perfect_of_past_perfect(
+        self, past_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the past perfect of past perfect or passive past perfect of past perfect tense conjugations for a given verb stem in Persian.
         Args:
@@ -177,14 +214,20 @@ class Conjugator:
         negation_prefix = "ن" if negative else ""
         auxiliary = "بوده"
 
-        
         if not passive:
-            return [f"{negation_prefix}{past_stem}ه {auxiliary}{suffix}" for suffix in self._perfect_personal_suffixes]
+            return [
+                f"{negation_prefix}{past_stem}ه {auxiliary}{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
         else:
-            return [f"{past_stem}ه {negation_prefix}شده {auxiliary}{suffix}" for suffix in self._perfect_personal_suffixes]
-        
+            return [
+                f"{past_stem}ه {negation_prefix}شده {auxiliary}{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
 
-    def past_subjunctive(self, past_stem: str, negative=False, passive=False) -> List[str]:
+    def past_subjunctive(
+        self, past_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the past subjunctive or passive past subjunctive tense conjugations for a given verb stem in Persian.
         Args:
@@ -205,12 +248,18 @@ class Conjugator:
         """
         negation_prefix = "ن" if negative else ""
         auxiliary = "باش"
-        
+
         if not passive:
-            return [f"{negation_prefix}{past_stem}ه {auxiliary}{suffix}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{negation_prefix}{past_stem}ه {auxiliary}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
         else:
-            return [f"{past_stem}ه {negation_prefix}شده {auxiliary}{suffix}" for suffix in self._present_personal_suffixes]
-    
+            return [
+                f"{past_stem}ه {negation_prefix}شده {auxiliary}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
+
     def past_progressive(self, past_stem: str, passive=False) -> List[str]:
         """
         Generates the past progressive or passive past progressive tense conjugations for a given verb stem in Persian.
@@ -228,12 +277,18 @@ class Conjugator:
 
         auxiliary = "داشت"
         mi = "می‌"
-        
+
         if not passive:
-            return [f"{auxiliary}{suffix} {mi}{past_stem}{suffix}" for suffix in self._past_personal_suffixes]
+            return [
+                f"{auxiliary}{suffix} {mi}{past_stem}{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
         else:
-            return [f"{auxiliary}{suffix} {past_stem}ه {mi}شد{suffix}" for suffix in self._past_personal_suffixes]
-        
+            return [
+                f"{auxiliary}{suffix} {past_stem}ه {mi}شد{suffix}"
+                for suffix in self._past_personal_suffixes
+            ]
+
     def past_perfect_progressive(self, past_stem: str, passive=False) -> List[str]:
         """
         Generates the past perfect progressive or passive past perfect progressive tense conjugations for a given verb stem in Persian.
@@ -250,14 +305,21 @@ class Conjugator:
         """
         auxiliary = "داشته"
         mi = "می‌"
-        
-        if not passive:
-            return [f"{auxiliary}{suffix} {mi}{past_stem}ه{suffix}" for suffix in self._perfect_personal_suffixes]
-        else:
-            return [f"{auxiliary}{suffix} {past_stem}ه {mi}شده{suffix}" for suffix in self._perfect_personal_suffixes]
-        
 
-    def simple_present(self, past_stem: str, present_stem: str, negative=False, passive=False) -> List[str]:
+        if not passive:
+            return [
+                f"{auxiliary}{suffix} {mi}{past_stem}ه{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
+        else:
+            return [
+                f"{auxiliary}{suffix} {past_stem}ه {mi}شده{suffix}"
+                for suffix in self._perfect_personal_suffixes
+            ]
+
+    def simple_present(
+        self, past_stem: str, present_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the simple present or passive simple present tense conjugations for a given verb stem in Persian.
         Args:
@@ -278,12 +340,20 @@ class Conjugator:
         """
         negation_prefix = "ن" if negative else ""
         if not passive:
-            return [f"{negation_prefix}{present_stem}{suffix}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{negation_prefix}{present_stem}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
         else:
             auxiliary = "شو"
-            return [f"{past_stem}ه {negation_prefix}{auxiliary}{suffix}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{past_stem}ه {negation_prefix}{auxiliary}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
 
-    def present_indicative(self, past_stem: str, present_stem: str, negative=False, passive=False) -> List[str]:
+    def present_indicative(
+        self, past_stem: str, present_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the present indicative or passive present indicative tense conjugations for a given verb stem in Persian.
         Args:
@@ -304,14 +374,22 @@ class Conjugator:
         """
         negation_prefix = "ن" if negative else ""
         mi = "می‌"
-        
+
         if not passive:
-            return [f"{negation_prefix}{mi}{present_stem}{suffix}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{negation_prefix}{mi}{present_stem}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
         else:
             auxiliary = "شو"
-            return [f"{past_stem}ه {negation_prefix}{mi}{auxiliary}{suffix}" for suffix in self._present_personal_suffixes]
-        
-    def present_subjunctive(self, past_stem: str, present_stem: str, negative=False, passive=False) -> List[str]:
+            return [
+                f"{past_stem}ه {negation_prefix}{mi}{auxiliary}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
+
+    def present_subjunctive(
+        self, past_stem: str, present_stem: str, negative=False, passive=False
+    ) -> List[str]:
         """
         Generates the present subjunctive or passive present subjunctive tense conjugations for a given verb stem in Persian.
         Args:
@@ -333,11 +411,19 @@ class Conjugator:
         prefix = "ن" if negative else "ب"
         auxiliary = "شو"
         if not passive:
-            return [f"{prefix}{present_stem}{suffix}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{prefix}{present_stem}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
         else:
-            return [f"{past_stem}ه {prefix}{auxiliary}{suffix}" for suffix in self._present_personal_suffixes]
-        
-    def present_progressive(self, past_stem: str, present_stem: str, passive=False) -> List[str]:
+            return [
+                f"{past_stem}ه {prefix}{auxiliary}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
+
+    def present_progressive(
+        self, past_stem: str, present_stem: str, passive=False
+    ) -> List[str]:
         """
         Generates the present progressive or passive present progressive tense conjugations for a given verb stem in Persian.
         Args:
@@ -356,10 +442,16 @@ class Conjugator:
         mi = "می‌"
 
         if not passive:
-            return [f"{first_auxiliary_stem}{suffix} {mi}{present_stem}{suffix}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{first_auxiliary_stem}{suffix} {mi}{present_stem}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
         else:
-            return [f"{first_auxiliary_stem}{suffix} {past_stem}ه {mi}{second_auxiliary_stem}{suffix}" for suffix in self._present_personal_suffixes]
-        
+            return [
+                f"{first_auxiliary_stem}{suffix} {past_stem}ه {mi}{second_auxiliary_stem}{suffix}"
+                for suffix in self._present_personal_suffixes
+            ]
+
     def future_simple(self, past_stem: str, negative=False, passive=False) -> List[str]:
         """
         Generates the future simple or passive future simple tense conjugations for a given verb stem in Persian.
@@ -383,16 +475,22 @@ class Conjugator:
         auxiliary = "خواه"
 
         if not passive:
-            return [f"{negation_prefix}{auxiliary}{suffix} {past_stem}" for suffix in self._present_personal_suffixes]
+            return [
+                f"{negation_prefix}{auxiliary}{suffix} {past_stem}"
+                for suffix in self._present_personal_suffixes
+            ]
         else:
-            return [f"{past_stem}ه {negation_prefix}{auxiliary}{suffix} شد" for suffix in self._present_personal_suffixes]
+            return [
+                f"{past_stem}ه {negation_prefix}{auxiliary}{suffix} شد"
+                for suffix in self._present_personal_suffixes
+            ]
 
     def imperative(self, present_stem: str, negative: bool = False) -> List[str]:
         """
         Generates the imperative tense conjugations for a given verb stem in Persian.
-        
+
         Args:
-            present_stem (str, optional): The stem of the verb in the present tense.           
+            present_stem (str, optional): The stem of the verb in the present tense.
             negative (bool, optional): If True, generates the negative form of the verb. Defaults to False.
         Returns:
             List[str]: A list containing all conjugated forms of the verb in the imperative tense.
@@ -408,12 +506,12 @@ class Conjugator:
     def conjugate(self, past_stem: str, present_stem: str = ""):
         """
         Generates all conjugations for a given verb in all tenses.
-        
+
         Args:
             past_stem (str): The stem of the verb in the past tense.
             present_stem (str, optional): The stem of the verb in the present tense.
             If not provided, only past tenses will be conjugated.
-            
+
         Returns:
             dict: A list containing all conjugated forms of the verb in different tenses.
         """
@@ -426,72 +524,122 @@ class Conjugator:
             conjugations.extend(self.simple_past(past_stem))
             conjugations.extend(self.simple_past(past_stem, negative=True))
             conjugations.extend(self.simple_past(past_stem, passive=True))
-            conjugations.extend(self.simple_past(past_stem, negative=True, passive=True))
+            conjugations.extend(
+                self.simple_past(past_stem, negative=True, passive=True)
+            )
 
             conjugations.extend(self.present_perfect(past_stem))
             conjugations.extend(self.present_perfect(past_stem, negative=True))
             conjugations.extend(self.present_perfect(past_stem, passive=True))
-            conjugations.extend(self.present_perfect(past_stem, negative=True, passive=True))
+            conjugations.extend(
+                self.present_perfect(past_stem, negative=True, passive=True)
+            )
 
             conjugations.extend(self.past_continuous(past_stem))
             conjugations.extend(self.past_continuous(past_stem, negative=True))
             conjugations.extend(self.past_continuous(past_stem, passive=True))
-            conjugations.extend(self.past_continuous(past_stem, negative=True, passive=True))
-            
+            conjugations.extend(
+                self.past_continuous(past_stem, negative=True, passive=True)
+            )
+
             conjugations.extend(self.present_perfect_continuous(past_stem))
-            conjugations.extend(self.present_perfect_continuous(past_stem, negative=True))
-            conjugations.extend(self.present_perfect_continuous(past_stem, passive=True))
-            conjugations.extend(self.present_perfect_continuous(past_stem, negative=True, passive=True))
-            
+            conjugations.extend(
+                self.present_perfect_continuous(past_stem, negative=True)
+            )
+            conjugations.extend(
+                self.present_perfect_continuous(past_stem, passive=True)
+            )
+            conjugations.extend(
+                self.present_perfect_continuous(past_stem, negative=True, passive=True)
+            )
+
             conjugations.extend(self.past_perfect(past_stem))
             conjugations.extend(self.past_perfect(past_stem, negative=True))
             conjugations.extend(self.past_perfect(past_stem, passive=True))
-            conjugations.extend(self.past_perfect(past_stem, negative=True, passive=True))
+            conjugations.extend(
+                self.past_perfect(past_stem, negative=True, passive=True)
+            )
 
             conjugations.extend(self.past_perfect_of_past_perfect(past_stem))
-            conjugations.extend(self.past_perfect_of_past_perfect(past_stem, negative=True))
-            conjugations.extend(self.past_perfect_of_past_perfect(past_stem, passive=True))
-            conjugations.extend(self.past_perfect_of_past_perfect(past_stem, negative=True, passive=True))
-            
+            conjugations.extend(
+                self.past_perfect_of_past_perfect(past_stem, negative=True)
+            )
+            conjugations.extend(
+                self.past_perfect_of_past_perfect(past_stem, passive=True)
+            )
+            conjugations.extend(
+                self.past_perfect_of_past_perfect(
+                    past_stem, negative=True, passive=True
+                )
+            )
+
             conjugations.extend(self.past_subjunctive(past_stem))
             conjugations.extend(self.past_subjunctive(past_stem, negative=True))
             conjugations.extend(self.past_subjunctive(past_stem, passive=True))
-            conjugations.extend(self.past_subjunctive(past_stem, negative=True, passive=True))
-            
+            conjugations.extend(
+                self.past_subjunctive(past_stem, negative=True, passive=True)
+            )
+
             conjugations.extend(self.past_progressive(past_stem))
             conjugations.extend(self.past_progressive(past_stem, passive=True))
-            
+
             conjugations.extend(self.past_perfect_progressive(past_stem))
             conjugations.extend(self.past_perfect_progressive(past_stem, passive=True))
-            
-        
-        
+
         # Present and future tenses (require present stem)
         if present_stem:
             conjugations.extend(self.simple_present(past_stem, present_stem))
-            conjugations.extend(self.simple_present(past_stem, present_stem, negative=True))
-            conjugations.extend(self.simple_present(past_stem, present_stem, passive=True))
-            conjugations.extend(self.simple_present(past_stem, present_stem, negative=True, passive=True))
-            
+            conjugations.extend(
+                self.simple_present(past_stem, present_stem, negative=True)
+            )
+            conjugations.extend(
+                self.simple_present(past_stem, present_stem, passive=True)
+            )
+            conjugations.extend(
+                self.simple_present(
+                    past_stem, present_stem, negative=True, passive=True
+                )
+            )
+
             conjugations.extend(self.present_indicative(past_stem, present_stem))
-            conjugations.extend(self.present_indicative(past_stem, present_stem, negative=True))
-            conjugations.extend(self.present_indicative(past_stem, present_stem, passive=True))
-            conjugations.extend(self.present_indicative(past_stem, present_stem, negative=True, passive=True))
-             
+            conjugations.extend(
+                self.present_indicative(past_stem, present_stem, negative=True)
+            )
+            conjugations.extend(
+                self.present_indicative(past_stem, present_stem, passive=True)
+            )
+            conjugations.extend(
+                self.present_indicative(
+                    past_stem, present_stem, negative=True, passive=True
+                )
+            )
+
             conjugations.extend(self.present_subjunctive(past_stem, present_stem))
-            conjugations.extend(self.present_subjunctive(past_stem, present_stem, negative=True))
-            conjugations.extend(self.present_subjunctive(past_stem, present_stem, passive=True))
-            conjugations.extend(self.present_subjunctive(past_stem, present_stem, negative=True, passive=True))
- 
+            conjugations.extend(
+                self.present_subjunctive(past_stem, present_stem, negative=True)
+            )
+            conjugations.extend(
+                self.present_subjunctive(past_stem, present_stem, passive=True)
+            )
+            conjugations.extend(
+                self.present_subjunctive(
+                    past_stem, present_stem, negative=True, passive=True
+                )
+            )
+
             conjugations.extend(self.present_progressive(past_stem, present_stem))
-            conjugations.extend(self.present_progressive(past_stem, present_stem, passive=True))
-             
+            conjugations.extend(
+                self.present_progressive(past_stem, present_stem, passive=True)
+            )
+
             conjugations.extend(self.future_simple(past_stem))
             conjugations.extend(self.future_simple(past_stem, negative=True))
             conjugations.extend(self.future_simple(past_stem, passive=True))
-            conjugations.extend(self.future_simple(past_stem, negative=True, passive=True))
+            conjugations.extend(
+                self.future_simple(past_stem, negative=True, passive=True)
+            )
 
             conjugations.extend(self.imperative(present_stem))
             conjugations.extend(self.imperative(present_stem, negative=True))
-            
+
         return conjugations

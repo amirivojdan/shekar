@@ -14,16 +14,15 @@ class AlbertTokenizer(BaseTransform):
         super().__init__()
         resource_name = "albert_persian_tokenizer.json"
 
-        if model_path is None or not Path(model_path).exists():            
+        if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
         self.tokenizer = Tokenizer.from_file(str(model_path))
 
-    
     def transform(self, X: str) -> dict:
         """
         Tokenize a batch of texts using the ALBERT tokenizer.
-        
+
         Args:
             X (str): The input text to be tokenized.
         Returns:
@@ -35,13 +34,12 @@ class AlbertTokenizer(BaseTransform):
 
         input_ids = np.array([encoding.ids], dtype=np.int64)
         attention_mask = np.array([encoding.attention_mask], dtype=np.int64)
-        token_type_ids = np.zeros_like(input_ids, dtype=np.int64) 
+        token_type_ids = np.zeros_like(input_ids, dtype=np.int64)
 
-            
         tokenized_inputs = {
             "input_ids": input_ids,
             "attention_mask": attention_mask,
             "token_type_ids": token_type_ids,
-            }
-    
+        }
+
         return tokenized_inputs

@@ -1,5 +1,6 @@
 from shekar.base import BaseTextTransform
 
+
 class URLMasker(BaseTextTransform):
     """
     A text transformation class for masking URLs in the text.

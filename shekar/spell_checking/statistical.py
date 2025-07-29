@@ -3,12 +3,13 @@ from shekar.base import BaseTransform
 from shekar.tokenization import WordTokenizer
 from shekar import data
 
+
 class StatisticalSpellChecker(BaseTransform):
     """
-        A statistical spell checker using Levenshtein distance and word frequencies.
+    A statistical spell checker using Levenshtein distance and word frequencies.
 
-        This class suggests corrections for misspelled Persian words based on edit distance 
-        and corpus-based word frequencies.
+    This class suggests corrections for misspelled Persian words based on edit distance
+    and corpus-based word frequencies.
     """
 
     def __init__(
@@ -25,7 +26,7 @@ class StatisticalSpellChecker(BaseTransform):
 
         if words is None:
             # Load the default words from data directory
-            
+
             test_words = "سلام بر شما این یک متن تستی است".split()
             words = Counter(test_words)
 
@@ -99,14 +100,14 @@ class StatisticalSpellChecker(BaseTransform):
             self.words.update(Counter(tokens))
         self.n_words = sum(self.words.values())
         return self
-    
+
     def transform(self, X: str) -> str:
         """
         Correct a given text using the spell checker.
-        
+
         Args:
             X (str): The input text to be corrected.
-        
+
         Returns:
             str: The corrected text.
         """

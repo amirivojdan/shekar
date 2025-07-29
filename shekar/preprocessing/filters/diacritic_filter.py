@@ -1,6 +1,7 @@
 from shekar.base import BaseTextTransform
 from shekar import data
 
+
 class DiacriticFilter(BaseTextTransform):
     """
     A text transformation class for removing Arabic diacritics from the text.

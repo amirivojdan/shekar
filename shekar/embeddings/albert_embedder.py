@@ -6,6 +6,7 @@ from shekar.hub import Hub
 from .base import BaseEmbedder
 from shekar.tokenization import AlbertTokenizer
 
+
 class AlbertEmbedder(BaseEmbedder):
     def __init__(self, model_path: str | Path = None):
         super().__init__()
@@ -19,7 +20,7 @@ class AlbertEmbedder(BaseEmbedder):
 
     def embed(self, phrase: str) -> np.ndarray:
         inputs = self.tokenizer(phrase)
-        
+
         logits, last_hidden_state = self.session.run(None, inputs)
         attention_mask = inputs["attention_mask"][0][:, np.newaxis]
         masked_embeddings = last_hidden_state[0] * attention_mask

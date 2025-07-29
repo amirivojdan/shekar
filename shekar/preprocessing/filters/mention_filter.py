@@ -1,5 +1,6 @@
 from shekar.base import BaseTextTransform
 
+
 class MentionFilter(BaseTextTransform):
     """
     A text transformation class for removing mentions from the text.

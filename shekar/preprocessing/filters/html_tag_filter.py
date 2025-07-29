@@ -1,6 +1,7 @@
 from shekar.base import BaseTextTransform
 import html
 
+
 class HTMLTagFilter(BaseTextTransform):
     """
     A text transformation class for removing HTML tags and entities from the text.
@@ -43,4 +44,3 @@ class HTMLTagFilter(BaseTextTransform):
     def _function(self, text: str) -> str:
         text = html.unescape(text)
         return self._map_patterns(text, self._patterns).strip()
-
