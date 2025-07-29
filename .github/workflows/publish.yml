@@ -17,12 +17,7 @@ jobs:
     steps:
       - name: Start Checkout
         uses: actions/checkout@v4
-
-      - name: Run Ruff Lint and Format Check
-        uses: astral-sh/ruff-action@v3
-      - run: ruff check shekar tests
-      - run: ruff format shekar tests --check --diff
-
+      
       - name: setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -45,6 +40,12 @@ jobs:
 
       - name: Install Dependencies
         run: uv pip install -r pyproject.toml --all-extras
+      
+      - name: Run Ruff Format Check
+        run: ruff format shekar tests --check --diff
+
+      - name: Run Ruff Lint
+        run: ruff check shekar tests
 
       - name: Install Pytest
         run: uv pip install pytest
