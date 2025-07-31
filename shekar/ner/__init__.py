@@ -1,4 +1,4 @@
-from .albert import AlbertNER
+from .albert_ner import AlbertNER
 from .base import NER
 
 

@@ -1,5 +1,5 @@
 from shekar.base import BaseTransform
-from .albert import AlbertNER
+from .albert_ner import AlbertNER
 
 NER_REGISTRY = {
     "albert": AlbertNER,
@@ -15,9 +15,6 @@ class NER(BaseTransform):
             )
 
         self.model = NER_REGISTRY[model](model_path=model_path)
-
-    def fit(self, X, y=None):
-        return self.model.fit(X, y)
 
     def transform(self, X: str) -> list:
         return self.model.transform(X)
