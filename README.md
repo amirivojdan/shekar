@@ -13,7 +13,7 @@
 </p>
 
 **Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
-The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression.
+The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression. Shekar embodies this philosophy in its design and development.
 
 ---
 
