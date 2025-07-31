@@ -18,6 +18,8 @@ class AlbertTokenizer(BaseTransform):
             model_path = Hub.get_resource(file_name=resource_name)
 
         self.tokenizer = Tokenizer.from_file(str(model_path))
+        self.pad_token_id = self.tokenizer.token_to_id("<pad>")
+        self.model_max_length = 512
 
     def transform(self, X: str) -> dict:
         """

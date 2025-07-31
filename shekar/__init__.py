@@ -5,8 +5,9 @@ from .normalizer import Normalizer
 from .tokenization import WordTokenizer, SentenceTokenizer, Tokenizer
 from .keyword_extraction import KeywordExtractor
 from .ner import NER
+from .pos import POSTagger
 from .embeddings import WordEmbedder, SentenceEmbedder
-from .spell_checking import SpellChecker
+from .spelling import SpellChecker
 from .hub import Hub
 
 __all__ = [
@@ -18,6 +19,7 @@ __all__ = [
     "WordCloud",
     "KeywordExtractor",
     "NER",
+    "POSTagger",
     "SpellChecker",
     "Tokenizer",
     "WordEmbedder",
