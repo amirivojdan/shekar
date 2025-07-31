@@ -54,7 +54,6 @@ class AlbertPOS(BaseTransform):
                 token_id = self.tokenizer.pad_token_id
             input_ids.append(token_id)
 
-
         attention_mask = [1] * len(input_ids)
         # Pad to max length (optional or if needed)
         pad_len = self.tokenizer.model_max_length - len(input_ids)
