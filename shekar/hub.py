@@ -9,7 +9,7 @@ MODEL_HASHES = {
     "albert_persian_pos_q8.onnx": "8b5a2761aae83911272763034e180345fe12b2cd45b6de0151db9fbf9d3d8b31",
     "albert_persian_mlm_embeddings.onnx": "6b2d987ba409fd6957764742e30bfbbe385ab33c210caeb313aa9a2eb9afa51a",
     "fasttext_d100_w5_v100k_cbow_wiki.bin": "27daf69dc030e028dda33465c488e25f72c2ea65a53b5c1e0695b883a8be061c",
-    "fasttext_d300_w10_v250k_cbow_naab.bin": "f1e2d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100",
+    "fasttext_d300_w10_v250k_cbow_naab.bin": "8db1e1e50f4b889c7e1774501541be2832240892b9ca00053772f0af7cd2526b",
 }
 
 
@@ -78,3 +78,21 @@ class Hub:
         except Exception as e:
             print(f"Error downloading the file: {e}")
             return False
+
+
+if __name__ == "__main__":
+    cache_dir = Path.home() / ".shekar"
+    if cache_dir.exists():
+        print(f"Checking files in {cache_dir}")
+        for file_path in cache_dir.iterdir():
+            if file_path.is_file():
+                file_hash = Hub.compute_sha256_hash(file_path)
+                print(f"{file_path.name}: {file_hash}")
+                if file_path.name in MODEL_HASHES:
+                    expected_hash = MODEL_HASHES[file_path.name]
+                    if file_hash == expected_hash:
+                        print("✓ Hash matches registry")
+                    else:
+                        print(f"✗ Hash mismatch! Expected: {expected_hash}")
+                else:
+                    print("⚠ File not in registry")
