@@ -19,6 +19,7 @@ class AlbertTokenizer(BaseTransform):
 
         self.tokenizer = Tokenizer.from_file(str(model_path))
         self.pad_token_id = self.tokenizer.token_to_id("<pad>")
+        self.unk_token_id = self.tokenizer.token_to_id("<unk>")
         self.model_max_length = 512
 
     def transform(self, X: str) -> dict:

@@ -47,9 +47,15 @@ class AlbertPOS(BaseTransform):
             word_ids.extend([word] * len(encoded.tokens))
 
         # Convert to IDs
-        input_ids = [self.tokenizer.tokenizer.token_to_id(token) for token in tokens]
-        attention_mask = [1] * len(input_ids)
+        input_ids = []
+        for token in tokens:
+            token_id = self.tokenizer.tokenizer.token_to_id(token)
+            if token_id is None:
+                token_id = self.tokenizer.pad_token_id
+            input_ids.append(token_id)
 
+
+        attention_mask = [1] * len(input_ids)
         # Pad to max length (optional or if needed)
         pad_len = self.tokenizer.model_max_length - len(input_ids)
         input_ids += (
