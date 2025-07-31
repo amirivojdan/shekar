@@ -1,5 +1,5 @@
 from shekar.base import BaseTransform
-from .statistical import StatisticalSpellChecker
+from .statistical_checker import StatisticalSpellChecker
 
 SPELL_CHECKING_REGISTRY = {
     "statistical": StatisticalSpellChecker,
