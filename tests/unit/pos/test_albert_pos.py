@@ -38,8 +38,6 @@ class TestAlbertPOS:
             assert isinstance(tag, str)
             assert tag in pos_tagger.id2tag.values()
 
-
-
     def test_transform_with_punctuation(self, pos_tagger):
         text = "سلام! این یک متن تست است. آیا همه چیز خوب است؟"
         result = pos_tagger.transform(text)
