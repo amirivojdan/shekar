@@ -1,5 +1,5 @@
 import pytest
-from shekar.conjugator import Conjugator
+from shekar.morphology.conjugator import Conjugator
 
 
 class TestConjugator:
