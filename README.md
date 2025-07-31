@@ -32,9 +32,8 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Embeddings](#embeddings)
   - [Word Embeddings](#word-embeddings)
   - [Sentence Embeddings](#sentence-embeddings)
+- [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
-  - [Basic Usage](#basic-usage)
-  - [Using NER in a Pipeline](#using-ner-in-a-pipeline)
 - [Keyword Extraction](#keyword-extraction)
 - [WordCloud](#wordcloud)
 
@@ -273,6 +272,48 @@ embedding = embedder(sentence)
 print(embedding.shape)  # (768,)
 ```
 
+## Part-of-Speech Tagging
+
+The POSTagger class provides part-of-speech tagging for Persian text using a transformer-based model (default: ALBERT). It returns one tag per word based on Universal POS tags (following the Universal Dependencies standard).
+
+Example usage:
+
+```python
+from shekar.pos import POSTagger
+
+pos_tagger = POSTagger()
+text = "نوروز، جشن سال نو ایرانی، بیش از سه هزار سال قدمت دارد و در کشورهای مختلف جشن گرفته می‌شود."
+
+result = pos_tagger(text)
+for word, tag in result:
+    print(f"{word}: {tag}")
+```
+
+```output
+نوروز: PROPN
+،: PUNCT
+جشن: NOUN
+سال: NOUN
+نو: ADJ
+ایرانی: ADJ
+،: PUNCT
+بیش: ADJ
+از: ADP
+سه: NUM
+هزار: NUM
+سال: NOUN
+قدمت: NOUN
+دارد: VERB
+و: CCONJ
+در: ADP
+کشورهای: NOUN
+مختلف: ADJ
+جشن: NOUN
+گرفته: VERB
+می‌شود: VERB
+.: PUNCT
+```
+
 ## Named Entity Recognition (NER)
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/ner.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/ner.ipynb)
@@ -281,7 +322,7 @@ The `NER` module in **Shekar** offers a fast, quantized Named Entity Recognition
 
 ---
 
-### Basic Usage
+Example usage:
 
 ```python
 from shekar import NER
@@ -319,8 +360,6 @@ for text, label in entities:
 دانشگاه تهران → ORG
 فرانسه → LOC
 ```
-
-### Using NER in a Pipeline
 
 You can seamlessly chain `NER` with other components using the `|` operator:
 
