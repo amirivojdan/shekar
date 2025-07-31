@@ -30,13 +30,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) simple past tense for all persons.
         Example:
-            simple_past("شناخت")
+            conjugator = Conjugator()
+            conjugator.simple_past("شناخت")
             # Returns: ['شناختم', 'شناختی', 'شناخت', 'شناختیم', 'شناختید', 'شناختند']
-            simple_past("شناخت", negative=True)
+            conjugator.simple_past("شناخت", negative=True)
             # Returns: ['نشناختم', 'نشناختی', 'نشناخت', 'نشناختیم', 'نشناختید', 'نشناختند']
-            simple_past("شناخت", passive=True)
+            conjugator.simple_past("شناخت", passive=True)
             # Returns: ['شناخته شدم', 'شناخته شدی', 'شناخته شد', 'شناخته شدیم', 'شناخته شدید', 'شناخته شدند']
-            simple_past("شناخت", negative=True, passive=True)
+            conjugator.simple_past("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشدم', 'شناخته نشدی', 'شناخته نشد', 'شناخته نشدیم', 'شناخته نشدید', 'شناخته نشدند']
         """
         negation_prefix = "ن" if negative else ""
@@ -64,13 +65,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) present perfect tense for all persons.
         Example:
-            present_perfect("شناخت")
+            conjugator = Conjugator()
+            conjugator.present_perfect("شناخت")
             # Returns: ['شناخته‌ام', 'شناخته‌ای', 'شناخته است', 'شناخته‌ایم', 'شناخته‌اید', 'شناخته‌اند']
-            present_perfect("شناخت", negative=True)
+            conjugator.present_perfect("شناخت", negative=True)
             # Returns: ['نشناخته‌ام', 'نشناخته‌ای', 'نشناخته است', 'نشناخته‌ایم', 'نشناخته‌اید', 'نشناخته‌اند']
-            present_perfect("شناخت", passive=True)
+            conjugator.present_perfect("شناخت", passive=True)
             # Returns: ['شناخته شده‌ام', 'شناخته شده‌ای', 'شناخته شده است', 'شناخته شده‌ایم', 'شناخته شده‌اید', 'شناخته شده‌اند']
-            present_perfect("شناخت", negative=True, passive=True)
+            conjugator.present_perfect("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشده‌ام', 'شناخته نشده‌ای', 'شناخته نشده است', 'شناخته نشده‌ایم', 'شناخته نشده‌اید', 'شناخته نشده‌اند']
         """
         neg = "ن" if negative else ""
@@ -98,13 +100,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) past continuous tense for all persons.
         Example:
-            past_continuous("شناخت")
+            conjugator = Conjugator()
+            conjugator.past_continuous("شناخت")
             # Returns: ['می‌شناختم', 'می‌شناختی', 'می‌شناخت', 'می‌شناختیم', 'می‌شناختید', 'می‌شناختند']
-            past_continuous("شناخت", negative=True)
+            conjugator.past_continuous("شناخت", negative=True)
             # Returns: ['نمی‌شناختم', 'نمی‌شناختی', 'نمی‌شناخت', 'نمی‌شناختیم', 'نمی‌شناختید', 'نمی‌شناختند']
-            past_continuous("شناخت", passive=True)
+            conjugator.past_continuous("شناخت", passive=True)
             # Returns: ['شناخته می‌شدم', 'شناخته می‌شدی', 'شناخته می‌شد', 'شناخته می‌شدیم', 'شناخته می‌شدید', 'شناخته می‌شدند']
-            past_continuous("شناخت", negative=True, passive=True)
+            conjugator.past_continuous("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نمی‌شدم', 'شناخته نمی‌شدی', 'شناخته نمی‌شد', 'شناخته نمی‌شدیم', 'شناخته نمی‌شدید', 'شناخته نمی‌شدند']
         """
         negation_prefix = "ن" if negative else ""
@@ -133,13 +136,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) present perfect continuous tense for all persons.
         Example:
-            present_perfect_continuous("شناخت")
+            conjugator = Conjugator()
+            conjugator.present_perfect_continuous("شناخت")
             # Returns: ["می‌شناخته‌ام", "می‌شناخته‌ای", "می‌شناخته است", "می‌شناخته‌ایم", "می‌شناخته‌اید", "می‌شناخته‌اند"]
-            present_perfect_continuous("شناخت", negative=True)
+            conjugator.present_perfect_continuous("شناخت", negative=True)
             # Returns: ["نمی‌شناخته‌ام", "نمی‌شناخته‌ای", "نمی‌شناخته است", "نمی‌شناخته‌ایم", "نمی‌شناخته‌اید", "نمی‌شناخته‌اند"]
-            present_perfect_continuous("شناخت", passive=True)
+            conjugator.present_perfect_continuous("شناخت", passive=True)
             # Returns: ["شناخته می‌شده‌ام", "شناخته می‌شده‌ای", "شناخته می‌شده است", "شناخته می‌شده‌ایم", "شناخته می‌شده‌اید", "شناخته می‌شده‌اند"]
-            present_perfect_continuous("شناخت", negative=True, passive=True)
+            conjugator.present_perfect_continuous("شناخت", negative=True, passive=True)
             # Returns: ["شناخته نمی‌شده‌ام", "شناخته نمی‌شده‌ای", "شناخته نمی‌شده است", "شناخته نمی‌شده‌ایم", "شناخته نمی‌شده‌اید", "شناخته نمی‌شده‌اند"]
         """
         negation_prefix = "ن" if negative else ""
@@ -167,13 +171,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) past perfect tense for all persons.
         Example:
-            past_perfect("شناخت")
+            conjugator = Conjugator()
+            conjugator.past_perfect("شناخت")
             # Returns: ['شناخته بودم', 'شناخته بودی', 'شناخته بود', 'شناخته بودیم', 'شناخته بودید', 'شناخته بودند']
-            past_perfect("شناخت", negative=True)
+            conjugator.past_perfect("شناخت", negative=True)
             # Returns: ['نشناخته بودم', 'نشناخته بودی', 'نشناخته بود', 'نشناخته بودیم', 'نشناخته بودید', 'نشناخته بودند']
-            past_perfect("شناخت", passive=True)
+            conjugator.past_perfect("شناخت", passive=True)
             # Returns: ['شناخته شده بودم', 'شناخته شده بودی', 'شناخته شده بود', 'شناخته شده بودیم', 'شناخته شده بودید', 'شناخته شده بودند']
-            past_perfect("شناخت", negative=True, passive=True)
+            conjugator.past_perfect("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشده بودم', 'شناخته نشده بودی', 'شناخته نشده بود', 'شناخته نشده بودیم', 'شناخته نشده بودید', 'شناخته نشده بودند']
         """
         negation_prefix = "ن" if negative else ""
@@ -202,13 +207,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) past perfect of past perfect tense for all persons.
         Example:
-            past_perfect_of_past_perfect("شناخت")
+            conjugator = Conjugator()
+            conjugator.past_perfect_of_past_perfect("شناخت")
             # Returns: ['شناخته بوده‌ام', 'شناخته بوده‌ای', 'شناخته بوده است', 'شناخته بوده‌ایم', 'شناخته بوده‌اید', 'شناخته بوده‌اند']
-            past_perfect_of_past_perfect("شناخت", negative=True)
+            conjugator.past_perfect_of_past_perfect("شناخت", negative=True)
             # Returns: ['نشناخته بوده‌ام', 'نشناخته بوده‌ای', 'نشناخته بوده است', 'نشناخته بوده‌ایم', 'نشناخته بوده‌اید', 'نشناخته بوده‌اند']
-            past_perfect_of_past_perfect("شناخت", passive=True)
+            conjugator.past_perfect_of_past_perfect("شناخت", passive=True)
             # Returns: ['شناخته شده بوده‌ام', 'شناخته شده بوده‌ای', 'شناخته شده بوده است', 'شناخته شده بوده‌ایم', 'شناخته شده بوده‌اید', 'شناخته شده بوده‌اند']
-            past_perfect_of_past_perfect("شناخت", negative=True, passive=True)
+            conjugator.past_perfect_of_past_perfect("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشده بوده‌ام', 'شناخته نشده بوده‌ای', 'شناخته نشده بوده است', 'شناخته نشده بوده‌ایم', 'شناخته نشده بوده‌اید', 'شناخته نشده بوده‌اند']
         """
         negation_prefix = "ن" if negative else ""
@@ -237,13 +243,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) past subjunctive tense for all persons.
         Example:
-            past_subjunctive("شناخت")
+            conjugator = Conjugator()
+            conjugator.past_subjunctive("شناخت")
             # Returns: ['شناخته باشم", 'شناخته باشی', 'شناخته باشد', 'شناخته باشیم', 'شناخته باشید', 'شناخته باشند']
-            past_subjunctive("شناخت", negative=True)
+            conjugator.past_subjunctive("شناخت", negative=True)
             # Returns: ['نشناخته باشم', 'نشناخته باشی', 'نشناخته باشد', 'نشناخته باشیم', 'نشناخته باشید', 'نشناخته باشند']
-            past_subjunctive("شناخت", passive=True)
+            conjugator.past_subjunctive("شناخت", passive=True)
             # Returns: ['شناخته شده باشم', 'شناخته شده باشی', 'شناخته شده باشد', 'شناخته شده باشیم', 'شناخته شده باشید', 'شناخته شده باشند']
-            past_subjunctive("شناخت", negative=True, passive=True)
+            conjugator.past_subjunctive("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشده باشم', 'شناخته نشده باشی', 'شناخته نشده باشد', 'شناخته نشده باشیم', 'شناخته نشده باشید', 'شناخته نشده باشند']
         """
         negation_prefix = "ن" if negative else ""
@@ -269,9 +276,10 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) past progressive tense for all persons.
         Example:
-            past_progressive("شناخت")
+            conjugator = Conjugator()
+            conjugator.past_progressive("شناخت")
             # Returns: ['داشتم می‌شناختم', 'داشتی می‌شناختی', 'داشت می‌شناخت', 'داشتیم می‌شناختیم', 'داشتید می‌شناختید', 'داشتند می‌شناختند']
-            past_progressive("شناخت", passive=True)
+            conjugator.past_progressive("شناخت", passive=True)
             # Returns: ['داشتم شناخته می‌شدم', 'داشتی شناخته می‌شدی', 'داشت شناخته می‌شد', 'داشتیم شناخته می‌شدیم', 'داشتید شناخته می‌شدید', 'داشتند شناخته می‌شدند']
         """
 
@@ -298,9 +306,10 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) past perfect progressive tense for all persons.
         Example:
-            past_perfect_progressive("شناخت")
+            conjugator = Conjugator()
+            conjugator.past_perfect_progressive("شناخت")
             # Returns: ['داشته‌ام می‌شناخته‌ام', 'داشته‌ای می‌شناخته‌ای', 'داشته است می‌شناخته است', 'داشته‌ایم می‌شناخته‌ایم', 'داشته‌اید می‌شناخته‌اید', 'داشته‌اند می‌شناخته‌اند']
-            past_perfect_progressive("شناخت", passive=True)
+            conjugator.past_perfect_progressive("شناخت", passive=True)
             # Returns: ['داشته‌ام شناخته می‌شده‌ام', 'داشته‌ای شناخته می‌شده‌ای', 'داشته است شناخته می‌شده است', 'داشته‌ایم شناخته می‌شده‌ایم', 'داشته‌اید شناخته می‌شده‌اید', 'داشته‌اند شناخته می‌شده‌اند']
         """
         auxiliary = "داشته"
@@ -329,13 +338,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) simple present tense for all persons.
         Example:
-            simple_present("شناس", "شناخت")
+            conjugator = Conjugator()
+            conjugator.simple_present("شناس", "شناخت")
             # Returns: ['شناسم', 'شناسی', 'شناسد', 'شناسیم', 'شناسید', 'شناسند']
-            simple_present("شناس", "شناخت", negative=True)
+            conjugator.simple_present("شناس", "شناخت", negative=True)
             # Returns: ['نشناسم', 'نشناسی', 'نشناسد', 'نشناسیم', 'نشناسید', 'نشناسند']
-            simple_present("شناس", "شناخت", passive=True)
+            conjugator.simple_present("شناس", "شناخت", passive=True)
             # Returns: ['شناخته شوم', 'شناخته شوی', 'شناخته شود', 'شناخته شویم', 'شناخته شوید', 'شناخته شوند']
-            simple_present("شناس", "شناخت", negative=True, passive=True)
+            conjugator.simple_present("شناس", "شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشوم', 'شناخته نشوی', 'شناخته نشود', 'شناخته نشویم', 'شناخته نشوید', 'شناخته نشوند']
         """
         negation_prefix = "ن" if negative else ""
@@ -363,13 +373,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) present indicative tense for all persons.
         Example:
-            present_indicative("شناس", "شناخت")
+            conjugator = Conjugator()
+            conjugator.present_indicative("شناس", "شناخت")
             # Returns: ['می‌شناسم', 'می‌شناسی', 'می‌شناسد', 'می‌شناسیم', 'می‌شناسید', 'می‌شناسند']
-            present_indicative("شناس", "شناخت", negative=True)
+            conjugator.present_indicative("شناس", "شناخت", negative=True)
             # Returns: ['نمی‌شناسم', 'نمی‌شناسی', 'نمی‌شناسد', 'نمی‌شناسیم', 'نمی‌شناسید', 'نمی‌شناسند']
-            present_indicative("شناس", "شناخت", passive=True)
+            conjugator.present_indicative("شناس", "شناخت", passive=True)
             # Returns: ['شناخته می‌شوم', 'شناخته می‌شوی', 'شناخته می‌شود', 'شناخته می‌شویم', 'شناخته می‌شوید', 'شناخته می‌شوند']
-            present_indicative("شناس", "شناخت", negative=True, passive=True)
+            conjugator.present_indicative("شناس", "شناخت", negative=True, passive=True)
             # Returns: ['شناخته نمی‌شوم', 'شناخته نمی‌شوی', 'شناخته نمی‌شود', 'شناخته نمی‌شویم', 'شناخته نمی‌شوید', 'شناخته نمی‌شوند']
         """
         negation_prefix = "ن" if negative else ""
@@ -399,13 +410,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) present subjunctive tense for all persons.
         Example:
-            present_subjunctive("شناس", "شناخت")
+            conjugator = Conjugator()
+            conjugator.present_subjunctive("شناس", "شناخت")
             # Returns: ['بشناسم', 'بشناسی', 'بشناسد', 'بشناسیم', 'بشناسید', 'بشناسند']
-            present_subjunctive("شناس", "شناخت", negative=True)
+            conjugator.present_subjunctive("شناس", "شناخت", negative=True)
             # Returns: ['نشناسم', 'نشناسی', 'نشناسد', 'نشناسیم', 'نشناسید', 'نشناسند']
-            present_subjunctive("شناس", "شناخت", passive=True)
+            conjugator.present_subjunctive("شناس", "شناخت", passive=True)
             # Returns: ['شناخته بشوم', 'شناخته بشوی', 'شناخته بشود', 'شناخته بشویم', 'شناخته بشوید', 'شناخته بشوند']
-            present_subjunctive("شناس", "شناخت", negative=True, passive=True)
+            conjugator.present_subjunctive("شناس", "شناخت", negative=True, passive=True)
             # Returns: ['شناخته نشوم', 'شناخته نشوی', 'شناخته نشود', 'شناخته نشویم', 'شناخته نشوید', 'شناخته نشوند']
         """
         prefix = "ن" if negative else "ب"
@@ -432,9 +444,10 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) present progressive tense for all persons.
         Example:
-            present_progressive("شناس", "شناخت")
+            conjugator = Conjugator()
+            conjugator.present_progressive("شناس", "شناخت")
             # Returns: ['دارم می‌شناسم', 'داری می‌شناسی', 'دارد می‌شناسد', 'داریم می‌شناسیم', 'دارید می‌شناسید', 'دارند می‌شناسند']
-            present_progressive("شناس", "شناخت", passive=True)
+            conjugator.present_progressive("شناس", "شناخت", passive=True)
             # Returns: ['دارم شناخته می‌شوم', 'داری شناخته می‌شوی', 'دارد شناخته می‌شود', 'داریم شناخته می‌شویم', 'دارید شناخته می‌شوید', 'دارند شناخته می‌شوند']
         """
         first_auxiliary_stem = "دار"
@@ -462,13 +475,14 @@ class Conjugator:
         Returns:
             List[str]: A list of conjugated verb forms in the (passive) future simple tense for all persons.
         Example:
-            future_simple("شناخت")
+            conjugator = Conjugator()
+            conjugator.future_simple("شناخت")
             # Returns: ['خواهم شناخت', 'خواهی شناخت', 'خواهد شناخت', 'خواهیم شناخت', 'خواهید شناخت', 'خواهند شناخت']
-            future_simple("شناخت", negative=True)
+            conjugator.future_simple("شناخت", negative=True)
             # Returns: ['نخواهم شناخت', 'نخواهی شناخت', 'نخواهد شناخت', 'نخواهیم شناخت', 'نخواهید شناخت', 'نخواهند شناخت']
-            future_simple("شناخت", passive=True)
+            conjugator.future_simple("شناخت", passive=True)
             # Returns: ['شناخته خواهم شد', 'شناخته خواهی شد', 'شناخته خواهد شد', 'شناخته خواهیم شد', 'شناخته خواهید شد', 'شناخته خواهند شد']
-            future_simple("شناخت", negative=True, passive=True)
+            conjugator.future_simple("شناخت", negative=True, passive=True)
             # Returns: ['شناخته نخواهم شد', 'شناخته نخواهی شد', 'شناخته نخواهد شد', 'شناخته نخواهیم شد', 'شناخته نخواهید شد', 'شناخته نخواهند شد']
         """
         negation_prefix = "ن" if negative else ""
@@ -495,9 +509,10 @@ class Conjugator:
         Returns:
             List[str]: A list containing all conjugated forms of the verb in the imperative tense.
         Example:
-            imperative("شناس")
+            conjugator = Conjugator()
+            conjugator.imperative("شناس")
             # Returns: ['بشناس', 'بشناسید']
-            imperative("شناس", negative=True)
+            conjugator.imperative("شناس", negative=True)
             # Returns: ['نشناس', 'نشناسید']
         """
         prefix = "ب" if not negative else "ن"

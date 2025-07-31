@@ -31,7 +31,7 @@ right_to_left_mark = "\u200f"
 arabic_digits = "٠١٢٣٤٥٦٧٨٩"
 numbers = persian_digits + english_digits + arabic_digits
 
-no_joiner_letters = "دۀذاأآورژز"
+non_left_joiner_letters = "دۀذاأآورژز"
 
 
 def load_verbs():
