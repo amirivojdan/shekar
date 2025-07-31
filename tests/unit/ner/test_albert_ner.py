@@ -1,4 +1,4 @@
-from shekar.ner.albert import AlbertNER
+from shekar.ner.albert_ner import AlbertNER
 
 
 def test_albert_ner_model_loads_successfully():

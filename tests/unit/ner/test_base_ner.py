@@ -1,6 +1,6 @@
 import pytest
 from shekar.ner import NER
-from shekar.ner.albert import AlbertNER
+from shekar.ner.albert_ner import AlbertNER
 
 
 def test_ner_default_model_is_albert():
@@ -32,7 +32,7 @@ def test_ner_transform_outputs_entities():
 def test_ner_fit_returns_model():
     ner = NER()
     result = ner.fit(["متن تست"], [["O", "B-PER", "I-PER"]])
-    assert result is ner.model
+    assert result is ner
 
 
 def test_ner_detects_known_entities():

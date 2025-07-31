@@ -1,5 +1,5 @@
 from collections import Counter
-from shekar.spell_checking.statistical import StatisticalSpellChecker
+from shekar.spelling.statistical_checker import StatisticalSpellChecker
 
 
 def test_initialization_with_default_words():

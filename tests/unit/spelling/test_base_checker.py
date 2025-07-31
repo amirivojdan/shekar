@@ -1,12 +1,12 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from shekar.spell_checking import SpellChecker
+from shekar.spelling import SpellChecker
 
 
 def test_spellchecker_initialization_default_model():
     # Patch where it's used, not where it's defined!
     with patch(
-        "shekar.spell_checking.base.SPELL_CHECKING_REGISTRY",
+        "shekar.spelling.checker.SPELL_CHECKING_REGISTRY",
         {"statistical": MagicMock()},
     ) as fake_registry:
         spell = SpellChecker()
@@ -24,7 +24,7 @@ def test_spellchecker_invalid_model():
 def test_spellchecker_fit_calls_underlying_model():
     fake_model = MagicMock()
     with patch(
-        "shekar.spell_checking.base.SPELL_CHECKING_REGISTRY",
+        "shekar.spelling.checker.SPELL_CHECKING_REGISTRY",
         {"statistical": lambda: fake_model},
     ):
         spell = SpellChecker()
@@ -37,7 +37,7 @@ def test_spellchecker_transform_calls_underlying_model():
     fake_model = MagicMock()
     fake_model.transform.return_value = "متن اصلاح‌شده"
     with patch(
-        "shekar.spell_checking.base.SPELL_CHECKING_REGISTRY",
+        "shekar.spelling.checker.SPELL_CHECKING_REGISTRY",
         {"statistical": lambda: fake_model},
     ):
         spell = SpellChecker()
