@@ -41,14 +41,14 @@ class StopWordFilter(BaseTextTransform):
     def __init__(self, stopwords: Iterable[str] = None, replace_with: str = ""):
         super().__init__()
         self.stopwords = stopwords or data.stopwords
-        self.letters = data.persian_letters
+
         self.replace_with = replace_with
         self._stopword_mappings = []
         for stopword in self.stopwords:
             escaped_word = re.escape(stopword)
             self._stopword_mappings.append(
                 (
-                    rf"(?<![{self.letters}]){escaped_word}(?![{self.letters}])",
+                    rf"(?<![{data.persian_full_set}]){escaped_word}(?![{data.persian_full_set}])",
                     replace_with,
                 )
             )

@@ -4,7 +4,7 @@ from shekar.preprocessing import (
     PunctuationNormalizer,
     AlphabetNormalizer,
     DigitNormalizer,
-    SpacingStandardizer,
+    SpacingNormalizer,
     EmojiFilter,
     EmailMasker,
     URLMasker,
@@ -31,7 +31,7 @@ class Normalizer(Pipeline):
                 ("DiacriticFilter", DiacriticFilter()),
                 ("RepeatedLetterFilter", RepeatedLetterFilter()),
                 ("NonPersianLetterFilter", NonPersianLetterFilter()),
-                ("SpacingStandardizer", SpacingStandardizer()),
+                ("SpacingNormalizer", SpacingNormalizer()),
             ]
         super().__init__(steps=steps)
 

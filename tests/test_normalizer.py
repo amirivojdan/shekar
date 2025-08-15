@@ -8,6 +8,6 @@ def normalizer():
 
 
 def test_normalize(normalizer):
-    input_text = "ناصر گفت:«من می‌روم.» \u200c 🎉🎉🎊🎈she+kar@she-kar.io"
-    expected_output = "ناصر گفت:«من می‌روم.»"
+    input_text = "ناصر گفت:«من میروم.» \u200c 🎉🎉🎊🎈she+kar@she-kar.io"
+    expected_output = "ناصر گفت: «من می‌روم.»"
     assert normalizer.normalize(input_text) == expected_output

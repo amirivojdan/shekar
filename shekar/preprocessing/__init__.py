@@ -40,13 +40,6 @@ from .maskers import (
     MaskURLs,
 )
 
-from .standardizers import (
-    PunctuationSpacingStandardizer,
-    SpacingStandardizer,
-    StandardizeSpacings,
-    StandardizePunctuationSpacings,
-)
-
 from .normalizers import (
     AlphabetNormalizer,
     ArabicUnicodeNormalizer,
@@ -56,6 +49,8 @@ from .normalizers import (
     NormalizePunctuations,
     NormalizeArabicUnicodes,
     NormalizeAlphabets,
+    SpacingNormalizer,
+    NormalizeSpacings,
 )
 
 __all__ = [
@@ -97,11 +92,6 @@ __all__ = [
     "URLMasker",
     "MaskEmails",
     "MaskURLs",
-    # Standardizers
-    "PunctuationSpacingStandardizer",
-    "SpacingStandardizer",
-    "StandardizeSpacings",
-    "StandardizePunctuationSpacings",
     # Normalizers
     "AlphabetNormalizer",
     "ArabicUnicodeNormalizer",
@@ -111,4 +101,6 @@ __all__ = [
     "NormalizePunctuations",
     "NormalizeArabicUnicodes",
     "NormalizeAlphabets",
+    "NormalizeSpacings",
+    "SpacingNormalizer",
 ]

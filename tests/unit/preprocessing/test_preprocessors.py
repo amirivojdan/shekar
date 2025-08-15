@@ -4,7 +4,7 @@ from shekar.preprocessing import (
     PunctuationNormalizer,
     AlphabetNormalizer,
     DigitNormalizer,
-    SpacingStandardizer,
+    SpacingNormalizer,
     EmojiFilter,
     EmailMasker,
     URLMasker,
@@ -18,7 +18,6 @@ from shekar.preprocessing import (
     DigitFilter,
     MentionFilter,
     HashtagFilter,
-    PunctuationSpacingStandardizer,
 )
 
 from shekar.transforms import (
@@ -28,69 +27,73 @@ from shekar.transforms import (
 
 
 def test_correct_spacings():
-    spacing_standardizer = SpacingStandardizer()
+    spacing_normalizer = SpacingNormalizer()
+
+    input_text = (
+        "میرویم به خانههای خاک آلود که گفته اند تا چند سال بعد تر ویران نمی شوند !"
+    )
+    expected_output = (
+        "می‌رویم به خانه‌های خاک‌آلود که گفته‌اند تا چند سال بعدتر ویران نمی‌شوند!"
+    )
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "   این یک جمله   نمونه   است. "
     expected_output = "این یک جمله نمونه است."
-    assert spacing_standardizer(input_text) == expected_output
+    assert spacing_normalizer(input_text) == expected_output
 
-    input_text = "اینجا کجاست؟تو میدونی؟نمیدونم!"
-    expected_output = "اینجا کجاست؟تو میدونی؟نمیدونم!"
-    assert spacing_standardizer.fit_transform(input_text) == expected_output
+    input_text = "اینجا کجاست؟تو میدانی؟نمیدانم!"
+    expected_output = "اینجا کجاست؟ تو می‌دانی؟ نمی‌دانم!"
+    assert spacing_normalizer.fit_transform(input_text) == expected_output
 
     input_text = "ناصر گفت:«من می‌روم.»"
-    expected_output = "ناصر گفت:«من می‌روم.»"
-    assert spacing_standardizer(input_text) == expected_output
+    expected_output = "ناصر گفت: «من می‌روم.»"
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "با کی داری حرف می زنی؟"
-    expected_output = "با کی داری حرف می زنی؟"
-    assert spacing_standardizer(input_text) == expected_output
+    expected_output = "با کی داری حرف می‌زنی؟"
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "من می‌روم.تو نمی‌آیی؟"
-    expected_output = "من می‌روم.تو نمی‌آیی؟"
-    assert spacing_standardizer(input_text) == expected_output
+    expected_output = "من می‌روم. تو نمی‌آیی؟"
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "به نکته ریزی اشاره کردی!"
     expected_output = "به نکته ریزی اشاره کردی!"
-    assert spacing_standardizer.fit_transform(input_text) == expected_output
+    assert spacing_normalizer.fit_transform(input_text) == expected_output
 
     sentences = ["   این یک جمله   نمونه   است. ", "با کی داری حرف می زنی؟"]
-    expected_output = ["این یک جمله نمونه است.", "با کی داری حرف می زنی؟"]
-    assert list(spacing_standardizer(sentences)) == expected_output
-    assert list(spacing_standardizer.fit_transform(sentences)) == expected_output
+    expected_output = ["این یک جمله نمونه است.", "با کی داری حرف می‌زنی؟"]
+    assert list(spacing_normalizer(sentences)) == expected_output
+    assert list(spacing_normalizer.fit_transform(sentences)) == expected_output
 
     input_text = 13.4
     expected_output = "Input must be a string or a Iterable of strings."
     with pytest.raises(ValueError, match=expected_output):
-        spacing_standardizer(input_text)
+        spacing_normalizer(input_text)
 
 
 def test_remove_extra_spaces():
-    spacing_standardizer = SpacingStandardizer()
+    spacing_normalizer = SpacingNormalizer()
 
     input_text = "این  یک  آزمون  است"
     expected_output = "این یک آزمون است"
-    assert spacing_standardizer(input_text) == expected_output
-
-    input_text = "این  یک\n\n\nآزمون  است"
-    expected_output = "این یک\n\nآزمون است"
-    assert spacing_standardizer(input_text) == expected_output
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "این\u200cیک\u200cآزمون\u200cاست"
     expected_output = "این\u200cیک\u200cآزمون\u200cاست"
-    assert spacing_standardizer.fit_transform(input_text) == expected_output
+    assert spacing_normalizer.fit_transform(input_text) == expected_output
 
     input_text = "این\u200c یک\u200c آزمون\u200c است"
     expected_output = "این یک آزمون است"
-    assert spacing_standardizer(input_text) == expected_output
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "این  یک  آزمون  است  "
     expected_output = "این یک آزمون است"
-    assert spacing_standardizer.fit_transform(input_text) == expected_output
+    assert spacing_normalizer.fit_transform(input_text) == expected_output
 
     input_text = "این  یک  آزمون  است\n\n\n\n"
     expected_output = "این یک آزمون است"
-    assert spacing_standardizer(input_text) == expected_output
+    assert spacing_normalizer(input_text) == expected_output
 
 
 def test_mask_email():
@@ -334,26 +337,25 @@ def test_remove_html_tags():
 def test_punctuation_spacings():
     batch_input = []
     batch_expected_output = []
-    punct_space_standardizer = PunctuationSpacingStandardizer()
+    punct_space_normalizer = SpacingNormalizer()
     input_text = "سلام!چطوری؟"
-    expected_output = "سلام! چطوری؟ "
-    assert punct_space_standardizer(input_text) == expected_output
+    expected_output = "سلام! چطوری؟"
+    assert punct_space_normalizer(input_text) == expected_output
 
     batch_input.append(input_text)
     batch_expected_output.append(expected_output)
 
     input_text = "شرکت « گوگل »اعلام کرد ."
-    expected_output = "شرکت «گوگل» اعلام کرد. "
+    expected_output = "شرکت «گوگل» اعلام کرد."
 
-    assert punct_space_standardizer.fit_transform(input_text) == expected_output
+    assert punct_space_normalizer.fit_transform(input_text) == expected_output
 
     batch_input.append(input_text)
     batch_expected_output.append(expected_output)
 
-    assert list(punct_space_standardizer(batch_input)) == batch_expected_output
+    assert list(punct_space_normalizer(batch_input)) == batch_expected_output
     assert (
-        list(punct_space_standardizer.fit_transform(batch_input))
-        == batch_expected_output
+        list(punct_space_normalizer.fit_transform(batch_input)) == batch_expected_output
     )
 
 

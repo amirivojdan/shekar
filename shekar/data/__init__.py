@@ -1,20 +1,25 @@
+import csv
 from importlib import resources
 from . import files as data
 from . import fonts
 from . import masks
+from shekar.morphology import Conjugator
 
 resources_root = resources.files(data)
 fonts_root = resources.files(fonts)
 masks_root = resources.files(masks)
 
 vocab_csv_path = resources_root.joinpath("vocab.csv")
+compound_words_csv_path = resources_root.joinpath("compound_words.csv")
 verbs_csv_path = resources_root.joinpath("verbs.csv")
 stopwords_csv_path = resources_root.joinpath("stopwords.csv")
+
 
 ZWNJ = "\u200c"
 newline = "\n"
 diacritics = "ًٌٍَُِّْ"
-persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
+persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی"
+persian_full_set = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
 persian_digits = "۰۱۲۳۴۵۶۷۸۹"
 english_digits = "0123456789"
 special_signs = "-٪@/#"
@@ -33,20 +38,129 @@ numbers = persian_digits + english_digits + arabic_digits
 
 non_left_joiner_letters = "دۀذاأآورژز"
 
+suffixes = [
+    "ها",
+    "های",
+    "هایی",
+    "ای",
+    "تر",
+    "تری",
+    "ترین",
+    "ات",
+    "اش",
+    "گر",
+    "گری",
+    "آسا",
+    "فام",
+    "جات",
+    "وش",
+    "آگین",
+    "باره",
+    "آسا",
+    "وار",
+    "نگر",
+    "نگری",
+    "زا",
+    "زایی",
+    "آمیز",
+    "زدایی",
+    "فرسا",
+    "سنج",
+    "سنجی",
+    "گشا",
+    "گشایی",
+    "سپاری",
+    "شدگی",
+    "زدگی",
+    "طلبی",
+    "یابی",
+    "شمول",
+    "پیما",
+    "پیمایی",
+    "شمول",
+    "بندی",
+    "نویسی",
+    "نشین",
+    "انگیز",
+    "کش",
+    "کشی",
+    "آور",
+    "آلود",
+    "نشین",
+    "گزین",
+    "سازی",
+    "کنان",
+    "رو",
+    "دار",
+    "بندی",
+    "ریز",
+    "مایه",
+    "پژوه",
+    "گستر",
+    "پژوهی",
+    "گستری",
+    "شناس",
+    "شناسی",
+    "پذیر",
+    "پذیری",
+    "ناپذیر",
+    "ناپذیری",
+]
+
+prefixes = [
+    "برون",
+    "تک",
+    "درون",
+    "زیست",
+    "میان",
+    "نیم",
+    "سوء",
+    "ضد",
+    "غیر",
+    "بی",
+    "هم",
+    "نصفه",
+    "پاره",
+    "نیمه",
+]
+
 
 def load_verbs():
     # Read the verbs from the CSV file
+    verbs = set()
     with open(verbs_csv_path, "r", encoding="utf-8") as file:
-        verbs = [line.strip().split(",") for line in file.read().splitlines()]
+        for line in file.read().splitlines():
+            parts = line.strip().split(",")
+            past_stem = parts[1]
+            present_stem = parts[0]
+            verbs.add((past_stem, present_stem))
     return verbs
 
 
-def loadstopwords():
-    # Read the stopwords from the text file
-    with open(stopwords_csv_path, "r", encoding="utf-8") as file:
-        stopwords = [line.strip() for line in file.read().splitlines()]
-    return stopwords
+def read_vocab(path):
+    """Read a list of words from a CSV file."""
+    words = set()
+    with open(path, mode="r", newline="", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row:  # avoid empty rows
+                words.add(row[0])
+    return words
 
 
 verbs = load_verbs()
-stopwords = loadstopwords()
+stopwords = read_vocab(stopwords_csv_path)
+vocab = read_vocab(vocab_csv_path)
+compound_words = read_vocab(compound_words_csv_path)
+
+
+conjugator = Conjugator()
+conjugated_verbs = set()
+for past_stem, present_stem in verbs:
+    conjugated_verbs.update(conjugator.conjugate(past_stem, present_stem))
+
+compound_words = compound_words - conjugated_verbs
+
+compound_words_space = {}
+for word in compound_words:
+    compound_words_space[word.replace(ZWNJ, " ")] = word
