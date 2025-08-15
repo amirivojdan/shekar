@@ -9,7 +9,7 @@ from shekar.preprocessing import (
     EmailMasker,
     URLMasker,
     DiacriticFilter,
-    NonPersianLetterFilter,
+    # NonPersianLetterFilter,
     HTMLTagFilter,
     RepeatedLetterFilter,
     ArabicUnicodeNormalizer,
@@ -30,7 +30,7 @@ class Normalizer(Pipeline):
                 ("HTMLTagFilter", HTMLTagFilter()),
                 ("DiacriticFilter", DiacriticFilter()),
                 ("RepeatedLetterFilter", RepeatedLetterFilter()),
-                #("NonPersianLetterFilter", NonPersianLetterFilter()),
+                # ("NonPersianLetterFilter", NonPersianLetterFilter()),
                 ("SpacingNormalizer", SpacingNormalizer()),
             ]
         super().__init__(steps=steps)

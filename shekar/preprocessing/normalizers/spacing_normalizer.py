@@ -71,7 +71,9 @@ class SpacingNormalizer(BaseTextTransform):
             rf"(?<!\S)(?P<prefix>ن?می)\s+(?P<stem>[{data.persian_letters}]+)"
         )
 
-        _verbal_suffix_alt = "|".join(map(re.escape, ["ام", "ای","است", "ایم", "اید", "اند"]))
+        _verbal_suffix_alt = "|".join(
+            map(re.escape, ["ام", "ای", "است", "ایم", "اید", "اند"])
+        )
         _punc_class = re.escape(data.punctuations)
         self._verbal_suffix_space_pattern = re.compile(
             rf"(?<!\S)(?P<stem>[{data.persian_letters}]+)\s+(?P<suffix>(?:{_verbal_suffix_alt}))(?=$|[\s{_punc_class}])"

@@ -42,7 +42,10 @@ class NonPersianLetterFilter(BaseTextTransform):
         super().__init__()
 
         self.characters_to_keep = (
-            data.persian_full_set + data.spaces + data.persian_digits + data.punctuations
+            data.persian_full_set
+            + data.spaces
+            + data.persian_digits
+            + data.punctuations
         )
 
         if keep_diacritics:
