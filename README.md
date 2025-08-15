@@ -1,9 +1,8 @@
 
 ![Shekar](https://amirivojdan.io/wp-content/uploads/2025/01/shekar-lib.png)
-![PyPI - Version](https://img.shields.io/pypi/v/shekar?color=00A693)
+![PyPI - Version](https://img.shields.io/pypi/v/shekar?color=00A693&link=https%3A%2F%2Fpypi.org%2Fproject%2Fshekar%2F)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml?color=00A693)
 ![Codecov](https://img.shields.io/codecov/c/github/amirivojdan/shekar?color=00A693)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/shekar?color=00A693)
 ![PyPI - License](https://img.shields.io/pypi/l/shekar?color=00A693)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/shekar?color=00A693)
 
@@ -21,11 +20,11 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 
 - [Installation](#installation)
 - [Preprocessing](#preprocessing)
-  - [Component Overview](#component-overview)
-  - [Using Pipelines](#using-pipelines)
   - [Normalizer](#normalizer)
   - [Batch Processing](#batch-processing)
   - [Decorator Support](#decorator-support)
+  - [Component Overview](#component-overview)
+  - [Using Pipelines](#using-pipelines)
 - [Tokenization](#tokenization)
   - [WordTokenizer](#wordtokenizer)
   - [SentenceTokenizer](#sentencetokenizer)
@@ -36,6 +35,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
 - [Keyword Extraction](#keyword-extraction)
 - [WordCloud](#wordcloud)
+- [Offline Models](#offline-models)
 
 ---
 
@@ -52,97 +52,22 @@ $ pip install shekar
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
 
-Shekar provides a modular, composable system for Persian text preprocessing through `filters`, `normalizers`, `standardizers`, and `maskers`. You can use these independently or combine them using the `Pipeline` class and the `|` operator.
-
----
-
-### Component Overview
-
-<details>
-<summary>Filters / Removers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `DiacriticFilter` | `DiacriticRemover`, `RemoveDiacritics` | Removes Persian/Arabic diacritics |
-| `EmojiFilter` | `EmojiRemover`, `RemoveEmojis` | Removes emojis |
-| `NonPersianLetterFilter` | `NonPersianRemover`, `RemoveNonPersianLetters` | Removes all non-Persian content (optionally keeps English) |
-| `PunctuationFilter` | `PunctuationRemover`, `RemovePunctuations` | Removes all punctuation characters |
-| `StopWordFilter` | `StopWordRemover`, `RemoveStopWords` | Removes frequent Persian stopwords |
-| `DigitFilter` | `DigitRemover`, `RemoveDigits` | Removes all digit characters |
-| `RepeatedLetterFilter` | `RepeatedLetterRemover`, `RemoveRepeatedLetters` | Shrinks repeated letters (e.g. "سسسلام") |
-| `HTMLTagFilter` | `HTMLRemover`, `RemoveHTMLTags` | Removes HTML tags but retains content |
-| `HashtagFilter` | `HashtagRemover`, `RemoveHashtags` | Removes hashtags |
-| `MentionFilter` | `MentionRemover`, `RemoveMentions` | Removes @mentions |
-
-</details>
-
-<details>
-<summary>Normalizers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `DigitNormalizer` | `NormalizeDigits` | Converts English/Arabic digits to Persian |
-| `PunctuationNormalizer` | `NormalizePunctuations` | Standardizes punctuation symbols |
-| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
-| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g. ﷽) with Persian equivalents |
-
-</details>
-
-<details>
-<summary>Standardizers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `SpacingStandardizer` | `StandardizeSpacings` | Removes extra spaces and fixes spacing around words |
-| `PunctuationSpacingStandardizer` | `StandardizePunctuationSpacings` | Adjusts spacing around punctuation marks |
-
-</details>
-
-<details>
-<summary>Maskers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `EmailMasker` | `MaskEmails` | Masks or removes email addresses |
-| `URLMasker` | `MaskURLs` | Masks or removes URLs |
-
-</details>
-
----
-
-### Using Pipelines
-
-You can combine any of the preprocessing components using the `|` operator:
-
-```python
-from shekar.preprocessing import EmojiRemover, PunctuationRemover
-
-text = "ز ایران دلش یاد کرد و بسوخت! 🌍🇮🇷"
-pipeline = EmojiRemover() | PunctuationRemover()
-output = pipeline(text)
-print(output)
-```
-
-```shell
-ز ایران دلش یاد کرد و بسوخت
-```
-
----
 
 ### Normalizer
 
-The built-in `Normalizer` class wraps the most common filters and normalizers:
+The built-in `Normalizer` class provides a ready-to-use pipeline that combines the most common filters and normalization steps, offering a default configuration that covers the majority of use cases.
 
 ```python
 from shekar import Normalizer
 
 normalizer = Normalizer()
-text = "ۿدف ما ػمګ بۀ ێڪډيڱڕ أښټ"
+text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده  می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
+
 print(normalizer(text))
 ```
 
 ```shell
-هدف ما کمک به یکدیگر است
+«فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
 ```
 
 ---
@@ -181,6 +106,76 @@ print(process_text("تو را من چشم👀 در راهم!"))
 ```shell
 تو را من چشم در راهم
 ```
+
+---
+
+For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
+
+---
+
+### Component Overview
+
+<details>
+<summary>Filters / Removers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `DiacriticFilter` | `DiacriticRemover`, `RemoveDiacritics` | Removes Persian/Arabic diacritics |
+| `EmojiFilter` | `EmojiRemover`, `RemoveEmojis` | Removes emojis |
+| `NonPersianLetterFilter` | `NonPersianRemover`, `RemoveNonPersianLetters` | Removes all non-Persian content (optionally keeps English) |
+| `PunctuationFilter` | `PunctuationRemover`, `RemovePunctuations` | Removes all punctuation characters |
+| `StopWordFilter` | `StopWordRemover`, `RemoveStopWords` | Removes frequent Persian stopwords |
+| `DigitFilter` | `DigitRemover`, `RemoveDigits` | Removes all digit characters |
+| `RepeatedLetterFilter` | `RepeatedLetterRemover`, `RemoveRepeatedLetters` | Shrinks repeated letters (e.g. "سسسلام") |
+| `HTMLTagFilter` | `HTMLRemover`, `RemoveHTMLTags` | Removes HTML tags but retains content |
+| `HashtagFilter` | `HashtagRemover`, `RemoveHashtags` | Removes hashtags |
+| `MentionFilter` | `MentionRemover`, `RemoveMentions` | Removes @mentions |
+
+</details>
+
+<details>
+<summary>Normalizers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `DigitNormalizer` | `NormalizeDigits` | Converts English/Arabic digits to Persian |
+| `PunctuationNormalizer` | `NormalizePunctuations` | Standardizes punctuation symbols |
+| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
+| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g. ﷽) with Persian equivalents |
+| `SpacingNormalizer` | `NormalizeSpacings` | Corrects spacings in Persian text by fixing issues like misplaced spaces, missing zero-width non-joiners (ZWNJ), and incorrect spacing around punctuation and affixes. |
+</details>
+
+
+<details>
+<summary>Maskers</summary>
+
+| Component | Aliases | Description |
+|----------|---------|-------------|
+| `EmailMasker` | `MaskEmails` | Masks or removes email addresses |
+| `URLMasker` | `MaskURLs` | Masks or removes URLs |
+
+</details>
+
+---
+
+### Using Pipelines
+
+You can combine any of the preprocessing components using the `|` operator:
+
+```python
+from shekar.preprocessing import EmojiRemover, PunctuationRemover
+
+text = "ز ایران دلش یاد کرد و بسوخت! 🌍🇮🇷"
+pipeline = EmojiRemover() | PunctuationRemover()
+output = pipeline(text)
+print(output)
+```
+
+```shell
+ز ایران دلش یاد کرد و بسوخت
+```
+
+---
 
 ## Tokenization
 
@@ -448,3 +443,18 @@ image.show()
 ```
 
 ![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)
+
+
+## Offline Models
+
+If Shekar Hub is unavailable, you can manually download the models and place them in the cache directory at `home/[username]/.shekar/` 
+
+| Model Name                | Download Link |
+|----------------------------|---------------|
+| FastText Embedding d100    | [Download](https://drive.google.com/file/d/1qgd0slGA3Ar7A2ShViA3v8UTM4qXIEN6/view?usp=drive_link) (50MB)|
+| FastText Embedding d300    | [Download](https://drive.google.com/file/d/1yeAg5otGpgoeD-3-E_W9ZwLyTvNKTlCa/view?usp=drive_link) (500MB)|
+| SentenceEmbedding    | [Download](https://drive.google.com/file/d/1PftSG2QD2M9qzhAltWk_S38eQLljPUiG/view?usp=drive_link) (60MB)|
+| POS Tagger  | [Download](https://drive.google.com/file/d/1d80TJn7moO31nMXT4WEatAaTEUirx2Ju/view?usp=drive_link) (38MB)|
+| NER       | [Download](https://drive.google.com/file/d/1DLoMJt8TWlNnGGbHDWjwNGsD7qzlLHfu/view?usp=drive_link) (38MB)|
+| AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
+

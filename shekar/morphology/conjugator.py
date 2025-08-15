@@ -16,7 +16,7 @@ class Conjugator:
     def __init__(self):
         self._past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ند"]
         self._present_personal_suffixes = ["م", "ی", "د", "یم", "ید", "ند"]
-        self._perfect_personal_suffixes = ["‌ام", "‌ای", " است", "‌ایم", "‌اید", "‌اند"]
+        self._perfect_personal_suffixes = ["‌ام", "‌ای", "‌است", "‌ایم", "‌اید", "‌اند"]
 
     def simple_past(
         self, past_stem: str, negative: bool = False, passive: bool = False
