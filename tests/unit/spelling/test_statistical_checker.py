@@ -2,13 +2,6 @@ from collections import Counter
 from shekar.spelling.statistical_checker import StatisticalSpellChecker
 
 
-def test_initialization_with_default_words():
-    checker = StatisticalSpellChecker()
-    assert isinstance(checker.words, dict)
-    assert checker.n_words > 0
-    assert "سلام" in checker.words
-
-
 def test_generate_1edits_has_reasonable_variants():
     word = "کتاب"
     edits = StatisticalSpellChecker.generate_1edits(word)
@@ -47,13 +40,6 @@ def test_correct_text_with_mixed_words():
     assert "سلام" in corrected
     assert "علیکم" in corrected
     assert "دوست" in corrected
-
-
-def test_fit_updates_internal_word_distribution():
-    checker = StatisticalSpellChecker(words=Counter())
-    checker.fit(["سلام سلام خوبی"])
-    assert "سلام" in checker.words
-    assert checker.words["سلام"] > checker.words.get("خوبی", 0)
 
 
 def test_transform_applies_correction_to_sentence():

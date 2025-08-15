@@ -16,6 +16,12 @@ class SpellChecker(BaseTransform):
 
         self.model = SPELL_CHECKING_REGISTRY[model]()
 
+    def suggest(self, word, n_best=5):
+        return self.model.suggest(word, n_best=n_best)
+
+    def correct(self, text):
+        return self.model.correct(text)
+
     def fit(self, X, y=None):
         return self.model.fit(X, y)
 

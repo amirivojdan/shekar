@@ -138,7 +138,7 @@ def load_verbs():
     return verbs
 
 
-def read_vocab(path):
+def read_words(path):
     """Read a list of words from a CSV file."""
     words = set()
     with open(path, mode="r", newline="", encoding="utf-8") as file:
@@ -149,10 +149,26 @@ def read_vocab(path):
     return words
 
 
+def read_vocab(path):
+    """Read a vocabulary list from a CSV file."""
+    vocab = {}
+    with open(path, mode="r", newline="", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row:  # avoid empty rows
+                word = row[0]
+                count = int(row[1]) if len(row) > 1 else 1
+                vocab[word] = count
+    return vocab
+
+
 verbs = load_verbs()
-stopwords = read_vocab(stopwords_csv_path)
+stopwords = read_words(stopwords_csv_path)
 vocab = read_vocab(vocab_csv_path)
-compound_words = read_vocab(compound_words_csv_path)
+compound_words = read_words(compound_words_csv_path)
+
+min_count = min(vocab.values())
+vocab = {word: count - min_count for word, count in vocab.items()}
 
 
 conjugator = Conjugator()

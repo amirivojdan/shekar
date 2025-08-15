@@ -34,6 +34,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
 - [Keyword Extraction](#keyword-extraction)
+- [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
 - [Offline Models](#offline-models)
 
@@ -394,6 +395,25 @@ for kw in keywords:
 زبان فارسی
 تاریخچه‌ای کهن
 ```
+
+## Spell Checking
+
+The `SpellChecker` class provides simple and effective spelling correction for Persian text. It can automatically detect and fix common errors such as extra characters, spacing mistakes, or misspelled words. You can use it directly as a callable on a sentence to clean up the text, or call `suggest()` to get a ranked list of correction candidates for a single word.
+
+```python
+from shekar import SpellChecker
+
+spell_checker = SpellChecker()
+print(spell_checker("سسلام بر ششما ددوست من"))
+
+print(spell_checker.suggest("درود"))
+```
+
+```output
+سلام بر شما دوست من
+['درود', 'درصد', 'ورود', 'درد', 'درون']
+```
+
 ## WordCloud
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)

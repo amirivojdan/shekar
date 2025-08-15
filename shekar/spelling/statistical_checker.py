@@ -1,4 +1,3 @@
-from collections import Counter
 from shekar.base import BaseTransform
 from shekar.tokenization import WordTokenizer
 from shekar import data
@@ -15,7 +14,7 @@ class StatisticalSpellChecker(BaseTransform):
     def __init__(
         self,
         n_edit=2,
-        words: Counter = None,
+        words: dict = None,
     ):
         """
         Initialize the AutoCorrect instance.
@@ -26,9 +25,7 @@ class StatisticalSpellChecker(BaseTransform):
 
         if words is None:
             # Load the default words from data directory
-
-            test_words = "سلام بر شما این یک متن تستی است".split()
-            words = Counter(test_words)
+            words = data.vocab
 
         self.tokenizer = WordTokenizer()
         self.n_words = sum(words.values())
@@ -90,16 +87,22 @@ class StatisticalSpellChecker(BaseTransform):
 
         return unique_suggestions[:n_best]
 
+    def suggest(self, word, n_best=5):
+        """
+        Suggest corrections for a given word.
+        """
+        return self.correct(word, n_best=n_best)
+
     def correct_text(self, text):
         tokens = self.tokenizer.tokenize(text)
-        return " ".join(self.correct(token)[0] for token in tokens)
-
-    def fit(self, X, y=None):
-        for text in X:
-            tokens = self.tokenizer.tokenize(text)
-            self.words.update(Counter(tokens))
-        self.n_words = sum(self.words.values())
-        return self
+        corrected_tokens = []
+        for token in tokens:
+            suggestions = self.correct(token)
+            if suggestions:
+                corrected_tokens.append(suggestions[0])
+            else:
+                corrected_tokens.append(token)
+        return " ".join(corrected_tokens)
 
     def transform(self, X: str) -> str:
         """
