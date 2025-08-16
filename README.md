@@ -23,7 +23,8 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
   - [Normalizer](#normalizer)
   - [Batch Processing](#batch-processing)
   - [Decorator Support](#decorator-support)
-  - [Component Overview](#component-overview)
+  - [Customization](#customization)
+    - [Component Overview](#component-overview)
   - [Using Pipelines](#using-pipelines)
 - [Tokenization](#tokenization)
   - [WordTokenizer](#wordtokenizer)
@@ -110,11 +111,13 @@ print(process_text("تو را من چشم👀 در راهم!"))
 
 ---
 
+### Customization
+
 For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
 
 ---
 
-### Component Overview
+#### Component Overview
 
 <details>
 <summary>Filters / Removers</summary>
@@ -221,6 +224,8 @@ for sentence in sentences:
 
 ## Embeddings
 
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/embeddings.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/embeddings.ipynb)
+
 **Shekar** offers two main embedding classes:
 
 - **`WordEmbedder`**: Provides static word embeddings using pre-trained FastText models.
@@ -270,12 +275,14 @@ print(embedding.shape)  # (768,)
 
 ## Part-of-Speech Tagging
 
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/pos_tagging.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/pos_tagging.ipynb)
+
 The POSTagger class provides part-of-speech tagging for Persian text using a transformer-based model (default: ALBERT). It returns one tag per word based on Universal POS tags (following the Universal Dependencies standard).
 
 Example usage:
 
 ```python
-from shekar.pos import POSTagger
+from shekar import POSTagger
 
 pos_tagger = POSTagger()
 text = "نوروز، جشن سال نو ایرانی، بیش از سه هزار سال قدمت دارد و در کشورهای مختلف جشن گرفته می‌شود."
@@ -370,6 +377,8 @@ for text, label in entities:
 This chaining enables clean and readable code, letting you build custom NLP flows with preprocessing and tagging in one pass.
 
 ## Keyword Extraction
+
+[![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/keyword_extraction.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/keyword_extraction.ipynb)
 
 The **shekar.keyword_extraction** module provides tools for automatically identifying and extracting key terms and phrases from Persian text. These algorithms help identify the most important concepts and topics within documents.
 
