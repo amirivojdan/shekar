@@ -37,7 +37,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
-- [Offline Models](#offline-models)
+- [Download Models](#download-models)
 
 ---
 
@@ -383,7 +383,9 @@ This chaining enables clean and readable code, letting you build custom NLP flow
 The **shekar.keyword_extraction** module provides tools for automatically identifying and extracting key terms and phrases from Persian text. These algorithms help identify the most important concepts and topics within documents.
 
 ```python
-from shekar.keyword_extraction import RAKE
+from shekar import KeywordExtractor
+
+extractor = KeywordExtractor(max_length=2, top_n=10)
 
 input_text = (
     "زبان فارسی یکی از زبان‌های مهم منطقه و جهان است که تاریخچه‌ای کهن دارد. "
@@ -391,7 +393,6 @@ input_text = (
     "از دوران فردوسی و شاهنامه تا دوران معاصر، زبان فارسی همواره ابزار بیان اندیشه، احساس و هنر بوده است. "
 )
 
-extractor = RAKE(max_length=2, top_n=5)
 keywords = extractor(input_text)
 
 for kw in keywords:
@@ -474,7 +475,7 @@ image.show()
 ![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)
 
 
-## Offline Models
+## Download Models
 
 If Shekar Hub is unavailable, you can manually download the models and place them in the cache directory at `home/[username]/.shekar/` 
 
