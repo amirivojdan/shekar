@@ -17,6 +17,8 @@ class Inflector:
             "مه": ("مهتر", "مهترین"),
         }
 
+        self._possessive_suffixes = ["م", "ت", "ش", "مان", "تان", "شان"]
+
     def comparative(self, adj: str) -> str:
         """
         Returns the comparative form of an adjective.
@@ -89,3 +91,22 @@ class Inflector:
         """
         zwnj = "" if noun[-1] in data.non_left_joiner_letters else data.ZWNJ
         return noun + zwnj + "ها"
+
+    def possessives(self, noun: str):
+        """
+        Returns a list of possessive forms of a noun.
+
+        Args:
+            noun (str): The noun to convert to possessive forms.
+
+        Returns:
+            list: A list of possessive forms of the noun.
+
+        Example:
+            inflector = Inflector()
+            inflector.possessives("کتاب")
+        # Returns: ['کتابم', 'کتابت', 'کتابش', 'کتاب‌مان', 'کتاب‌تان', 'کتاب‌شان']
+
+        """
+        zwnj = "" if noun[-1] in data.non_left_joiner_letters else data.ZWNJ
+        return [noun + zwnj + suffix for suffix in self._possessive_suffixes]

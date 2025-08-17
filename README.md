@@ -32,6 +32,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Embeddings](#embeddings)
   - [Word Embeddings](#word-embeddings)
   - [Sentence Embeddings](#sentence-embeddings)
+- [Stemmer](#stemmer)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
 - [Keyword Extraction](#keyword-extraction)
@@ -260,7 +261,8 @@ print(similar_words)
 ```
 
 ### Sentence Embeddings
-SentenceEmbedder uses an ALBERT model trained with Masked Language Modeling (MLM) on the Naab dataset to generate high-quality contextual embeddings.
+
+`SentenceEmbedder` uses an ALBERT model trained with Masked Language Modeling (MLM) on the Naab dataset to generate high-quality contextual embeddings.
 The resulting embeddings are 768-dimensional vectors representing the semantic meaning of entire phrases or sentences.
 
 ```python
@@ -271,6 +273,26 @@ embedder = SentenceEmbedder(model="albert")
 sentence = "کتاب‌ها دریچه‌ای به جهان دانش هستند."
 embedding = embedder(sentence)
 print(embedding.shape)  # (768,)
+```
+
+## Stemmer
+
+The `Stemmer` is a lightweight, rule-based reducer for Persian word forms. It trims common suffixes while respecting Persian orthography and Zero Width Non-Joiner usage. The goal is to produce stable stems for search, indexing, and simple text analysis without requiring a full morphological analyzer.
+
+```python
+from shekar import Stemmer
+
+stemmer = Stemmer()
+
+print(stemmer("نوه‌ام"))
+print(stemmer("کتاب‌ها"))
+print(stemmer("خانه‌هایی"))
+```
+
+```output
+نوه
+کتاب
+خانه
 ```
 
 ## Part-of-Speech Tagging

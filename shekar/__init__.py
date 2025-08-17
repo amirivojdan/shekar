@@ -8,6 +8,7 @@ from .ner import NER
 from .pos import POSTagger
 from .embeddings import WordEmbedder, SentenceEmbedder
 from .spelling import SpellChecker
+from .morphology import Conjugator, Inflector, Stemmer
 from .hub import Hub
 
 __all__ = [
@@ -26,4 +27,7 @@ __all__ = [
     "SentenceEmbedder",
     "WordTokenizer",
     "SentenceTokenizer",
+    "Conjugator",
+    "Inflector",
+    "Stemmer",
 ]
