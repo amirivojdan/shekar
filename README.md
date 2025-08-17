@@ -1,10 +1,13 @@
 
 ![Shekar](https://amirivojdan.io/wp-content/uploads/2025/01/shekar-lib.png)
-![PyPI - Version](https://img.shields.io/pypi/v/shekar?color=00A693&link=https%3A%2F%2Fpypi.org%2Fproject%2Fshekar%2F)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml?color=00A693)
-![Codecov](https://img.shields.io/codecov/c/github/amirivojdan/shekar?color=00A693)
-![PyPI - License](https://img.shields.io/pypi/l/shekar?color=00A693)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/shekar?color=00A693)
+
+<p align="center">
+<a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/shekar?color=00A693"></a>
+<a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/amirivojdan/shekar/test.yml?color=00A693"></a>
+<a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/amirivojdan/shekar?color=00A693"></a>
+<a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="PyPI - License" src="https://img.shields.io/pypi/l/shekar?color=00A693"></a>
+<a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/shekar?color=00A693"></a>
+</p>
 
 
 <p align="center">
