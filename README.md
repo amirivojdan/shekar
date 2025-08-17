@@ -35,7 +35,8 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Embeddings](#embeddings)
   - [Word Embeddings](#word-embeddings)
   - [Sentence Embeddings](#sentence-embeddings)
-- [Stemmer](#stemmer)
+- [Stemming](#stemming)
+- [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
 - [Keyword Extraction](#keyword-extraction)
@@ -278,7 +279,7 @@ embedding = embedder(sentence)
 print(embedding.shape)  # (768,)
 ```
 
-## Stemmer
+## Stemming
 
 The `Stemmer` is a lightweight, rule-based reducer for Persian word forms. It trims common suffixes while respecting Persian orthography and Zero Width Non-Joiner usage. The goal is to produce stable stems for search, indexing, and simple text analysis without requiring a full morphological analyzer.
 
@@ -296,6 +297,28 @@ print(stemmer("خانه‌هایی"))
 نوه
 کتاب
 خانه
+```
+
+## Lemmatization
+
+The `Lemmatizer` maps Persian words to their base dictionary form. Unlike stemming, which only trims affixes, lemmatization uses explicit verb conjugation rules, vocabulary lookups, and a stemmer fallback to ensure valid lemmas. This makes it more accurate for tasks like part-of-speech tagging, text normalization, and linguistic analysis where the canonical form of a word is required.
+
+```python
+from shekar import Lemmatizer
+
+lemmatizer = Lemmatizer()
+
+print(lemmatizer("رفتند"))
+print(lemmatizer("کتاب‌ها"))
+print(lemmatizer("خانه‌هایی"))
+print(lemmatizer("گفته بوده‌ایم"))
+```
+
+```output
+رفت/رو
+کتاب
+خانه
+گفت/گو
 ```
 
 ## Part-of-Speech Tagging

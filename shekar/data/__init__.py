@@ -172,11 +172,15 @@ vocab = {word: count - min_count for word, count in vocab.items()}
 
 
 conjugator = Conjugator()
-conjugated_verbs = set()
-for past_stem, present_stem in verbs:
-    conjugated_verbs.update(conjugator.conjugate(past_stem, present_stem))
+conjugated_verbs = {}
 
-compound_words = compound_words - conjugated_verbs
+
+for past_stem, present_stem in verbs:
+    conjugations = conjugator.conjugate(past_stem, present_stem)
+    for form in conjugations:
+        conjugated_verbs[form] = (past_stem, present_stem)
+
+compound_words = compound_words - set(conjugated_verbs.keys())
 
 compound_words_space = {}
 for word in compound_words:

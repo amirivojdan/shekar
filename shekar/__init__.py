@@ -8,7 +8,7 @@ from .ner import NER
 from .pos import POSTagger
 from .embeddings import WordEmbedder, SentenceEmbedder
 from .spelling import SpellChecker
-from .morphology import Conjugator, Inflector, Stemmer
+from .morphology import Conjugator, Inflector, Stemmer, Lemmatizer
 from .hub import Hub
 
 __all__ = [
@@ -30,4 +30,5 @@ __all__ = [
     "Conjugator",
     "Inflector",
     "Stemmer",
+    "Lemmatizer",
 ]
