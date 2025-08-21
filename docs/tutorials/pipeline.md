@@ -4,16 +4,19 @@ The `Pipeline` class in the `shekar` library enables you to chain together multi
 
 ## Key Features
 
-- Chain multiple transformations.
-- Supports both single string and list input.
-- Callable as a function.
-- Supports decorator-based application on specific function arguments.
-- Works seamlessly with all transformers like `EmojiRemover`, `PunctuationRemover`, etc.
+-   **Composable**: Chain multiple transformations in a defined order.
+-   **Operator Chaining**: Use the | operator for a clean, functional style.
+-   **Flexible Input**: Works with single strings or batches of strings.
+-   **Callable**: The pipeline object itself is callable.
+-   **Decorator Support**: Apply preprocessing automatically to specific function arguments.
+-   **Error Handling**: Raises clear errors for invalid inputs or configuration.
 
 ## Initialization
 
-To create a pipeline, provide a list of named preprocessing steps:
+You can create a pipeline in two ways:
 
+1. Using the `Pipeline` class directly
+   
 ```python
 from shekar import Pipeline
 from shekar.preprocessing import EmojiRemover, PunctuationRemover
@@ -25,6 +28,16 @@ steps = [
 
 pipeline = Pipeline(steps)
 ```
+
+2. Using the `|` operator for cleaner chaining
+
+```python
+from shekar.preprocessing import AlphabetNormalizer, SpacingNormalizer, StopWordFilter
+
+pipeline = AlphabetNormalizer() | SpacingNormalizer() | StopWordFilter()
+```
+
+Both approaches produce identical pipelines. The `|` operator is ideal for quick and readable pipeline definitions.
 
 ## Basic Usage
 

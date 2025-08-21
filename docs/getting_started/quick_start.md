@@ -6,14 +6,19 @@ Welcome to **Shekar**, a Python library for Persian Natural Language Processing.
 
 ## 1. Normalize Your Text
 
-Use the `Normalizer` to standardize noisy or non-standard Persian text by applying a built-in pipeline of transformations.
+The built-in `Normalizer` class provides a ready-to-use pipeline that combines the most common filters and normalization steps, offering a default configuration that covers the majority of use cases.
 
 ```python
 from shekar import Normalizer
 
 normalizer = Normalizer()
-text = "ۿدف ما ػمګ بۀ ێڪډيڱڕ أښټ"
-print(normalizer.normalize(text))  # Output: "هدف ما کمک به یکدیگر است"
+text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده  می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
+
+print(normalizer(text))
+```
+
+```shell
+«فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
 ```
 
 ---
@@ -69,17 +74,3 @@ sentences = SentenceTokenizer().tokenize(text)
 for s in sentences:
     print(s)
 ```
-
----
- 
-## Summary
-
-| Task           | Tool / Class         |
-|----------------|----------------------|
-| Normalize text | `Normalizer`         |
-| Clean text     | `shekar.preprocessing` |
-| Create pipeline| `Pipeline`           |
-| Tokenize       | `SentenceTokenizer`  |
-| Word Cloud   | `WordCloud`           |
-
-All components work with both single strings and lists. Pipelines are composable and can be reused, tested, or applied dynamically via decorators.
