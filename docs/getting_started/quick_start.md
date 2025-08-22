@@ -66,10 +66,10 @@ Supports:
 Use `SentenceTokenizer` to split text into sentences:
 
 ```python
-from shekar.tokenizers import SentenceTokenizer
+from shekar import SentenceTokenizer
 
 text = "هدف ما کمک به یکدیگر است! ما می‌توانیم با هم کار کنیم."
-sentences = SentenceTokenizer().tokenize(text)
+sentences = SentenceTokenizer()(text)
 
 for s in sentences:
     print(s)

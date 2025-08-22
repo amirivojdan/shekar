@@ -17,7 +17,6 @@
 **Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
 The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression. Shekar embodies this philosophy in its design and development.
 
----
 
 ### Table of Contents
 
@@ -39,12 +38,12 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
+  - [Chaining with Pipelines](#chaining-with-pipelines)
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
 - [Download Models](#download-models)
 
----
 
 ## Installation
 
@@ -77,8 +76,6 @@ print(normalizer(text))
 «فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
 ```
 
----
-
 ### Batch Processing
 
 Both `Normalizer` and `Pipeline` support memory-efficient batch processing:
@@ -96,8 +93,6 @@ print(list(outputs))
 ["پرنده‌های  قفسی عادت دارن به بی‌کسی", "تو را من چشم در راهم"]
 ```
 
----
-
 ### Decorator Support
 
 Use `.on_args(...)` to apply the pipeline to specific function arguments:
@@ -114,13 +109,9 @@ print(process_text("تو را من چشم👀 در راهم!"))
 تو را من چشم در راهم
 ```
 
----
-
 ### Customization
 
 For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
-
----
 
 #### Component Overview
 
@@ -165,8 +156,6 @@ For advanced customization, Shekar offers a modular and composable framework for
 
 </details>
 
----
-
 ### Using Pipelines
 
 You can combine any of the preprocessing components using the `|` operator:
@@ -183,8 +172,6 @@ print(output)
 ```shell
 ز ایران دلش یاد کرد و بسوخت
 ```
-
----
 
 ## Tokenization
 
@@ -240,8 +227,6 @@ Both classes share a consistent interface:
 
 - `embed(text)` returns a NumPy vector.
 - `transform(text)` is an alias for `embed(text)` to integrate with pipelines.
-
----
 
 ### Word Embeddings
 
@@ -371,8 +356,6 @@ for word, tag in result:
 
 The `NER` module in **Shekar** offers a fast, quantized Named Entity Recognition pipeline using a fine-tuned ALBERT model in ONNX format. It detects common Persian entities such as persons, locations, organizations, and dates. This model is designed for efficient inference and can be easily combined with other preprocessing steps.
 
----
-
 Example usage:
 
 ```python
@@ -412,9 +395,30 @@ for text, label in entities:
 فرانسه → LOC
 ```
 
+**Entity Tags**
+
+The following table summarizes the entity types used by the model (aggregating B- and I- tags):
+
+| Tag     | Description                              |
+| ------- | ---------------------------------------- |
+| **PER** | Person names                             |
+| **LOC** | Locations (cities, countries, landmarks) |
+| **ORG** | Organizations (companies, institutions)  |
+| **DAT** | Dates and temporal expressions           |
+| **EVE** | Events (festivals, historical events)    |
+| **O**   | Outside (non-entity text)                |
+
+### Chaining with Pipelines
+
 You can seamlessly chain `NER` with other components using the `|` operator:
 
 ```python
+from shekar import NER
+from shekar import Normalizer
+
+normalizer = Normalizer()
+albert_ner = NER()
+
 ner_pipeline = normalizer | albert_ner
 entities = ner_pipeline(input_text)
 
@@ -423,7 +427,7 @@ for text, label in entities:
 ```
 
 This chaining enables clean and readable code, letting you build custom NLP flows with preprocessing and tagging in one pass.
-
+ 
 ## Keyword Extraction
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/keyword_extraction.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/keyword_extraction.ipynb)

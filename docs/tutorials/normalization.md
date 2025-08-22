@@ -12,9 +12,13 @@ The **`Normalizer`** is a composite tool that standardizes input Persian text by
 from shekar import Normalizer
 
 normalizer = Normalizer()
-text = "ۿدف ما ػمګ بۀ ێڪډيڱڕ أښټ"
+text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده  می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
 normalized = normalizer.normalize(text)
 print(normalized)  # Output: "هدف ما کمک به یکدیگر است"
+```
+
+```shell
+«فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
 ```
 
 ### Batch and Decorator Support
@@ -88,17 +92,16 @@ print(process_text("تو را من چشم👀 در راهم!"))
 
 ```python
 steps = [
-                ("AlphaNumericUnifier", AlphabetNormalizer()),
+                ("AlphabetNormalizer", AlphabetNormalizer()),
                 ("ArabicUnicodeNormalizer", ArabicUnicodeNormalizer()),
-                ("NumericNormalizer", NumericNormalizer()),
-                ("PunctuationUnifier", PunctuationNormalizer()),
+                ("DigitNormalizer", DigitNormalizer()),
+                ("PunctuationNormalizer", PunctuationNormalizer()),
                 ("EmailMasker", EmailMasker(mask="")),
                 ("URLMasker", URLMasker(mask="")),
-                ("EmojiRemover", EmojiRemover()),
-                ("HTMLTagRemover", HTMLTagRemover()),
-                ("DiacriticsRemover", DiacriticsRemover()),
-                ("RedundantCharacterRemover", RedundantCharacterRemover()),
-                ("NonPersianRemover", NonPersianRemover()),
-                ("SpacingStandardizer", SpacingStandardizer()),
+                ("EmojiFilter", EmojiFilter()),
+                ("HTMLTagFilter", HTMLTagFilter()),
+                ("DiacriticFilter", DiacriticFilter()),
+                ("RepeatedLetterFilter", RepeatedLetterFilter()),
+                ("SpacingNormalizer", SpacingNormalizer()),
             ]
 ```

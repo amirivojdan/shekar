@@ -31,7 +31,12 @@ nav:
     - Pipeline: tutorials/pipeline.md
     - Tokenization: tutorials/tokenization.md
     - Normalization: tutorials/normalization.md
-    
+    - Embeddings: tutorials/embeddings.md
+    - Part-of-Speech Tagging: tutorials/pos.md
+    - Named Entity Recognition: tutorials/ner.md
+    - Keyword Extraction: tutorials/keyword_extraction.md
+    - Spell Checking: tutorials/spell_checking.md
+    - Visualization: tutorials/visualization.md
 
 plugins:
   - termynal:
