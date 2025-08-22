@@ -1,5 +1,5 @@
 from .word_embedder import WordEmbedder
-from .sentence_embedder import SentenceEmbedder
+from .contextual_embedder import ContextualEmbedder
 
 
-__all__ = ["WordEmbedder", "SentenceEmbedder"]
+__all__ = ["WordEmbedder", "ContextualEmbedder"]

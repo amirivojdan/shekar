@@ -34,7 +34,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
   - [SentenceTokenizer](#sentencetokenizer)
 - [Embeddings](#embeddings)
   - [Word Embeddings](#word-embeddings)
-  - [Sentence Embeddings](#sentence-embeddings)
+  - [Contextual Embeddings](#contextual-embeddings)
 - [Stemming](#stemming)
 - [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
@@ -234,7 +234,7 @@ for sentence in sentences:
 **Shekar** offers two main embedding classes:
 
 - **`WordEmbedder`**: Provides static word embeddings using pre-trained FastText models.
-- **`SentenceEmbedder`**: Provides contextual embeddings using a fine-tuned ALBERT model.
+- **`ContextualEmbedder`**: Provides contextual embeddings using a fine-tuned ALBERT model.
 
 Both classes share a consistent interface:
 
@@ -264,15 +264,15 @@ similar_words = embedder.most_similar("کتاب", top_n=5)
 print(similar_words)
 ```
 
-### Sentence Embeddings
+### Contextual Embeddings
 
-`SentenceEmbedder` uses an ALBERT model trained with Masked Language Modeling (MLM) on the Naab dataset to generate high-quality contextual embeddings.
+`ContextualEmbedder` uses an ALBERT model trained with Masked Language Modeling (MLM) on the Naab dataset to generate high-quality contextual embeddings.
 The resulting embeddings are 768-dimensional vectors representing the semantic meaning of entire phrases or sentences.
 
 ```python
-from shekar.embeddings import SentenceEmbedder
+from shekar.embeddings import ContextualEmbedder
 
-embedder = SentenceEmbedder(model="albert")
+embedder = ContextualEmbedder(model="albert")
 
 sentence = "کتاب‌ها دریچه‌ای به جهان دانش هستند."
 embedding = embedder(sentence)

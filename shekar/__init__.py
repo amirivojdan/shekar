@@ -6,7 +6,7 @@ from .tokenization import WordTokenizer, SentenceTokenizer, Tokenizer
 from .keyword_extraction import KeywordExtractor
 from .ner import NER
 from .pos import POSTagger
-from .embeddings import WordEmbedder, SentenceEmbedder
+from .embeddings import WordEmbedder, ContextualEmbedder
 from .spelling import SpellChecker
 from .morphology import Conjugator, Inflector, Stemmer, Lemmatizer
 from .hub import Hub
@@ -24,7 +24,7 @@ __all__ = [
     "SpellChecker",
     "Tokenizer",
     "WordEmbedder",
-    "SentenceEmbedder",
+    "ContextualEmbedder",
     "WordTokenizer",
     "SentenceTokenizer",
     "Conjugator",
