@@ -1,141 +1,181 @@
-import pytest
+import io
 import os
-import tempfile
+import sys
+import json
 import hashlib
+import tempfile
 from pathlib import Path
 from unittest import mock
+
+import pytest
+
 from shekar.hub import Hub, MODEL_HASHES, TqdmUpTo
 
 
-class TestHub:
-    def test_compute_sha256_hash(self):
-        # Create a temporary file with known content
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            tmp.write(b"test content")
-            tmp_path = tmp.name
+def test_compute_sha256_hash_bytesio(tmp_path: Path):
+    p = tmp_path / "small.txt"
+    p.write_bytes(b"test content")
+    expected = hashlib.sha256(b"test content").hexdigest()
+    assert Hub.compute_sha256_hash(p) == expected
 
+
+def test_compute_sha256_hash_empty(tmp_path: Path):
+    p = tmp_path / "empty.bin"
+    p.write_bytes(b"")
+    expected = hashlib.sha256(b"").hexdigest()
+    assert Hub.compute_sha256_hash(p) == expected
+
+
+def test_compute_sha256_hash_large_blockwise(tmp_path: Path):
+    # create a file larger than default block size to exercise the loop
+    p = tmp_path / "large.bin"
+    data = os.urandom(1_000_000)  # 1 MB
+    p.write_bytes(data)
+    expected = hashlib.sha256(data).hexdigest()
+    # use a small block size to ensure multiple iterations
+    assert Hub.compute_sha256_hash(p, block_size=4096) == expected
+
+
+def _fake_home(tmp_path: Path):
+    """Return a function that makes Path.home() return tmp_path."""
+    def _home():
+        return tmp_path
+    return _home
+
+
+@pytest.mark.parametrize("fname", list(MODEL_HASHES.keys()))
+def test_get_resource_downloads_when_missing(monkeypatch, tmp_path: Path, fname: str):
+    # redirect cache to a temp home
+    monkeypatch.setattr(Path, "home", _fake_home(tmp_path))
+    # pretend file does not exist
+    monkeypatch.setattr(Path, "exists", lambda self: False if self.name == fname else Path(self).exists())
+
+    # stub download to write a file with the correct hash
+    def fake_urlretrieve(url, filename, reporthook=None, data=None):
+        # write some bytes, then overwrite with a file whose hash matches expected
+        Path(filename).write_bytes(b"placeholder")
+        # replace content with a deterministic file that matches expected hash
+        # we cannot reconstruct the exact bytes, so instead patch compute_sha256_hash below
+        return (url, filename, None)
+
+    monkeypatch.setattr("urllib.request.urlretrieve", fake_urlretrieve)
+
+    # patch compute_sha256_hash to return the registry value for our target file
+    monkeypatch.setattr(Hub, "compute_sha256_hash", lambda p: MODEL_HASHES[fname])
+
+    result = Hub.get_resource(fname)
+    assert isinstance(result, Path)
+    assert result.name == fname
+    assert result.parent == tmp_path / ".shekar"
+
+
+def test_get_resource_download_failure_raises(monkeypatch, tmp_path: Path):
+    fname = "albert_persian_tokenizer.json"
+    monkeypatch.setattr(Path, "home", _fake_home(tmp_path))
+    # force "missing"
+    monkeypatch.setattr(Path, "exists", lambda self: False)
+    # simulate download failure
+    monkeypatch.setattr(Hub, "download_file", lambda url, dest: False)
+    # track unlink calls
+    unlinked = {"called": False}
+    def fake_unlink(self, missing_ok=False):
+        unlinked["called"] = True
+    monkeypatch.setattr(Path, "unlink", fake_unlink)
+
+    with pytest.raises(FileNotFoundError) as exc:
+        Hub.get_resource(fname)
+    assert "Failed to download" in str(exc.value)
+    assert unlinked["called"] is True
+
+
+def test_get_resource_hash_mismatch_raises_and_unlinks(monkeypatch, tmp_path: Path):
+    fname = "albert_persian_tokenizer.json"
+    monkeypatch.setattr(Path, "home", _fake_home(tmp_path))
+    target = tmp_path / ".shekar" / fname
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(b"wrong content")
+    # exists -> True
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    # hash mismatch
+    monkeypatch.setattr(Hub, "compute_sha256_hash", lambda p: "badbadbad")
+    # capture unlink
+    calls = {"count": 0}
+    def fake_unlink(self, missing_ok=False):
+        calls["count"] += 1
         try:
-            # Calculate expected hash
-            expected_hash = hashlib.sha256(b"test content").hexdigest()
-            # Test the method
-            actual_hash = Hub.compute_sha256_hash(tmp_path)
-            assert actual_hash == expected_hash
-        finally:
-            # Clean up
-            os.unlink(tmp_path)
+            self.unlink(missing_ok=True)  # attempt actual delete if possible
+        except Exception:
+            pass
+    monkeypatch.setattr(Path, "unlink", fake_unlink)
 
-    def test_compute_sha256_hash_with_path_object(self):
-        # Test with a Path object instead of a string
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            tmp.write(b"test content with path")
-            tmp_path = Path(tmp.name)
+    with pytest.raises(ValueError) as exc:
+        Hub.get_resource(fname)
+    assert "Hash mismatch" in str(exc.value)
+    assert calls["count"] >= 1
 
-        try:
-            expected_hash = hashlib.sha256(b"test content with path").hexdigest()
-            actual_hash = Hub.compute_sha256_hash(tmp_path)
-            assert actual_hash == expected_hash
-        finally:
-            os.unlink(tmp_path)
 
-    def test_get_resource_file_not_recognized(self):
-        # Test for an unrecognized file
-        with pytest.raises(ValueError) as excinfo:
-            Hub.get_resource("nonexistent_file.txt")
-        assert "File nonexistent_file.txt is not recognized" in str(excinfo.value)
+def test_get_resource_uses_cached_when_hash_ok(monkeypatch, tmp_path: Path):
+    fname = "albert_persian_tokenizer.json"
+    monkeypatch.setattr(Path, "home", _fake_home(tmp_path))
+    target = tmp_path / ".shekar" / fname
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(b"correct content")
 
-    @mock.patch("shekar.hub.Hub.download_file")
-    @mock.patch("shekar.hub.Hub.compute_sha256_hash")
-    @mock.patch("pathlib.Path.exists")
-    @mock.patch("pathlib.Path.mkdir")
-    def test_get_resource_download_success(
-        self, mock_mkdir, mock_exists, mock_hash, mock_download
-    ):
-        # Setup mocks
-        mock_exists.return_value = False
-        mock_download.return_value = True
-        mock_hash.return_value = MODEL_HASHES["albert_persian_tokenizer.json"]
+    # exists -> True
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    # hash matches registry
+    monkeypatch.setattr(Hub, "compute_sha256_hash", lambda p: MODEL_HASHES[fname])
+    # ensure download is NOT called
+    with mock.patch.object(Hub, "download_file") as dl_mock:
+        out = Hub.get_resource(fname)
+        dl_mock.assert_not_called()
+        assert out == target
 
-        # Call the method
-        result = Hub.get_resource("albert_persian_tokenizer.json")
 
-        # Assertions
-        assert mock_mkdir.called
-        assert mock_download.called
-        assert isinstance(result, Path)
-        assert result.name == "albert_persian_tokenizer.json"
+def test_get_resource_unrecognized_file_raises():
+    with pytest.raises(ValueError) as exc:
+        Hub.get_resource("not_in_registry.onnx")
+    assert "is not recognized" in str(exc.value)
 
-    @mock.patch("shekar.hub.Hub.download_file")
-    @mock.patch("pathlib.Path.exists")
-    @mock.patch("pathlib.Path.unlink")
-    @mock.patch("pathlib.Path.mkdir")
-    def test_get_resource_download_failure(
-        self, mock_mkdir, mock_unlink, mock_exists, mock_download
-    ):
-        # Setup mocks
-        mock_exists.return_value = False
-        mock_download.return_value = False
 
-        # Call the method and check for exception
-        with pytest.raises(FileNotFoundError) as excinfo:
-            Hub.get_resource("albert_persian_tokenizer.json")
+def test_download_file_success_sets_progress(monkeypatch, tmp_path: Path):
+    url = "https://example.com/file.bin"
+    dest = tmp_path / "file.bin"
 
-        assert "Failed to download" in str(excinfo.value)
-        assert mock_unlink.called
+    # fake progress: call reporthook with chunks to simulate 100 bytes
+    def fake_urlretrieve(url, filename, reporthook=None, data=None):
+        total = 100
+        # call reporthook a few times to simulate progress
+        if reporthook:
+            reporthook(1, 25, total)   # 25
+            reporthook(2, 25, total)   # 50
+            reporthook(3, 25, total)   # 75
+            reporthook(4, 25, total)   # 100
+        Path(filename).write_bytes(b"x" * total)
+        return (url, filename, None)
 
-    @mock.patch("shekar.hub.Hub.compute_sha256_hash")
-    @mock.patch("pathlib.Path.exists")
-    @mock.patch("pathlib.Path.unlink")
-    @mock.patch("pathlib.Path.mkdir")
-    def test_get_resource_hash_mismatch(
-        self, mock_mkdir, mock_unlink, mock_exists, mock_hash
-    ):
-        # Setup mocks
-        mock_exists.return_value = True
-        mock_hash.return_value = "wrong_hash_value"
+    monkeypatch.setattr("urllib.request.urlretrieve", fake_urlretrieve)
+    assert Hub.download_file(url, dest) is True
+    assert dest.exists()
+    assert dest.stat().st_size == 100
 
-        # Call the method and check for exception
-        with pytest.raises(ValueError) as excinfo:
-            Hub.get_resource("albert_persian_tokenizer.json")
 
-        assert "Hash mismatch" in str(excinfo.value)
-        assert mock_unlink.called
+def test_download_file_failure_prints_and_returns_false(monkeypatch, tmp_path: Path, capsys):
+    monkeypatch.setattr("urllib.request.urlretrieve", mock.Mock(side_effect=Exception("boom")))
+    ok = Hub.download_file("https://example.com/f.bin", tmp_path / "f.bin")
+    captured = capsys.readouterr()
+    assert ok is False
+    assert "Error downloading the file: boom" in captured.out
 
-    @mock.patch("urllib.request.urlretrieve")
-    def test_download_file_success(self, mock_urlretrieve):
-        # Setup
-        url = "https://example.com/file.txt"
-        dest_path = Path(tempfile.gettempdir()) / "file.txt"
-
-        # Test
-        result = Hub.download_file(url, dest_path)
-
-        # Assertions
-        assert result is True
-        mock_urlretrieve.assert_called_once()
-
-    @mock.patch("urllib.request.urlretrieve")
-    def test_download_file_failure(self, mock_urlretrieve):
-        # Setup
-        mock_urlretrieve.side_effect = Exception("Download failed")
-        url = "https://example.com/file.txt"
-        dest_path = Path(tempfile.gettempdir()) / "file.txt"
-
-        # Test
-        result = Hub.download_file(url, dest_path)
-
-        # Assertions
-        assert result is False
-
-    def test_tqdm_up_to(self):
-        # Create a TqdmUpTo instance
-        with mock.patch("tqdm.tqdm.update") as mock_update:
-            t = TqdmUpTo(total=100)
-
-            # Test with tsize=None
-            t.update_to(b=1, bsize=10)
-            mock_update.assert_called_with(10)
-
-            # Test with tsize specified
-            t.update_to(b=2, bsize=10, tsize=200)
-            assert t.total == 200
-            mock_update.assert_called_with(20)
+def test_tqdm_up_to_updates_and_sets_total():
+    t = TqdmUpTo(total=0)
+    # first call without tsize
+    n_before = t.n
+    t.update_to(b=2, bsize=10)  # should call update with delta 20
+    assert t.n - n_before == 20
+    # now with tsize to set total
+    t.update_to(b=3, bsize=10, tsize=200)
+    assert t.total == 200
+    # ensure cumulative n moved by another 10
+    assert t.n - n_before == 30
+    t.close()
