@@ -36,6 +36,8 @@ class SpacingNormalizer(BaseTextTransform):
                 "",
             ),  # Remove ZWNJ at edges of tokens (not between Arabic letters/digits)
             (r" {2,}", " "),  # Final collapse of extra spaces
+            # Remove ZWNJ after non-left-joiner letters
+            (rf"(?<=[{data.non_left_joiner_letters}]){data.ZWNJ}", ""),
         ]
 
         self._punctuation_spacing_mappings = [
