@@ -51,6 +51,8 @@ from .normalizers import (
     NormalizeAlphabets,
     SpacingNormalizer,
     NormalizeSpacings,
+    YaNormalizer,
+    NormalizeYas,
 )
 
 __all__ = [
@@ -103,4 +105,6 @@ __all__ = [
     "NormalizeAlphabets",
     "NormalizeSpacings",
     "SpacingNormalizer",
+    "YaNormalizer",
+    "NormalizeYas",
 ]

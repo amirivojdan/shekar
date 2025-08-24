@@ -5,6 +5,7 @@ from shekar.preprocessing import (
     AlphabetNormalizer,
     DigitNormalizer,
     SpacingNormalizer,
+    YaNormalizer,
     EmojiFilter,
     EmailMasker,
     URLMasker,
@@ -87,6 +88,11 @@ def test_remove_extra_spaces():
     expected_output = "این یک آزمون است"
     assert spacing_normalizer(input_text) == expected_output
 
+    # test ZWNJ after non-left joiner letters!
+    input_text = "چهار‌لاچنگ"
+    expected_output = "چهارلاچنگ"
+    assert spacing_normalizer(input_text) == expected_output
+
     input_text = "این  یک  آزمون  است  "
     expected_output = "این یک آزمون است"
     assert spacing_normalizer.fit_transform(input_text) == expected_output
@@ -94,6 +100,19 @@ def test_remove_extra_spaces():
     input_text = "این  یک  آزمون  است\n\n\n\n"
     expected_output = "این یک آزمون است"
     assert spacing_normalizer(input_text) == expected_output
+
+
+def test_ya_normalizer():
+    ya_normalizer = YaNormalizer()
+
+    input_text = "خانه‌ی ما"
+    expected_output = "خانۀ ما"
+    assert ya_normalizer(input_text) == expected_output
+
+    ya_normalizer = YaNormalizer(style="joda")
+    input_text = "خانۀ ما"
+    expected_output = "خانه‌ی ما"
+    assert ya_normalizer(input_text) == expected_output
 
 
 def test_mask_email():
