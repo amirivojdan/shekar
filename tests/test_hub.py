@@ -1,9 +1,5 @@
-import io
 import os
-import sys
-import json
 import hashlib
-import tempfile
 from pathlib import Path
 from unittest import mock
 
@@ -38,8 +34,10 @@ def test_compute_sha256_hash_large_blockwise(tmp_path: Path):
 
 def _fake_home(tmp_path: Path):
     """Return a function that makes Path.home() return tmp_path."""
+
     def _home():
         return tmp_path
+
     return _home
 
 
@@ -48,7 +46,11 @@ def test_get_resource_downloads_when_missing(monkeypatch, tmp_path: Path, fname:
     # redirect cache to a temp home
     monkeypatch.setattr(Path, "home", _fake_home(tmp_path))
     # pretend file does not exist
-    monkeypatch.setattr(Path, "exists", lambda self: False if self.name == fname else Path(self).exists())
+    monkeypatch.setattr(
+        Path,
+        "exists",
+        lambda self: False if self.name == fname else Path(self).exists(),
+    )
 
     # stub download to write a file with the correct hash
     def fake_urlretrieve(url, filename, reporthook=None, data=None):
@@ -78,8 +80,10 @@ def test_get_resource_download_failure_raises(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(Hub, "download_file", lambda url, dest: False)
     # track unlink calls
     unlinked = {"called": False}
+
     def fake_unlink(self, missing_ok=False):
         unlinked["called"] = True
+
     monkeypatch.setattr(Path, "unlink", fake_unlink)
 
     with pytest.raises(FileNotFoundError) as exc:
@@ -100,12 +104,14 @@ def test_get_resource_hash_mismatch_raises_and_unlinks(monkeypatch, tmp_path: Pa
     monkeypatch.setattr(Hub, "compute_sha256_hash", lambda p: "badbadbad")
     # capture unlink
     calls = {"count": 0}
+
     def fake_unlink(self, missing_ok=False):
         calls["count"] += 1
         try:
             self.unlink(missing_ok=True)  # attempt actual delete if possible
         except Exception:
             pass
+
     monkeypatch.setattr(Path, "unlink", fake_unlink)
 
     with pytest.raises(ValueError) as exc:
@@ -147,10 +153,10 @@ def test_download_file_success_sets_progress(monkeypatch, tmp_path: Path):
         total = 100
         # call reporthook a few times to simulate progress
         if reporthook:
-            reporthook(1, 25, total)   # 25
-            reporthook(2, 25, total)   # 50
-            reporthook(3, 25, total)   # 75
-            reporthook(4, 25, total)   # 100
+            reporthook(1, 25, total)  # 25
+            reporthook(2, 25, total)  # 50
+            reporthook(3, 25, total)  # 75
+            reporthook(4, 25, total)  # 100
         Path(filename).write_bytes(b"x" * total)
         return (url, filename, None)
 
@@ -160,12 +166,17 @@ def test_download_file_success_sets_progress(monkeypatch, tmp_path: Path):
     assert dest.stat().st_size == 100
 
 
-def test_download_file_failure_prints_and_returns_false(monkeypatch, tmp_path: Path, capsys):
-    monkeypatch.setattr("urllib.request.urlretrieve", mock.Mock(side_effect=Exception("boom")))
+def test_download_file_failure_prints_and_returns_false(
+    monkeypatch, tmp_path: Path, capsys
+):
+    monkeypatch.setattr(
+        "urllib.request.urlretrieve", mock.Mock(side_effect=Exception("boom"))
+    )
     ok = Hub.download_file("https://example.com/f.bin", tmp_path / "f.bin")
     captured = capsys.readouterr()
     assert ok is False
     assert "Error downloading the file: boom" in captured.out
+
 
 def test_tqdm_up_to_updates_and_sets_total():
     t = TqdmUpTo(total=0)

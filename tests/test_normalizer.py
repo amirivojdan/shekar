@@ -10,7 +10,7 @@ def normalizer():
 
 def test_normalize_basic_spacing_and_quotes(normalizer):
     # Exercises punctuation spacing, ZWNJ for "می + verb", and Persian quotes
-    inp = 'ناصر گفت:«من میروم.»  \u200c 🎉 she+kar@she-kar.io'
+    inp = "ناصر گفت:«من میروم.»  \u200c 🎉 she+kar@she-kar.io"
     out = normalizer.normalize(inp)
     # Email should be removed (mask="")
     assert "@" not in out
