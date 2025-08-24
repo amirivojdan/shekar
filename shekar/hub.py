@@ -78,21 +78,3 @@ class Hub:
         except Exception as e:
             print(f"Error downloading the file: {e}")
             return False
-
-
-if __name__ == "__main__":
-    cache_dir = Path.home() / ".shekar"
-    if cache_dir.exists():
-        print(f"Checking files in {cache_dir}")
-        for file_path in cache_dir.iterdir():
-            if file_path.is_file():
-                file_hash = Hub.compute_sha256_hash(file_path)
-                print(f"{file_path.name}: {file_hash}")
-                if file_path.name in MODEL_HASHES:
-                    expected_hash = MODEL_HASHES[file_path.name]
-                    if file_hash == expected_hash:
-                        print("✓ Hash matches registry")
-                    else:
-                        print(f"✗ Hash mismatch! Expected: {expected_hash}")
-                else:
-                    print("⚠ File not in registry")
