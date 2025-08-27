@@ -50,7 +50,6 @@ def test_correct_spacings():
     expected_output = "هم شاید"
     assert spacing_normalizer(input_text) == expected_output
 
-
     input_text = "   این یک جمله   نمونه   است. "
     expected_output = "این یک جمله نمونه است."
     assert spacing_normalizer(input_text) == expected_output
