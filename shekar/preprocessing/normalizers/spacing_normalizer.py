@@ -91,6 +91,11 @@ class SpacingNormalizer(BaseTextTransform):
             rf"(?<!\S)(?P<stem>[{data.persian_letters}]+)\s+(?P<suffix>(?:{_word_suffix_alt}))(?=$|[\s{_punc_class}])"
         )
 
+        _morph_suffix_alt = "|".join(map(re.escape, data.morph_suffixes))
+        self._morph_suffix_space_pattern = re.compile(
+            rf"(?<!\S)(?P<stem>[{data.persian_letters}]+)\s+(?P<suffix>(?:{_morph_suffix_alt}))(?=$|[\s{_punc_class}])"
+        )
+
         self._punctuation_spacing_patterns = self._compile_patterns(
             self._punctuation_spacing_mappings
         )
@@ -105,11 +110,15 @@ class SpacingNormalizer(BaseTextTransform):
         )
 
         self._word_suffix_corrector = partial(
-            self._suffix_spacing, vocab=data.vocab, only_stem=True
+            self._suffix_spacing, vocab=data.vocab,
         )
 
         self._word_prefix_corrector = partial(
-            self._prefix_spacing, vocab=data.vocab, only_stem=True
+            self._prefix_spacing, vocab=data.vocab,
+        )
+
+        self._morph_suffix_corrector = partial(
+            self._suffix_spacing, vocab=data.vocab, only_stem=True
         )
 
         self.compound_words_pattern = re.compile(
@@ -150,8 +159,15 @@ class SpacingNormalizer(BaseTextTransform):
         text = self._map_patterns(text, self._other_patterns)
         text = self._map_patterns(text, self._punctuation_spacing_patterns).strip()
 
+        #correct compound words spacing
+        text = self.compound_words_pattern.sub(self._compound_replacer, text)
+
+        #correct word prefixes/suffix spacing
         text = self._word_prefix_space_pattern.sub(self._word_prefix_corrector, text)
         text = self._word_suffix_space_pattern.sub(self._word_suffix_corrector, text)
+
+        #correct morphological suffix spacing
+        text = self._morph_suffix_space_pattern.sub(self._morph_suffix_corrector, text)
 
         # Apply the verbal suffix spacing patterns
         text = self._verbal_suffix_space_pattern.sub(self.verbal_suffix_corrector, text)
@@ -160,6 +176,5 @@ class SpacingNormalizer(BaseTextTransform):
         text = self._mi_space_pattern.sub(self.verbal_prefix_corrector, text)
         text = self._mi_joined_pattern.sub(self.verbal_prefix_corrector, text)
 
-        text = self.compound_words_pattern.sub(self._compound_replacer, text)
-
+        
         return text.strip()
