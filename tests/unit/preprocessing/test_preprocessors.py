@@ -30,13 +30,13 @@ from shekar.transforms import (
 def test_correct_spacings():
     spacing_normalizer = SpacingNormalizer()
 
-    # input_text = (
-    #     "میرویم به خانههای خاک آلود که گفته اند تا چند سال بعد تر ویران نمی شوند !"
-    # )
-    # expected_output = (
-    #     "می‌رویم به خانه‌های خاک‌آلود که گفته‌اند تا چند سال بعدتر ویران نمی‌شوند!"
-    # )
-    # assert spacing_normalizer(input_text) == expected_output
+    input_text = (
+        "میرویم به خانههای خاک آلود که گفته اند تا چند سال بعد تر ویران نمی شوند !"
+    )
+    expected_output = (
+        "می‌رویم به خانه‌های خاک‌آلود که گفته‌اند تا چند سال بعدتر ویران نمی‌شوند!"
+    )
+    assert spacing_normalizer(input_text) == expected_output
 
     input_text = "دوقلو های هم خون"
     expected_output = "دوقلوهای هم‌خون"
