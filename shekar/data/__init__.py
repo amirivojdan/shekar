@@ -18,8 +18,7 @@ stopwords_csv_path = resources_root.joinpath("stopwords.csv")
 ZWNJ = "\u200c"
 newline = "\n"
 diacritics = "ًٌٍَُِّْ"
-persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی"
-persian_full_set = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
+persian_letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی" + "ءؤۀأئ" + ZWNJ
 persian_digits = "۰۱۲۳۴۵۶۷۸۹"
 english_digits = "0123456789"
 special_signs = "-٪@/#"
@@ -62,67 +61,72 @@ morph_suffixes = [
 
 suffixes = [
     "گر",
-    "گری",
     "آسا",
     "فام",
     "جات",
     "وش",
     "آگین",
-    "باره",
-    "آسا",
     "وار",
     "نگر",
-    "نگری",
     "زا",
-    "زایی",
     "آمیز",
-    "آمیزی",
-    "زدایی",
+    "زدا",
     "فرسا",
     "سنج",
-    "سنجی",
     "گشا",
-    "گشایی",
-    "سپاری",
-    "شدگی",
-    "زدگی",
-    "طلبی",
-    "یابی",
+    "سپار",
+    "طلب",
+    "یاب",
     "شمول",
     "پیما",
-    "پیمایی",
-    "شمول",
-    "بندی",
-    "نویسی",
+    "بند",
+    "نویس",
     "نشین",
     "انگیز",
     "کش",
-    "کشی",
     "آور",
     "آلود",
     "نشین",
     "گزین",
-    "سازی",
+    "ساز",
     "کنان",
     "رو",
     "دار",
-    "بندی",
+    "بند",
     "ریز",
-    "مایه",
-    "پژوه",
     "گستر",
-    "پژوهی",
-    "گستری",
     "شناس",
-    "شناسی",
     "پذیر",
-    "پذیری",
     "ناپذیر",
-    "ناپذیری",
-    "پراکنی",
+    "پراکن",
+    "پژوه",
+]
+
+e_suffixes = [
+    "باره",
+    "بارگی",
     "دهنده",
     "دهندگی",
+    "مایه",
+    "مایگی",
+    # "شده", # TODO: if POS tag is adjective
+    "شدگی",
+    # "زده",
+    "زدگی",
 ]
+
+expanded_prefixes = []
+for suffix in suffixes:
+    expanded_prefixes.append(suffix)
+    if suffix.endswith("ا") or suffix.endswith("آ"):
+        expanded_prefixes.append(suffix + "یی")
+    # TODO: check if the suffix ends with e sound and POS is adjective to add "گی" otherwise add "ی"
+    # elif suffix.endswith("ه"):
+    #     expanded_prefixes.append(suffix[:-1] + "گی")
+    elif not suffix.endswith("ی"):
+        expanded_prefixes.append(suffix + "ی")
+
+suffixes = expanded_prefixes
 
 prefixes = [
     "برون",

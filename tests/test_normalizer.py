@@ -23,6 +23,14 @@ def test_normalize_basic_spacing_and_quotes(normalizer):
     # Balanced Persian quotes around sentence
     assert "«" in out and "»" in out
 
+    input_text = "بنیان    گذار های خانه هایمان"
+    expected_output = "بنیان‌گذارهای خانه‌هایمان"
+    assert normalizer(input_text) == expected_output
+
+    input_text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده  می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
+    expected_output = "«فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود."
+    assert normalizer(input_text) == expected_output
+
 
 def test_email_and_url_masking(normalizer):
     inp = "تماس: user@example.com و وبگاه: https://example.com/page"

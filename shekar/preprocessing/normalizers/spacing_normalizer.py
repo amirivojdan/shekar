@@ -154,7 +154,13 @@ class SpacingNormalizer(BaseTextTransform):
             candidate = f"{stem}{data.ZWNJ}{suffix}"
         if only_stem:
             return candidate if stem in vocab else m.group(0)
-        return candidate if candidate in vocab else m.group(0)
+
+        no_y_candidate = candidate.removesuffix("یی").removesuffix("ی")
+        return (
+            candidate
+            if ((candidate in vocab) or (no_y_candidate in vocab))
+            else m.group(0)
+        )
 
     def _function(self, text: str) -> str:
         text = self._map_patterns(text, self._spacing_patterns)

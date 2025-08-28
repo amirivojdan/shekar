@@ -48,7 +48,7 @@ class StopWordFilter(BaseTextTransform):
             escaped_word = re.escape(stopword)
             self._stopword_mappings.append(
                 (
-                    rf"(?<![{data.persian_full_set}]){escaped_word}(?![{data.persian_full_set}])",
+                    rf"(?<![{data.persian_letters}]){escaped_word}(?![{data.persian_letters}])",
                     replace_with,
                 )
             )
