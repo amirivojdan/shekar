@@ -73,13 +73,58 @@ class AlbertNER(BaseTransform):
         return entities
 
     def transform(self, X: str) -> list:
-        inputs = self.tokenizer.fit_transform(X)
-        inputs.pop("token_type_ids", None)
-        outputs = self.session.run(None, inputs)
-        logits = outputs[0]
-        predicted_tag_ids = np.argmax(logits, axis=-1)[0]
-        tokens = [
-            self.tokenizer.tokenizer.id_to_token(id) for id in inputs["input_ids"][0]
-        ]
-        entities = self._aggregate_entities(tokens, predicted_tag_ids)
+        """
+        NER tag a possibly long input by running ONNX over tokenizer chunks
+        and stitching predictions back into a single sequence.
+
+        Returns:
+            entities: list produced by self._aggregate_entities over the full text
+        """
+
+        batched = self.tokenizer(X)  # dict with (num_chunks, L) arrays
+        input_ids = batched["input_ids"]  # (B, L)
+        attention_mask = batched["attention_mask"]  # (B, L)
+
+        onnx_input_names = {i.name for i in self.session.get_inputs()}
+        feed = {k: v for k, v in batched.items() if k in onnx_input_names}
+
+        outputs = self.session.run(None, feed)
+        logits = outputs[0]  # (B, L, num_tags)
+        pred_ids = np.argmax(logits, axis=-1)  # (B, L)
+
+        special_names = ["<pad>", "[PAD]", "[CLS]", "[SEP]", "<cls>", "<sep>"]
+        special_ids = {self.tokenizer.tokenizer.token_to_id(n) for n in special_names}
+        special_ids = {i for i in special_ids if i is not None}
+
+        stride = getattr(self.tokenizer, "stride", 0)
+        B, L = input_ids.shape
+
+        tokens_all: list[str] = []
+        tags_all: list[int] = []
+
+        for b in range(B):
+            ids = input_ids[b]
+            mask = attention_mask[b].astype(bool)
+
+            valid_pos = [
+                i for i in range(L) if mask[i] and int(ids[i]) not in special_ids
+            ]
+
+            if b > 0 and stride > 0:
+                valid_pos = valid_pos[stride:]
+
+            if not valid_pos:
+                continue
+
+            toks = [
+                self.tokenizer.tokenizer.id_to_token(int(ids[i])) for i in valid_pos
+            ]
+            tags = pred_ids[b, valid_pos].tolist()
+
+            tokens_all.extend(toks)
+            tags_all.extend(tags)
+
+        entities = self._aggregate_entities(
+            tokens_all, np.asarray(tags_all, dtype=pred_ids.dtype)
+        )
         return entities
