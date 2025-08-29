@@ -22,9 +22,17 @@ class AlbertEmbedder(BaseEmbedder):
         inputs = self.tokenizer(phrase)
 
         logits, last_hidden_state = self.session.run(None, inputs)
-        attention_mask = inputs["attention_mask"][0][:, np.newaxis]
-        masked_embeddings = last_hidden_state[0] * attention_mask
-        sum_embeddings = masked_embeddings.sum(axis=0)
-        valid_token_count = attention_mask.sum()
-        mean_pooled_embedding = sum_embeddings / valid_token_count
-        return mean_pooled_embedding.astype(np.float32)
+
+        mask = inputs["attention_mask"].astype(last_hidden_state.dtype)[:, :, None]
+
+        # drop special tokens
+        # if "input_ids" in inputs:
+        #     ids = inputs["input_ids"]
+        #     for tid in [cls_id, sep_id]:  # define these ids if available
+        #         if tid is not None:
+        #             mask[ids == tid] = 0
+
+        sum_all = (last_hidden_state * mask).sum(axis=(0, 1))  # (H,)
+        count = np.clip(mask.sum(), 1e-9, None)  # scalar
+
+        return (sum_all / count).astype(np.float32)
