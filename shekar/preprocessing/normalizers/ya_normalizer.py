@@ -6,8 +6,12 @@ class YaNormalizer(BaseTextTransform):
     Normalizes Ya in the text regarding the offical Persian script standard published by the Iranian Academy of Language and Literature.
     reference: https://apll.ir/
 
+    There are two styles available:
+    - "standard": Follows the official Persian script standard.
+    - "joda" (default): Follows the Joda script style.
+
     Examples:
-        >>> ya_normalizer = YaNormalizer()
+        >>> ya_normalizer = YaNormalizer(style="standard")
         >>> ya_normalizer("خانه‌ی ما")
         "خانۀ ما"
         >>> ya_normalizer = YaNormalizer(style="joda")
@@ -15,9 +19,9 @@ class YaNormalizer(BaseTextTransform):
         "خانه‌ی ما"
     """
 
-    def __init__(self, style="apll"):
+    def __init__(self, style="joda"):
         super().__init__()
-        if style == "apll":
+        if style == "standard":
             self._ya_mappings = [
                 (r"ه‌ی", "ۀ"),
                 (r"ه ی", "ۀ"),
