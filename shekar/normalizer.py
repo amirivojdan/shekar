@@ -13,6 +13,7 @@ from shekar.preprocessing import (
     HTMLTagFilter,
     RepeatedLetterFilter,
     ArabicUnicodeNormalizer,
+    YaNormalizer,
 )
 
 
@@ -32,6 +33,7 @@ class Normalizer(Pipeline):
                 ("RepeatedLetterFilter", RepeatedLetterFilter()),
                 # ("NonPersianLetterFilter", NonPersianLetterFilter()),
                 ("SpacingNormalizer", SpacingNormalizer()),
+                ("YaNormalizer", YaNormalizer()),
             ]
         super().__init__(steps=steps)
 

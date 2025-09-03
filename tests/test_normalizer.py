@@ -133,3 +133,9 @@ def test_normalize_method_alias(normalizer):
     # Ensure __call__ and normalize give the same result
     s = "می روم"
     assert normalizer.normalize(s) == normalizer(s)
+
+
+def test_ya_normalizer_joda(normalizer):
+    assert normalizer("خانۀ ما") == "خانه‌ی ما"
+    assert normalizer("خانه‌ی ما") == "خانه‌ی ما"
+    assert normalizer("خانه ی ما") == "خانه‌ی ما"
