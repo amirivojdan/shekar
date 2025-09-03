@@ -14,7 +14,7 @@ class AlbertNER(BaseTransform):
             model_path = Hub.get_resource(file_name=resource_name)
 
         self.session = onnxruntime.InferenceSession(model_path)
-        self.tokenizer = AlbertTokenizer()
+        self.tokenizer = AlbertTokenizer(enable_padding=True, enable_truncation=True)
 
         self.id2tag = {
             0: "B-DAT",

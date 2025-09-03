@@ -18,6 +18,8 @@ class AlbertTokenizer(BaseTransform):
     def __init__(
         self,
         model_path: Optional[str | Path] = None,
+        enable_padding: bool = False,
+        enable_truncation: bool = False,
         stride: int = 0,
     ):
         super().__init__()
@@ -42,17 +44,20 @@ class AlbertTokenizer(BaseTransform):
         self.model_max_length = 512
         self.stride = stride
 
-        self.tokenizer.enable_truncation(
-            max_length=self.model_max_length,
-            stride=self.stride,
-        )
-        self.tokenizer.enable_padding(
-            length=self.model_max_length,
-            pad_id=self.pad_token_id,
-            pad_token=self.pad_token,
-            pad_type_id=0,
-            direction="right",
-        )
+        if enable_truncation:
+            self.tokenizer.enable_truncation(
+                max_length=self.model_max_length,
+                stride=self.stride,
+            )
+
+        if enable_padding:
+            self.tokenizer.enable_padding(
+                length=self.model_max_length,
+                pad_id=self.pad_token_id,
+                pad_token=self.pad_token,
+                pad_type_id=0,
+                direction="right",
+            )
 
     def transform(self, X: str) -> Dict[str, Any]:
         """

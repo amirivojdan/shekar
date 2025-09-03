@@ -15,7 +15,7 @@ class AlbertEmbedder(BaseEmbedder):
             model_path = Hub.get_resource(file_name=resource_name)
 
         self.session = onnxruntime.InferenceSession(model_path)
-        self.tokenizer = AlbertTokenizer()
+        self.tokenizer = AlbertTokenizer(enable_padding=True, enable_truncation=True)
         self.vector_size = 768
 
     def embed(self, phrase: str) -> np.ndarray:
