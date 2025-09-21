@@ -489,12 +489,12 @@ from collections import Counter
 from shekar import WordCloud
 from shekar import WordTokenizer
 from shekar.preprocessing import (
-  HTMLTagRemover,
+  HTMLRemover,
   PunctuationRemover,
   StopWordRemover,
   NonPersianRemover,
 )
-preprocessing_pipeline = HTMLTagRemover() | PunctuationRemover() | StopWordRemover() | NonPersianRemover()
+preprocessing_pipeline = HTMLRemover() | PunctuationRemover() | StopWordRemover() | NonPersianRemover()
 
 
 url = f"https://ganjoor.net/ferdousi/shahname/siavosh/sh9"
