@@ -7,4 +7,6 @@ To install `shekar` using pip, you can run the following command in your termina
 <!-- termynal -->
 ```bash
 $ pip install shekar
+---> 100%
+Successfully installed shekar!
 ```
