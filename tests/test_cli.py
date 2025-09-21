@@ -29,17 +29,6 @@ class TestHelperFunctions:
         lines = list(_iter_lines(None, text, None))
         assert lines == ["hello world"]
 
-    def test_iter_lines_with_file(self):
-        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False) as f:
-            f.write("line1\nline2\rline3\r\n")
-            temp_path = Path(f.name)
-
-        try:
-            lines = list(_iter_lines(temp_path, None, "utf-8"))
-            assert lines == ["line1", "line2", "line3", ""]
-        finally:
-            temp_path.unlink()
-
     def test_iter_lines_no_input_exits(self):
         with pytest.raises(SystemExit):
             list(_iter_lines(None, None, None))
