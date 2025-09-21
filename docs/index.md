@@ -53,10 +53,16 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 
 To install the package, you can use **`pip`**. Run the following command:
 
-<!-- termynal -->
-```bash
+<div class="termy">
+
+```console
 $ pip install shekar
+
+---> 100%
 ```
+
+</div>
+
 
 ## Preprocessing
 
