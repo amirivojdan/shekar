@@ -120,6 +120,7 @@ def normalize(
     required=True,
     help="Output PNG file",
 )
+@click.option("--bidi", is_flag=True, default=False, help="Apply bidi reshaping")
 @click.option(
     "--mask",
     type=str,
@@ -158,6 +159,7 @@ def wordcloud(
     i: Path | None,
     text: str | None,
     o: Path,
+    bidi: bool,
     mask: str,
     font: str,
     width: int,
@@ -226,7 +228,7 @@ def wordcloud(
         color_map=color_map,
     )
 
-    image = wc.generate(word_freqs, bidi_reshape=True)
+    image = wc.generate(word_freqs, bidi_reshape=bidi)
     image.save(o)
     click.echo(f"Wordcloud saved to {o}")
 
