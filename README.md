@@ -17,6 +17,11 @@
 **Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
 The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression. Shekar embodies this philosophy in its design and development.
 
+<div dir="rtl">
+«شِکَر» یک کتابخانهٔ پایتون برای پردازش زبان فارسی است که نام خود را از داستان طنز «فارسی شکر است» وام گرفته است؛ اثری ماندگار که در سال ۱۹۲۱ به قلم محمدعلی جمالزاده منتشر شد. این داستان به یکی از ارکان نوزایی ادبی ایران بدل شد که با ترویج زبانی ساده و روان، مسیر تازه‌ای در ادبیات معاصر گشود. 
+کتابخانهٔ «شِکَر» نیز با الهام از همین نگرش، تلاش می‌کند ابزارهایی کاربردی، ساده و در عین حال دقیق برای پردازش متن فارسی فراهم کند تا پژوهشگران، توسعه‌دهندگان و علاقه‌مندان بتوانند به‌راحتی از آن در پروژه‌های خود استفاده کنند.
+</div>
+
 
 ### Table of Contents
 
