@@ -1,11 +1,11 @@
 site_name: shekar
-site_description: Simplifying Persian NLP for Everyone
+site_description: Simplifying Persian NLP for Modern Applications
 repo_url: https://github.com/amirivojdan/shekar/
 theme: 
   name: material
+  custom_dir: docs/assets/overrides
   features:
-    - navigation.instant
-    - navigation.instant.progress
+    - search.share
     - navigation.path
     - navigation.indexes
     - navigation.tabs
@@ -40,11 +40,46 @@ nav:
     - Visualization: tutorials/visualization.md
 
 plugins:
+  - search
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          name: English
+          build: true
+          default: true
+        - locale: fa
+          name: فارسی
+          site_name: شکر
+          site_description: ساده‌سازی پردازش زبان فارسی برای کاربردهای نوین
+          build: true
+          nav_translations:
+            Home: خانه
+            Overview: مرور کلی
+            Installation: نصب
+            Quick Start: شروع سریع
+            CLI: رابط خط فرمان
+            Preprocessing: پیش‌پردازش
+            Pipeline: زنجیرۀ پردازش
+            Tokenization: بخش‌بندی واژگانی/جمله‌ای
+            Normalization: یکنواخت‌سازی متن
+            Embeddings: بازنمایی واژه‌ها و جملات
+            Part-of-Speech Tagging: برچسب‌گذاری نقش‌های دستوری
+            Named Entity Recognition: شناسایی موجودیت‌های نامدار
+            Keyword Extraction: کلیدواژه‌یابی 
+            Spell Checking: غلط‌یابی املایی
+            Visualization: بصری‌سازی
+
+  
   - termynal:
       title: bash
       buttons: macos
       prompt_literal_start:
         - "$"
+
 
 markdown_extensions:
   - admonition
@@ -58,4 +93,14 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.inlinehilite
-  - pymdownx.emoji
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/amirivojdan/shekar
+      name: GitHub
+  

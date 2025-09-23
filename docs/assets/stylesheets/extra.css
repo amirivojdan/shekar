@@ -1,5 +1,20 @@
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../fonts/Vazirmatn-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  
+}
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+
+}
+
 :root {
   --md-primary-fg-color:        #00A693;
   --md-primary-fg-color--light: #00A693;
   --md-primary-fg-color--dark:  #00A693;
 }
+

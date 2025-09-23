@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shekar"
-version = "0.1.27"
+version = "0.1.28"
 description = "Simplifying Persian NLP for Modern Applications"
 readme = "README.md"
 license = "MIT"
@@ -54,6 +54,7 @@ dev = [
     "coverage>=7.8.0",
     "termynal>=0.13.0",
     "ruff>=0.12.5",
+    "mkdocs-static-i18n>=1.3.0",
 ]
 
 [project.scripts]
