@@ -63,3 +63,6 @@ shekar = "shekar.cli:main"
 [project.urls]
 Homepage = "https://github.com/amirivojdan/shekar"
 Repository = "https://github.com/amirivojdan/shekar"
+
+[project.optional-dependencies]
+gpu = ["onnxruntime-gpu>=1.22.1"]
