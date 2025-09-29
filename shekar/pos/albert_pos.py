@@ -4,6 +4,7 @@ from shekar.hub import Hub
 from pathlib import Path
 import onnxruntime
 import numpy as np
+from shekar.utils import get_onnx_providers
 
 
 class AlbertPOS(BaseTransform):
@@ -13,7 +14,9 @@ class AlbertPOS(BaseTransform):
         if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
-        self.session = onnxruntime.InferenceSession(model_path)
+        self.session = onnxruntime.InferenceSession(
+            model_path, providers=get_onnx_providers()
+        )
         self.tokenizer = AlbertTokenizer()
         self.word_tokenizer = WordTokenizer()
 

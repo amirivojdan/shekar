@@ -26,6 +26,8 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 ### Table of Contents
 
 - [Installation](#installation)
+  - [CPU Installation (All Platforms)](#cpu-installation-all-platforms)
+  - [GPU Acceleration (NVIDIA CUDA)](#gpu-acceleration-nvidia-cuda)
 - [Preprocessing](#preprocessing)
   - [Normalizer](#normalizer)
   - [Batch Processing](#batch-processing)
@@ -54,25 +56,29 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 
 ## Installation
 
-You can install Shekar with pip. By default, the `CPU` runtime of ONNX is included.
+You can install Shekar with pip. By default, the `CPU` runtime of ONNX is included, which works on all platforms.
+
+### CPU Installation (All Platforms)
 
 <!-- termynal -->
 ```bash
 $ pip install shekar
 ```
+This works on **Windows**, **Linux**, and **macOS** (including Apple Silicon M1/M2/M3).
 
-If you want `GPU` acceleration, install with the gpu extra:
+### GPU Acceleration (NVIDIA CUDA)
+If you have an NVIDIA GPU and want hardware acceleration, you need to replace the CPU runtime with the GPU version.
+
+**Prerequisites**
+
+- NVIDIA GPU with CUDA support
+- Appropriate CUDA Toolkit installed
+- Compatible NVIDIA drivers
 
 <!-- termynal -->
 ```bash
-$ pip install "shekar[gpu]"
+$ pip install shekar && pip uninstall -y onnxruntime && pip install onnxruntime-gpu
 ```
-
-**Notes:**
-
-- The GPU extra installs onnxruntime-gpu (not available for macOS).
-- If you are unsure which to pick, start with the default CPU install.
-- Both CPU and GPU versions expose the same API, only performance differs depending on your hardware.
 
 ## Preprocessing
 

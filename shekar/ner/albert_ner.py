@@ -4,6 +4,7 @@ from shekar.hub import Hub
 from pathlib import Path
 import onnxruntime
 import numpy as np
+from shekar.utils import get_onnx_providers
 
 
 class AlbertNER(BaseTransform):
@@ -13,7 +14,9 @@ class AlbertNER(BaseTransform):
         if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
-        self.session = onnxruntime.InferenceSession(model_path)
+        self.session = onnxruntime.InferenceSession(
+            model_path, providers=get_onnx_providers()
+        )
         self.tokenizer = AlbertTokenizer(enable_padding=True, enable_truncation=True)
 
         self.id2tag = {
