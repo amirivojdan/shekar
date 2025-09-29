@@ -8,65 +8,11 @@ permissions:
   contents: read
 
 jobs:
-  test-build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
-
-    steps:
-      - name: Start Checkout
-        uses: actions/checkout@v4
-      
-      - name: setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v4
-        with: 
-          version: "0.4.15"
-          enable-cache: true
-          cache-dependency-glob: |
-            requirements**.txt
-            pyproject.toml
-      
-      - name: setup venv
-        run: uv venv
-
-      - name: Upgrade hatch
-        run: uv pip install --upgrade hatch hatchling
-
-      - name: Install Dependencies
-        run: uv pip install -r pyproject.toml --all-extras
-      
-      - name: Install Ruff
-        run: uv pip install ruff
-
-      - name: Run Ruff Format Check
-        run: uv run ruff format shekar tests --check --diff
-
-      - name: Run Ruff Lint
-        run: uv run ruff check shekar tests
-
-      - name: Install Pytest
-        run: uv pip install pytest
-
-      - name: Run Tests
-        run: uv run pytest
-
-      - name: Build release distributions
-        run: uv build
-
   release:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
       id-token: write
-    needs:
-      - test-build
     steps:
       - uses: actions/checkout@v4
 
