@@ -14,14 +14,9 @@
     <em>Simplifying Persian NLP for Modern Applications</em>
 </p>
 
-**Shekar** (meaning 'sugar' in Persian) is a Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh.
-The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression. Shekar embodies this philosophy in its design and development.
+**Shekar** is an open-source Python library for Persian natural language processing (NLP). It provides tools for text preprocessing, tokenization, part-of-speech tagging, named entity recognition, embeddings, spell checking, and more. With its modular pipeline design, Shekar makes it easy to build reproducible workflows for both research and production applications.
 
-<div dir="rtl">
-«شِکَر» یک کتابخانهٔ پایتون برای پردازش زبان فارسی است که نام خود را از داستان طنز «فارسی شکر است» وام گرفته است؛ اثری ماندگار که در سال ۱۹۲۱ به قلم محمدعلی جمالزاده منتشر شد. این داستان به یکی از ارکان نوزایی ادبی ایران بدل شد که با ترویج زبانی ساده و روان، مسیر تازه‌ای در ادبیات معاصر گشود. 
-کتابخانهٔ «شِکَر» نیز با الهام از همین نگرش، تلاش می‌کند ابزارهایی کاربردی، ساده و در عین حال دقیق برای پردازش متن فارسی فراهم کند تا پژوهشگران، توسعه‌دهندگان و علاقه‌مندان بتوانند به‌راحتی از آن در پروژه‌های خود استفاده کنند.
-</div>
-
+📖 Documentation: https://lib.shekar.io/
 
 ### Table of Contents
 
@@ -30,11 +25,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
   - [GPU Acceleration (NVIDIA CUDA)](#gpu-acceleration-nvidia-cuda)
 - [Preprocessing](#preprocessing)
   - [Normalizer](#normalizer)
-  - [Batch Processing](#batch-processing)
-  - [Decorator Support](#decorator-support)
   - [Customization](#customization)
-    - [Component Overview](#component-overview)
-  - [Using Pipelines](#using-pipelines)
 - [Tokenization](#tokenization)
   - [WordTokenizer](#wordtokenizer)
   - [SentenceTokenizer](#sentencetokenizer)
@@ -45,12 +36,10 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
-  - [Chaining with Pipelines](#chaining-with-pipelines)
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
 - [Command-Line Interface (CLI)](#command-line-interface-cli)
-  - [Commands](#commands)
 - [Download Models](#download-models)
 
 
@@ -102,87 +91,9 @@ print(normalizer(text))
 «فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده‌ی گرامی می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
 ```
 
-### Batch Processing
-
-Both `Normalizer` and `Pipeline` support memory-efficient batch processing:
-
-```python
-texts = [
-    "پرنده‌های 🐔 قفسی، عادت دارن به بی‌کسی!",
-    "تو را من چشم👀 در راهم!"
-]
-outputs = normalizer.fit_transform(texts)
-print(list(outputs))
-```
-
-```shell
-["پرنده‌های  قفسی عادت دارن به بی‌کسی", "تو را من چشم در راهم"]
-```
-
-### Decorator Support
-
-Use `.on_args(...)` to apply the pipeline to specific function arguments:
-
-```python
-@normalizer.on_args(["text"])
-def process_text(text):
-    return text
-
-print(process_text("تو را من چشم👀 در راهم!"))
-```
-
-```shell
-تو را من چشم در راهم
-```
-
 ### Customization
 
 For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
-
-#### Component Overview
-
-<details>
-<summary>Filters / Removers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `DiacriticFilter` | `DiacriticRemover`, `RemoveDiacritics` | Removes Persian/Arabic diacritics |
-| `EmojiFilter` | `EmojiRemover`, `RemoveEmojis` | Removes emojis |
-| `NonPersianLetterFilter` | `NonPersianRemover`, `RemoveNonPersianLetters` | Removes all non-Persian content (optionally keeps English) |
-| `PunctuationFilter` | `PunctuationRemover`, `RemovePunctuations` | Removes all punctuation characters |
-| `StopWordFilter` | `StopWordRemover`, `RemoveStopWords` | Removes frequent Persian stopwords |
-| `DigitFilter` | `DigitRemover`, `RemoveDigits` | Removes all digit characters |
-| `RepeatedLetterFilter` | `RepeatedLetterRemover`, `RemoveRepeatedLetters` | Shrinks repeated letters (e.g. "سسسلام") |
-| `HTMLTagFilter` | `HTMLRemover`, `RemoveHTMLTags` | Removes HTML tags but retains content |
-| `HashtagFilter` | `HashtagRemover`, `RemoveHashtags` | Removes hashtags |
-| `MentionFilter` | `MentionRemover`, `RemoveMentions` | Removes @mentions |
-
-</details>
-
-<details>
-<summary>Normalizers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `DigitNormalizer` | `NormalizeDigits` | Converts English/Arabic digits to Persian |
-| `PunctuationNormalizer` | `NormalizePunctuations` | Standardizes punctuation symbols |
-| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
-| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g. ﷽) with Persian equivalents |
-| `SpacingNormalizer` | `NormalizeSpacings` | Corrects spacings in Persian text by fixing issues like misplaced spaces, missing zero-width non-joiners (ZWNJ), and incorrect spacing around punctuation and affixes. |
-</details>
-
-
-<details>
-<summary>Maskers</summary>
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `EmailMasker` | `MaskEmails` | Masks or removes email addresses |
-| `URLMasker` | `MaskURLs` | Masks or removes URLs |
-
-</details>
-
-### Using Pipelines
 
 You can combine any of the preprocessing components using the `|` operator:
 
@@ -261,7 +172,6 @@ Both classes share a consistent interface:
 - **`fasttext-d100`**: A 100-dimensional CBOW model trained on [Persian Wikipedia](https://huggingface.co/datasets/codersan/Persian-Wikipedia-Corpus).
 - **`fasttext-d300`**: A 300-dimensional CBOW model trained on the large-scale [Naab dataset](https://huggingface.co/datasets/SLPL/naab).
 
-> **Note:** The word embeddings are static due to Gensim’s outdated dependencies, which can lead to compatibility issues. To ensure stability, the embeddings are stored as pre-computed vectors.
 
 ```python
 from shekar.embeddings import WordEmbedder
@@ -421,39 +331,6 @@ for text, label in entities:
 فرانسه → LOC
 ```
 
-**Entity Tags**
-
-The following table summarizes the entity types used by the model (aggregating B- and I- tags):
-
-| Tag     | Description                              |
-| ------- | ---------------------------------------- |
-| **PER** | Person names                             |
-| **LOC** | Locations (cities, countries, landmarks) |
-| **ORG** | Organizations (companies, institutions)  |
-| **DAT** | Dates and temporal expressions           |
-| **EVE** | Events (festivals, historical events)    |
-| **O**   | Outside (non-entity text)                |
-
-### Chaining with Pipelines
-
-You can seamlessly chain `NER` with other components using the `|` operator:
-
-```python
-from shekar import NER
-from shekar import Normalizer
-
-normalizer = Normalizer()
-albert_ner = NER()
-
-ner_pipeline = normalizer | albert_ner
-entities = ner_pipeline(input_text)
-
-for text, label in entities:
-    print(f"{text} → {label}")
-```
-
-This chaining enables clean and readable code, letting you build custom NLP flows with preprocessing and tagging in one pass.
- 
 ## Keyword Extraction
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/keyword_extraction.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/keyword_extraction.ipynb)
@@ -493,7 +370,6 @@ from shekar import SpellChecker
 
 spell_checker = SpellChecker()
 print(spell_checker("سسلام بر ششما ددوست من"))
-
 print(spell_checker.suggest("درود"))
 ```
 
@@ -563,21 +439,6 @@ You can normalize Persian text or generate wordclouds directly from files or inl
 shekar [COMMAND] [OPTIONS]
 ```
 
-### Commands
-
-1. `normalize`
-
-Normalize Persian text by standardizing spacing, characters, and diacritics.  
-Works with files or inline text.
-
-**Options**
-
-- `-i, --input` Path to an input text file  
-- `-o, --output` Path to save normalized text. If not provided, results are printed to stdout  
-- `-t, --text` Inline text instead of a file  
-- `--encoding` Force a specific input file encoding  
-- `--progress` Show progress bar (enabled by default)  
-
 **Examples**
 
 ```console
@@ -587,44 +448,6 @@ shekar normalize -i ./corpus.txt -o ./normalized_corpus.txt
 # Normalize inline text
 shekar normalize -t "درود پرودگار بر ایران و ایرانی"
 ```
-
-2. `wordcloud`
-
-Generate a wordcloud image (PNG) from Persian text, either from a file or inline.  
-Preprocessing automatically removes punctuation, diacritics, stopwords, non-Persian characters, and normalizes spacing.
-
----
-
-**Options**
-
-- `-i, --input` Input text file  
-- `-t, --text` Inline text instead of a file  
-- `-o, --output` **(required)** Path to output PNG file
-- `--bidi` Apply **bidi reshaping** for correct rendering of Persian text (default: `False`) 
-- `--mask` Shape mask (`Iran`, `Heart`, `Bulb`, `Cat`, `Cloud`, `Head`) or custom image path  
-- `--font` Font to use (`sahel`, `parastoo`, or custom TTF path)  
-- `--width` Image width in pixels (default: 1000)  
-- `--height` Image height in pixels (default: 500)  
-- `--bg-color` Background color (default: white)  
-- `--contour-color` Outline color (default: black)  
-- `--contour-width` Outline thickness (default: 3)  
-- `--color-map` Matplotlib colormap for words (default: Set2)  
-- `--min-font-size` Minimum font size (default: 5)  
-- `--max-font-size` Maximum font size (default: 220)  
-
----
-
-**Examples**
-
-```console
-# Generate a wordcloud from a text file
-shekar wordcloud -i ./corpus.txt -o ./word_cloud.png
-
-# Generate a wordcloud from inline text with a custom mask
-shekar wordcloud -t "درود پرودگار بر ایران و ایرانی" -o ./word_cloud.png --mask Heart
-```
-
-**Note:** If the letters in the generated wordcloud appear **separated**, use the `--bidi` option to enable proper Persian text shaping.
 
 ## Download Models
 
