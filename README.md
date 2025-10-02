@@ -9,12 +9,13 @@
 <a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/shekar?color=00A693"></a>
 </p>
 
-
 <p align="center">
     <em>Simplifying Persian NLP for Modern Applications</em>
 </p>
 
-**Shekar** is an open-source Python library for Persian natural language processing (NLP). It provides tools for text preprocessing, tokenization, part-of-speech tagging, named entity recognition, embeddings, spell checking, and more. With its modular pipeline design, Shekar makes it easy to build reproducible workflows for both research and production applications.
+**Shekar** (meaning 'sugar' in Persian) is an open-source Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh. The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression. Shekar embodies this philosophy in its design and development.
+
+It provides tools for text preprocessing, tokenization, part-of-speech(POS) tagging, named entity recognition(NER), embeddings, spell checking, and more. With its modular pipeline design, Shekar makes it easy to build reproducible workflows for both research and production applications.
 
 📖 Documentation: https://lib.shekar.io/
 
@@ -461,4 +462,9 @@ If Shekar Hub is unavailable, you can manually download the models and place the
 | POS Tagger  | [Download](https://drive.google.com/file/d/1d80TJn7moO31nMXT4WEatAaTEUirx2Ju/view?usp=drive_link) (38MB)|
 | NER       | [Download](https://drive.google.com/file/d/1DLoMJt8TWlNnGGbHDWjwNGsD7qzlLHfu/view?usp=drive_link) (38MB)|
 | AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
+
+-----
+
+<p align="center"><em>With ❤️ for <strong>IRAN</strong></em></p>
+
 
