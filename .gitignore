@@ -19,5 +19,4 @@ site/
 .coverage
 
 htmlcov/
-
-recipes/
+.ruff_cache/
