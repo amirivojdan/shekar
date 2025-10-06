@@ -33,9 +33,6 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
   - [Decorator Support](#decorator-support)
   - [Customization](#customization)
     - [Component Overview](#component-overview)
-      - [Filters / Removers](#filters--removers)
-      - [Normalizers](#normalizers)
-      - [Maskers](#maskers)
   - [Using Pipelines](#using-pipelines)
 - [Tokenization](#tokenization)
   - [WordTokenizer](#wordtokenizer)
@@ -151,47 +148,44 @@ print(process_text("تو را من چشم👀 در راهم!"))
 
 ### Customization
 
-For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
-
----
+For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `normalizers` and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
 
 #### Component Overview
 
-
-##### Filters / Removers
-
-| Component | Aliases | Description |
-|----------|---------|-------------|
-| `DiacriticFilter` | `DiacriticRemover`, `RemoveDiacritics` | Removes Persian/Arabic diacritics |
-| `EmojiFilter` | `EmojiRemover`, `RemoveEmojis` | Removes emojis |
-| `NonPersianLetterFilter` | `NonPersianRemover`, `RemoveNonPersianLetters` | Removes all non-Persian content (optionally keeps English) |
-| `PunctuationFilter` | `PunctuationRemover`, `RemovePunctuations` | Removes all punctuation characters |
-| `StopWordFilter` | `StopWordRemover`, `RemoveStopWords` | Removes frequent Persian stopwords |
-| `DigitFilter` | `DigitRemover`, `RemoveDigits` | Removes all digit characters |
-| `RepeatedLetterFilter` | `RepeatedLetterRemover`, `RemoveRepeatedLetters` | Shrinks repeated letters (e.g. "سسسلام") |
-| `HTMLTagFilter` | `HTMLRemover`, `RemoveHTMLTags` | Removes HTML tags but retains content |
-| `HashtagFilter` | `HashtagRemover`, `RemoveHashtags` | Removes hashtags |
-| `MentionFilter` | `MentionRemover`, `RemoveMentions` | Removes @mentions |
-
-
-##### Normalizers 
+<details>
+<summary>Normalizers</summary>
 
 | Component | Aliases | Description |
-|----------|---------|-------------|
+|------------|----------|-------------|
+| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
+| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g., ﷽) with Persian equivalents |
 | `DigitNormalizer` | `NormalizeDigits` | Converts English/Arabic digits to Persian |
 | `PunctuationNormalizer` | `NormalizePunctuations` | Standardizes punctuation symbols |
-| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
-| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g. ﷽) with Persian equivalents |
-| `SpacingNormalizer` | `NormalizeSpacings` | Corrects spacings in Persian text by fixing issues like misplaced spaces, missing zero-width non-joiners (ZWNJ), and incorrect spacing around punctuation and affixes. |
+| `RepeatedLetterNormalizer` | `NormalizeRepeatedLetters` | Normalizes words with repeated letters (e.g., “سسسلام” → “سلام”) |
+| `SpacingNormalizer` | `NormalizeSpacings` | Corrects spacings in Persian text by fixing misplaced spaces, missing zero-width non-joiners (ZWNJ), and incorrect spacing around punctuation and affixes |
+| `YaNormalizer` | `NormalizeYas` | Normalizes Persian “یـا” in accordance with either the official standard (“standard”) or colloquial (“joda”) style |
 
+</details>
 
-##### Maskers 
+<details>
+<summary>Maskers</summary>
 
 | Component | Aliases | Description |
-|----------|---------|-------------|
-| `EmailMasker` | `MaskEmails` | Masks or removes email addresses |
-| `URLMasker` | `MaskURLs` | Masks or removes URLs |
+|------------|----------|-------------|
+| `DiacriticMasker` | `DiacriticRemover`, `RemoveDiacritics`, `MaskDiacritics` | Removes or masks Persian/Arabic diacritics |
+| `DigitMasker` | `DigitRemover`, `RemoveDigits`, `MaskDigits` | Removes or masks all digit characters |
+| `EmojiMasker` | `EmojiRemover`, `RemoveEmojis`, `MaskEmojis` | Removes or masks emojis |
+| `EmailMasker` | `EmailRemover`, `RemoveEmails`, `MaskEmails` | Masks or removes email addresses |
+| `HashtagMasker` | `HashtagRemover`, `RemoveHashtags`, `MaskHashtags` | Masks or removes hashtags |
+| `HTMLTagMasker` | `HTMLTagRemover`, `RemoveHTMLTags`, `MaskHTMLTags` | Removes HTML tags while retaining content |
+| `MentionMasker` | `MentionRemover`, `RemoveMentions`, `MaskMentions` | Masks or removes @mentions |
+| `NonPersianLetterMasker` | `NonPersianRemover`, `RemoveNonPersianLetters`, `MaskNonPersianLetters` | Masks or removes all non-Persian letters (optionally keeps English) |
+| `OffensiveWordMasker` | `OffensiveWordRemover`, `RemoveOffensiveWords`, `MaskOffensiveWords` | Masks or removes Persian offensive words using a predefined or custom list |
+| `PunctuationMasker` | `PunctuationRemover`, `RemovePunctuations`, `MaskPunctuations` | Removes or masks punctuation characters |
+| `StopWordMasker` | `StopWordRemover`, `RemoveStopWords`, `MaskStopWords` | Masks or removes frequent Persian stopwords |
+| `URLMasker` | `URLRemover`, `RemoveURLs`, `MaskURLs` | Masks or removes URLs |
 
+</details>
 
 ---
 

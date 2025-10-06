@@ -18,12 +18,14 @@ Each component supports:
 ## 1. `Normalizers`
 
 | Component | Aliases | Description |
-|----------|---------|-------------|
+|------------|----------|-------------|
+| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
+| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g., ﷽) with Persian equivalents |
 | `DigitNormalizer` | `NormalizeDigits` | Converts English/Arabic digits to Persian |
 | `PunctuationNormalizer` | `NormalizePunctuations` | Standardizes punctuation symbols |
-| `AlphabetNormalizer` | `NormalizeAlphabets` | Converts Arabic characters to Persian equivalents |
-| `ArabicUnicodeNormalizer` | `NormalizeArabicUnicodes` | Replaces Arabic presentation forms (e.g. ﷽) with Persian equivalents |
-| `SpacingNormalizer` | `NormalizeSpacings` | Corrects spacings in Persian text by fixing issues like misplaced spaces, missing zero-width non-joiners (ZWNJ), and incorrect spacing around punctuation and affixes. |
+| `RepeatedLetterNormalizer` | `NormalizeRepeatedLetters` | Normalizes words with repeated letters (e.g., “سسسلام” → “سلام”) |
+| `SpacingNormalizer` | `NormalizeSpacings` | Corrects spacings in Persian text by fixing misplaced spaces, missing zero-width non-joiners (ZWNJ), and incorrect spacing around punctuation and affixes |
+| `YaNormalizer` | `NormalizeYas` | Normalizes Persian “یـا” in accordance with either the official standard (“standard”) or colloquial (“joda”) style |
 
 **Examples:**
 
