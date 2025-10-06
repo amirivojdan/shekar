@@ -23,9 +23,9 @@ class RAKE(BaseTransform):
         self._sentence_tokenizer = SentenceTokenizer()
         self._word_tokenizer = WordTokenizer()
         self._preprocessor = (
-            RemoveStopWords(replace_with="|")
-            | RemovePunctuations(replace_with="|")
-            | RemoveDigits(replace_with="|")
+            RemoveStopWords(mask_token="|")
+            | RemovePunctuations(mask_token="|")
+            | RemoveDigits(mask_token="|")
         )
         self._ngram_extractor = NGramExtractor(range=(1, max_length)) | Flatten()
         self.top_n = top_n

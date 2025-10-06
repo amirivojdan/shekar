@@ -13,6 +13,7 @@ vocab_csv_path = resources_root.joinpath("vocab.csv")
 compound_words_csv_path = resources_root.joinpath("compound_words.csv")
 verbs_csv_path = resources_root.joinpath("verbs.csv")
 stopwords_csv_path = resources_root.joinpath("stopwords.csv")
+offensive_words_csv_path = resources_root.joinpath("offensive_words.csv")
 
 
 ZWNJ = "\u200c"
@@ -184,6 +185,7 @@ def read_vocab(path):
 
 verbs = load_verbs()
 stopwords = read_words(stopwords_csv_path)
+offensive_words = read_words(offensive_words_csv_path)
 vocab = read_vocab(vocab_csv_path)
 compound_words = read_words(compound_words_csv_path)
 

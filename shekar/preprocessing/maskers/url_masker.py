@@ -34,11 +34,11 @@ class URLMasker(BaseTextTransform):
         "برای اطلاعات بیشتر به <URL> مراجعه کنید."
     """
 
-    def __init__(self, mask: str = "<URL>"):
+    def __init__(self, mask_token: str = "<URL>"):
         super().__init__()
-        self.mask = mask
+        self._mask_token = mask_token
         self._url_mappings = [
-            (r"(https?://[^\s]+)", self.mask),
+            (r"(https?://[^\s]+)", self._mask_token),
         ]
         self._patterns = self._compile_patterns(self._url_mappings)
 

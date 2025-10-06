@@ -2,18 +2,18 @@ import pytest
 from shekar.pipeline import Pipeline
 
 from shekar.preprocessing import (
-    EmojiFilter,
-    PunctuationFilter,
-    HTMLTagFilter,
-    NonPersianLetterFilter,
+    EmojiRemover,
+    PunctuationRemover,
+    HTMLTagRemover,
+    NonPersianRemover,
 )
 
 
 @pytest.fixture
 def mock_pipeline():
     steps = [
-        EmojiFilter(),
-        PunctuationFilter(),
+        EmojiRemover(),
+        PunctuationRemover(),
     ]
     return Pipeline(steps=steps)
 
@@ -97,29 +97,29 @@ def test_pipeline_on_args_invalid_type(mock_pipeline):
 
 def test_pipeline_or_with_pipeline(mock_pipeline):
     # Pipline | Pipeline
-    other_pipeline = Pipeline([("htmlFilter", HTMLTagFilter())])
+    other_pipeline = Pipeline([("htmlTagRemover", HTMLTagRemover())])
     combined = mock_pipeline | other_pipeline
     assert isinstance(combined, Pipeline)
 
     assert len(combined.steps) == len(mock_pipeline.steps) + len(other_pipeline.steps)
 
-    assert combined.steps[-1][0] == "htmlFilter"
-    assert isinstance(combined.steps[-1][1], HTMLTagFilter)
+    assert combined.steps[-1][0] == "htmlTagRemover"
+    assert isinstance(combined.steps[-1][1], HTMLTagRemover)
     assert combined.steps[-2][0] == mock_pipeline.steps[-1][0]
     assert isinstance(combined.steps[-2][1], type(mock_pipeline.steps[-1][1]))
 
 
 def test_pipeline_or_with_transformer(mock_pipeline):
     # Pipline | Transformer
-    htmlRemover = HTMLTagFilter()
-    nonPersianRemover = NonPersianLetterFilter()
-    combined = mock_pipeline | htmlRemover | nonPersianRemover
+    htmlTagRemover = HTMLTagRemover()
+    nonPersianRemover = NonPersianRemover()
+    combined = mock_pipeline | htmlTagRemover | nonPersianRemover
     assert isinstance(combined, Pipeline)
     assert len(combined.steps) == len(mock_pipeline.steps) + 2
     assert combined.steps[-1][0] == nonPersianRemover.__class__.__name__
     assert combined.steps[-1][1] is nonPersianRemover
-    assert combined.steps[-2][0] == htmlRemover.__class__.__name__
-    assert combined.steps[-2][1] is htmlRemover
+    assert combined.steps[-2][0] == htmlTagRemover.__class__.__name__
+    assert combined.steps[-2][1] is htmlTagRemover
 
     input_text = "خدایا! خدایا، <b>کویرم!</b>"
     result = combined(input_text)
@@ -137,7 +137,7 @@ def test_pipeline_or_invalid_type(mock_pipeline):
 def test_pipeline_str(mock_pipeline):
     assert (
         str(mock_pipeline)
-        == "Pipeline(steps=[('EmojiFilter', EmojiFilter()), ('PunctuationFilter', PunctuationFilter())])"
+        == "Pipeline(steps=[('EmojiMasker', EmojiMasker()), ('PunctuationMasker', PunctuationMasker())])"
     )
 
 
@@ -145,5 +145,5 @@ def test_pipeline_repr(mock_pipeline):
     print(repr(mock_pipeline))
     assert (
         repr(mock_pipeline)
-        == "Pipeline(steps=[('EmojiFilter', EmojiFilter()), ('PunctuationFilter', PunctuationFilter())])"
+        == "Pipeline(steps=[('EmojiMasker', EmojiMasker()), ('PunctuationMasker', PunctuationMasker())])"
     )

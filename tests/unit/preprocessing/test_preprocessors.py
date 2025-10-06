@@ -6,19 +6,20 @@ from shekar.preprocessing import (
     DigitNormalizer,
     SpacingNormalizer,
     YaNormalizer,
-    EmojiFilter,
+    EmojiMasker,
     EmailMasker,
     URLMasker,
-    DiacriticFilter,
-    NonPersianLetterFilter,
-    HTMLTagFilter,
-    RepeatedLetterFilter,
+    DiacriticRemover,
+    NonPersianLetterMasker,
+    HTMLTagMasker,
+    RepeatedLetterNormalizer,
     ArabicUnicodeNormalizer,
-    StopWordFilter,
-    PunctuationFilter,
-    DigitFilter,
-    MentionFilter,
-    HashtagFilter,
+    StopWordRemover,
+    PunctuationRemover,
+    DigitRemover,
+    MentionMasker,
+    HashtagMasker,
+    OffensiveWordMasker,
 )
 
 from shekar.transforms import (
@@ -128,7 +129,7 @@ def test_ya_normalizer():
 
 
 def test_mask_email():
-    email_masker = EmailMasker(mask="")
+    email_masker = EmailMasker(mask_token="")
 
     input_text = "ایمیل من: she.kar@shekar.panir.io"
     expected_output = "ایمیل من:"
@@ -140,7 +141,7 @@ def test_mask_email():
 
 
 def test_mask_url():
-    url_masker = URLMasker(mask="")
+    url_masker = URLMasker(mask_token="")
 
     input_text = "لینک: https://shekar.parsi-shekar.com"
     expected_output = "لینک:"
@@ -247,7 +248,7 @@ def test_unify_arabic_unicode():
 
 
 def test_remove_punctuations():
-    punc_Filter = PunctuationFilter()
+    punc_Filter = PunctuationRemover()
 
     input_text = "اصفهان، نصف جهان!"
     expected_output = "اصفهان نصف جهان"
@@ -259,7 +260,7 @@ def test_remove_punctuations():
 
 
 def test_remove_redundant_characters():
-    redundant_character_Filter = RepeatedLetterFilter()
+    redundant_character_Filter = RepeatedLetterNormalizer()
     input_text = "سلامم"
     expected_output = "سلامم"
     assert redundant_character_Filter(input_text) == expected_output
@@ -274,7 +275,7 @@ def test_remove_redundant_characters():
 
 
 def test_remove_emojis():
-    emoji_Filter = EmojiFilter()
+    emoji_Filter = EmojiMasker()
     input_text = "😊🇮🇷سلام گلای تو خونه!🎉🎉🎊🎈"
     expected_output = "سلام گلای تو خونه!"
     assert emoji_Filter(input_text) == expected_output
@@ -286,7 +287,7 @@ def test_remove_emojis():
 
 
 def test_remove_diacritics():
-    diacritics_Filter = DiacriticFilter()
+    diacritics_Filter = DiacriticRemover()
     input_text = "مَنْ"
     expected_output = "من"
     assert diacritics_Filter(input_text) == expected_output
@@ -297,7 +298,7 @@ def test_remove_diacritics():
 
 
 def test_remove_stopwords():
-    stopword_Filter = StopWordFilter()
+    stopword_Filter = StopWordRemover()
     input_text = "این یک جملهٔ نمونه است"
     expected_output = "جملهٔ نمونه"
     assert stopword_Filter(input_text) == expected_output
@@ -310,14 +311,14 @@ def test_remove_stopwords():
     expected_output = "ایران"
     assert stopword_Filter(input_text) == expected_output
 
-    stopword_Filter = StopWordFilter(replace_with="|")
+    stopword_Filter = StopWordRemover(mask_token="|")
     input_text = "ایران ما زیباتر از تمام جهان"
     expected_output = "ایران | زیباتر | | جهان"
     assert stopword_Filter(input_text) == expected_output
 
 
 def test_remove_non_persian():
-    non_persian_Filter = NonPersianLetterFilter()
+    non_persian_Filter = NonPersianLetterMasker()
     input_text = "با یه گل بهار نمی‌شه"
     expected_output = "با یه گل بهار نمی‌شه"
     assert non_persian_Filter(input_text) == expected_output
@@ -330,7 +331,7 @@ def test_remove_non_persian():
     expected_output = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسما   کردم!"
     assert non_persian_Filter(input_text) == expected_output
 
-    non_persian_Filter = NonPersianLetterFilter(keep_english=True)
+    non_persian_Filter = NonPersianLetterMasker(keep_english=True)
 
     input_text = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسماً panic attack کردم!"
     expected_output = "صبح از خواب پاشدم دیدم اینترنت ندارم، رسما panic attack کردم!"
@@ -340,14 +341,14 @@ def test_remove_non_persian():
     expected_output = "100 سال به این سال‌ها"
     assert non_persian_Filter(input_text) == expected_output
 
-    non_persian_Filter = NonPersianLetterFilter(keep_diacritics=True)
+    non_persian_Filter = NonPersianLetterMasker(keep_diacritics=True)
     input_text = "گُلِ مَنو اَذیَت نَکُنین!"
     expected_output = "گُلِ مَنو اَذیَت نَکُنین!"
     assert non_persian_Filter(input_text) == expected_output
 
 
 def test_remove_html_tags():
-    html_tag_Filter = HTMLTagFilter(replace_with="")
+    html_tag_Filter = HTMLTagMasker(mask_token="")
     input_text = "<p>گل صدبرگ به پیش تو فرو ریخت ز خجلت!</p>"
     expected_output = "گل صدبرگ به پیش تو فرو ریخت ز خجلت!"
     assert html_tag_Filter(input_text) == expected_output
@@ -390,26 +391,26 @@ def test_punctuation_spacings():
     )
 
 
-def test_mention_Filter():
-    mention_Filter = MentionFilter(replace_with="")
+def test_mention_masker():
+    mention_masker = MentionMasker(mask_token="")
     input_text = "@user شما خبر دارید؟"
     expected_output = "شما خبر دارید؟"
-    assert mention_Filter(input_text) == expected_output
+    assert mention_masker(input_text) == expected_output
 
     input_text = "@user سلام رفقا @user"
     expected_output = "سلام رفقا"
-    assert mention_Filter.fit_transform(input_text) == expected_output
+    assert mention_masker.fit_transform(input_text) == expected_output
 
 
-def test_hashtag_Filter():
-    hashtag_Filter = HashtagFilter(replace_with="")
+def test_hashtag_masker():
+    hashtag_masker = HashtagMasker(mask_token="")
     input_text = "#پیشرفت_علمی در راستای توسعه"
     expected_output = "در راستای توسعه"
-    assert hashtag_Filter(input_text) == expected_output
+    assert hashtag_masker(input_text) == expected_output
 
     input_text = "روز #کودک شاد باد."
     expected_output = "روز  شاد باد."
-    assert hashtag_Filter.fit_transform(input_text) == expected_output
+    assert hashtag_masker.fit_transform(input_text) == expected_output
 
 
 def test_ngram_extractor():
@@ -521,40 +522,75 @@ def test_flatten():
     assert list(flatten(input_text)) == expected_output
 
 
-def test_digit_Filter():
-    digit_Filter = DigitFilter()
+def test_digit_remover():
+    digit_remover = DigitRemover()
 
     input_text = "قیمت این محصول ۱۲۳۴۵ تومان است"
     expected_output = "قیمت این محصول  تومان است"
-    assert digit_Filter(input_text) == expected_output
+    assert digit_remover(input_text) == expected_output
 
     input_text = "سفارش شما با کد 98765 ثبت شد"
     expected_output = "سفارش شما با کد  ثبت شد"
-    assert digit_Filter(input_text) == expected_output
+    assert digit_remover(input_text) == expected_output
 
     input_text = "کد پستی ۱۰۴۵۶-32901 را وارد کنید"
     expected_output = "کد پستی - را وارد کنید"
-    assert digit_Filter.fit_transform(input_text) == expected_output
+    assert digit_remover.fit_transform(input_text) == expected_output
 
     input_text = "سلام، چطوری دوست من؟"
     expected_output = "سلام، چطوری دوست من؟"
-    assert digit_Filter(input_text) == expected_output
+    assert digit_remover(input_text) == expected_output
 
-    digit_Filter_custom = DigitFilter(replace_with="X")
+    digit_remover_custom = DigitRemover(mask_token="X")
     input_text = "سال ۱۴۰۲ با موفقیت به پایان رسید"
     expected_output = "سال XXXX با موفقیت به پایان رسید"
-    assert digit_Filter_custom(input_text) == expected_output
+    assert digit_remover_custom(input_text) == expected_output
 
     input_texts = ["شماره ۱۲۳۴", "کد 5678", "بدون عدد"]
     expected_outputs = ["شماره", "کد", "بدون عدد"]
-    assert list(digit_Filter(input_texts)) == expected_outputs
-    assert list(digit_Filter.fit_transform(input_texts)) == expected_outputs
+    assert list(digit_remover(input_texts)) == expected_outputs
+    assert list(digit_remover.fit_transform(input_texts)) == expected_outputs
 
     input_text = "نرخ تورم ۲۴.۵ درصد اعلام شد"
     expected_output = "نرخ تورم . درصد اعلام شد"
-    assert digit_Filter(input_text) == expected_output
+    assert digit_remover(input_text) == expected_output
 
     input_text = 12345
     expected_output = "Input must be a string or a Iterable of strings."
     with pytest.raises(ValueError, match=expected_output):
-        digit_Filter(input_text)
+        digit_remover(input_text)
+
+
+def test_offensive_word_masker():
+    offensive_word_masker = OffensiveWordMasker(
+        words=["تاپاله", "فحش", "بد", "زشت"], mask_token="[بوق]"
+    )
+
+    input_text = "عجب آدم تاپاله ای هستی!"
+    expected_output = "عجب آدم [بوق] ای هستی!"
+    assert offensive_word_masker(input_text) == expected_output
+
+    input_text = "این فحش بد و زشت است"
+    expected_output = "این [بوق] [بوق] و [بوق] است"
+    assert offensive_word_masker.fit_transform(input_text) == expected_output
+
+
+def test_offensive_word_masker_default_words():
+    offensive_word_masker = OffensiveWordMasker()
+
+    # Test with default offensive words from data.offensive_words
+    input_text = "این متن عادی است"
+    expected_output = "این متن عادی است"
+    assert offensive_word_masker(input_text) == expected_output
+
+    # Test empty mask token behavior
+    offensive_word_masker = OffensiveWordMasker(words=["بد", "زشت"], mask_token="")
+    input_text = "کلمه بد و زشت را حذف کن"
+    expected_output = "کلمه  و  را حذف کن"
+    assert offensive_word_masker(input_text) == expected_output
+
+    # Test with iterable input
+    input_texts = ["فحش نگو", "کلام زیبا بگو"]
+    offensive_word_masker = OffensiveWordMasker(words=["فحش"], mask_token="***")
+    expected_outputs = ["*** نگو", "کلام زیبا بگو"]
+    assert list(offensive_word_masker(input_texts)) == expected_outputs
