@@ -2,7 +2,7 @@ from shekar.base import BaseTextTransform
 from shekar import data
 
 
-class DigitFilter(BaseTextTransform):
+class DigitMasker(BaseTextTransform):
     """
     A text transformation class for filtering numbers from the text.
 
@@ -10,7 +10,7 @@ class DigitFilter(BaseTextTransform):
     all numeric characters from the text. It uses predefined mappings to eliminate
     Arabic, English, and other Unicode numbers, ensuring a clean and normalized text representation.
 
-    The `DigitFilter` class includes `fit` and `fit_transform` methods, and it
+    The `DigitMasker` class includes `fit` and `fit_transform` methods, and it
     is callable, allowing direct application to text data.
 
     Methods:
@@ -27,16 +27,16 @@ class DigitFilter(BaseTextTransform):
             to the input text.
 
     Example:
-        >>> numbers_remover = NumbersRemover()
-        >>> cleaned_text = numbers_remover("این متن 1234 شامل اعداد است.")
+        >>> digit_masker = DigitMasker()
+        >>> cleaned_text = digit_masker("این متن 1234 شامل اعداد است.")
         >>> print(cleaned_text)
         "این متن  شامل اعداد است."
     """
 
-    def __init__(self, replace_with: str = ""):
+    def __init__(self, mask_token: str = ""):
         super().__init__()
         self._number_mappings = [
-            (rf"[{data.numbers}]", replace_with),
+            (rf"[{data.numbers}]", mask_token),
         ]
 
         self._patterns = self._compile_patterns(self._number_mappings)

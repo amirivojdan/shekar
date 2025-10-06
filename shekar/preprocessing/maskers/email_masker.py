@@ -35,11 +35,11 @@ class EmailMasker(BaseTextTransform):
         "برای تماس با ما به <EMAIL> ایمیل بزنید."
     """
 
-    def __init__(self, mask: str = "<EMAIL>"):
+    def __init__(self, mask_token: str = "<EMAIL>"):
         super().__init__()
-        self.mask = mask
+        self._mask_token = mask_token
         self._email_mappings = [
-            (r"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})", self.mask),
+            (r"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})", self._mask_token),
         ]
         self._patterns = self._compile_patterns(self._email_mappings)
 

@@ -2,7 +2,7 @@ from shekar.base import BaseTextTransform
 import html
 
 
-class HTMLTagFilter(BaseTextTransform):
+class HTMLTagMasker(BaseTextTransform):
     """
     A text transformation class for removing HTML tags and entities from the text.
 
@@ -10,7 +10,7 @@ class HTMLTagFilter(BaseTextTransform):
     and remove HTML tags and entities from the text. It ensures a clean and tag-free
     representation of the text by unescaping HTML entities and removing all HTML tags.
 
-    The `HTMLTagRemover` class includes `fit` and `fit_transform` methods, and it
+    The `HTMLTagMasker` class includes `fit` and `fit_transform` methods, and it
     is callable, allowing direct application to text data.
 
     Methods:
@@ -27,16 +27,16 @@ class HTMLTagFilter(BaseTextTransform):
             to the input text.
 
     Example:
-        >>> html_tag_remover = HTMLTagFilter()
-        >>> cleaned_text = html_tag_remover("<p>این یک <strong>متن</strong> نمونه است.</p>")
+        >>> html_tag_masker = HTMLTagMasker()
+        >>> cleaned_text = html_tag_masker("<p>این یک <strong>متن</strong> نمونه است.</p>")
         >>> print(cleaned_text)
         "این یک متن نمونه است."
     """
 
-    def __init__(self, replace_with: str = " "):
+    def __init__(self, mask_token: str = " "):
         super().__init__()
         self._html_tag_mappings = [
-            (r"<[^>]+>", replace_with),
+            (r"<[^>]+>", mask_token),
         ]
 
         self._patterns = self._compile_patterns(self._html_tag_mappings)

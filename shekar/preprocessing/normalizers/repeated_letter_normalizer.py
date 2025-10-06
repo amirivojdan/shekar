@@ -1,7 +1,7 @@
 from shekar import BaseTextTransform
 
 
-class RepeatedLetterFilter(BaseTextTransform):
+class RepeatedLetterNormalizer(BaseTextTransform):
     """
     A text transformation class for removing redundant characters from the text.
 

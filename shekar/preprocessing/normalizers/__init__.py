@@ -4,6 +4,7 @@ from .digit_normalizer import DigitNormalizer
 from .punctuation_normalizer import PunctuationNormalizer
 from .spacing_normalizer import SpacingNormalizer
 from .ya_normalizer import YaNormalizer
+from .repeated_letter_normalizer import RepeatedLetterNormalizer
 
 # aliases
 NormalizeDigits = DigitNormalizer
@@ -12,6 +13,7 @@ NormalizeArabicUnicodes = ArabicUnicodeNormalizer
 NormalizeYas = YaNormalizer
 NormalizeSpacings = SpacingNormalizer
 NormalizeAlphabets = AlphabetNormalizer
+NormalizeRepeatedLetters = RepeatedLetterNormalizer
 
 __all__ = [
     "AlphabetNormalizer",
@@ -20,6 +22,7 @@ __all__ = [
     "PunctuationNormalizer",
     "SpacingNormalizer",
     "YaNormalizer",
+    "RepeatedLetterNormalizer",
     # aliases
     "NormalizeDigits",
     "NormalizePunctuations",
@@ -27,4 +30,5 @@ __all__ = [
     "NormalizeSpacings",
     "NormalizeAlphabets",
     "NormalizeYas",
+    "NormalizeRepeatedLetters",
 ]

@@ -2,7 +2,7 @@ from shekar.base import BaseTextTransform
 from shekar import data
 
 
-class DiacriticFilter(BaseTextTransform):
+class DiacriticMasker(BaseTextTransform):
     """
     A text transformation class for removing Arabic diacritics from the text.
 
@@ -10,7 +10,7 @@ class DiacriticFilter(BaseTextTransform):
     Arabic diacritics from the text. It uses predefined mappings to eliminate diacritics
     such as "َ", "ً", "ُ", and others, ensuring a clean and normalized text representation.
 
-    The `DiacriticsFilter` class includes `fit` and `fit_transform` methods, and it
+    The `DiacriticMasker` class includes `fit` and `fit_transform` methods, and it
     is callable, allowing direct application to text data.
 
     Methods:
@@ -27,8 +27,8 @@ class DiacriticFilter(BaseTextTransform):
             to the input text.
 
     Example:
-        >>> diacritics_filter = DiacriticFilter()
-        >>> cleaned_text = diacritics_filter("کُجا نِشانِ قَدَم ناتَمام خواهَد ماند؟")
+        >>> diacritic_masker = DiacriticMasker()
+        >>> cleaned_text = diacritic_masker("کُجا نِشانِ قَدَم ناتَمام خواهَد ماند؟")
         >>> print(cleaned_text)
         "کجا نشان قدم ناتمام خواهد ماند؟"
     """

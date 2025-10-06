@@ -4,7 +4,7 @@ import re
 import string
 
 
-class NonPersianLetterFilter(BaseTextTransform):
+class NonPersianLetterMasker(BaseTextTransform):
     """
     A text transformation class for removing non-Persian characters from the text.
 
@@ -12,7 +12,7 @@ class NonPersianLetterFilter(BaseTextTransform):
     and remove non-Persian characters from the text. It uses predefined character sets
     to filter out unwanted characters while optionally retaining English characters and diacritics.
 
-    The `NonPersianRemover` class includes `fit` and `fit_transform` methods, and it
+    The `NonPersianLetterMasker` class includes `fit` and `fit_transform` methods, and it
     is callable, allowing direct application to text data.
 
     Args:
@@ -32,8 +32,8 @@ class NonPersianLetterFilter(BaseTextTransform):
             Allows the class to be called as a function, applying the transformation
             to the input text.
     Example:
-        >>> non_persian_remover = NonPersianRemover(keep_english=True, keep_diacritics=False)
-        >>> cleaned_text = non_persian_remover("این یک متن نمونه است! Hello!")
+        >>> non_persian_masker = NonPersianLetterMasker(keep_english=True, keep_diacritics=False)
+        >>> cleaned_text = non_persian_masker("این یک متن نمونه است! Hello!")
         >>> print(cleaned_text)
         "این یک متن نمونه است! Hello!"
     """
