@@ -22,6 +22,7 @@ __all__ = [
     "KeywordExtractor",
     "NER",
     "POSTagger",
+    "SentimentClassifier",
     "SpellChecker",
     "Tokenizer",
     "WordEmbedder",
