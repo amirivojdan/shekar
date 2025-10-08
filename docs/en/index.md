@@ -44,6 +44,7 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
+- [Sentiment Analysis](#sentiment-analysis)
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
@@ -445,6 +446,26 @@ for text, label in entities:
 ```
 
 This chaining enables clean and readable code, letting you build custom NLP flows with preprocessing and tagging in one pass.
+
+## Sentiment Analysis
+
+The `SentimentClassifier` module enables automatic sentiment analysis of Persian text using transformer-based models. It currently supports the `AlbertBinarySentimentClassifier`, a lightweight ALBERT model fine-tuned on Snapfood dataset to classify text as **positive** or **negative**, returning both the predicted label and its confidence score.
+
+**Example usage:**
+
+```python
+from shekar import SentimentClassifier
+
+sentiment_classifier = SentimentClassifier()
+
+print(sentiment_classifier("سریال قصه‌های مجید عالی بود!"))
+print(sentiment_classifier("فیلم ۳۰۰ افتضاح بود!"))
+```
+
+```output
+('positive', 0.9923112988471985)
+('negative', 0.9330866932868958)
+```
 
 ## Keyword Extraction
 

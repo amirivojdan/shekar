@@ -37,6 +37,7 @@ It provides tools for text preprocessing, tokenization, part-of-speech(POS) tagg
 - [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
+- [Sentiment Analysis](#sentiment-analysis)
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
@@ -292,7 +293,7 @@ for word, tag in result:
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/ner.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/ner.ipynb)
 
-The `NER` module in **Shekar** offers a fast, quantized Named Entity Recognition pipeline using a fine-tuned ALBERT model in ONNX format. It detects common Persian entities such as persons, locations, organizations, and dates. This model is designed for efficient inference and can be easily combined with other preprocessing steps.
+The `NER` module offers a fast, quantized Named Entity Recognition pipeline using a fine-tuned ALBERT model. It detects common Persian entities such as persons, locations, organizations, and dates. This model is designed for efficient inference and can be easily combined with other preprocessing steps.
 
 Example usage:
 
@@ -331,6 +332,26 @@ for text, label in entities:
 تهران → LOC
 دانشگاه تهران → ORG
 فرانسه → LOC
+```
+
+## Sentiment Analysis
+
+The `SentimentClassifier` module enables automatic sentiment analysis of Persian text using transformer-based models. It currently supports the `AlbertBinarySentimentClassifier`, a lightweight ALBERT model fine-tuned on Snapfood dataset to classify text as **positive** or **negative**, returning both the predicted label and its confidence score.
+
+**Example usage:**
+
+```python
+from shekar import SentimentClassifier
+
+sentiment_classifier = SentimentClassifier()
+
+print(sentiment_classifier("سریال قصه‌های مجید عالی بود!"))
+print(sentiment_classifier("فیلم ۳۰۰ افتضاح بود!"))
+```
+
+```output
+('positive', 0.9923112988471985)
+('negative', 0.9330866932868958)
 ```
 
 ## Keyword Extraction
