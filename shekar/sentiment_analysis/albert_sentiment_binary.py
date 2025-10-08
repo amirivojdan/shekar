@@ -8,6 +8,12 @@ from shekar.utils import get_onnx_providers
 
 
 class AlbertBinarySentimentClassifier(BaseTransform):
+    """Albert model for binary sentiment classification (positive/negative).
+    This model is fine-tuned on the snapfood dataset.
+     Args:
+        model_path (str | Path, optional): Path to a custom model file. If None, the default model will be used.
+    """
+
     def __init__(self, model_path: str | Path = None):
         super().__init__()
         resource_name = "albert_persian_sentiment_binary_q8.onnx"
@@ -22,6 +28,18 @@ class AlbertBinarySentimentClassifier(BaseTransform):
         self.id2tag = {0: "negative", 1: "positive"}
 
     def transform(self, X: str) -> list:
+        """Perform sentiment analysis on the input text.
+        Args:
+            X (str): Input text.
+            Returns:
+                list: A tuple containing the predicted sentiment label and its confidence score.
+        Example:
+            >>> model = AlbertBinarySentimentClassifier()
+            >>> model.transform("فیلم ۳۰۰ افتضاح بود.")
+            ('negative', 0.998765468120575)
+            >>> model.transform("سریال قصه‌های مجید عالی بود!")
+            ('positive', 0.9976541996002197)
+        """
         batched = self.tokenizer(X)  # dict with (num_chunks, L) arrays
         input_ids = batched["input_ids"]  # (B, L)
         attention_mask = batched["attention_mask"]  # (B, L)

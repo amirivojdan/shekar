@@ -29,5 +29,12 @@ class SentimentClassifier(BaseTransform):
             X (str): Input text.
             Returns:
                 list: A tuple containing the predicted sentiment label and its confidence score.
+
+        Example:
+            >>> model = AlbertBinarySentimentClassifier()
+            >>> model.transform("فیلم ۳۰۰ افتضاح بود.")
+            ('negative', 0.998765468120575)
+            >>> model.transform("سریال قصه‌های مجید عالی بود!")
+            ('positive', 0.9976541996002197)
         """
         return self.model.transform(X)
