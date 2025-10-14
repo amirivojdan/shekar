@@ -1,20 +1,20 @@
 from shekar.base import BaseTransform
 from .logistic_offensive_classifier import LogisticOffensiveClassifier
 
-POS_REGISTRY = {
-    "logistic_offensive": LogisticOffensiveClassifier,
+OFFENSIVE_REGISTRY = {
+    "logistic": LogisticOffensiveClassifier,
 }
 
 
 class OffensiveLanguageClassifier(BaseTransform):
-    def __init__(self, model: str = "logistic_offensive", model_path=None):
+    def __init__(self, model: str = "logistic", model_path=None):
         model = model.lower()
-        if model not in POS_REGISTRY:
+        if model not in OFFENSIVE_REGISTRY:
             raise ValueError(
-                f"Unknown model '{model}'. Available: {list(POS_REGISTRY.keys())}"
+                f"Unknown model '{model}'. Available: {list(OFFENSIVE_REGISTRY.keys())}"
             )
 
-        self.model = POS_REGISTRY[model](model_path=model_path)
+        self.model = OFFENSIVE_REGISTRY[model](model_path=model_path)
 
-    def transform(self, X: str) -> list:
+    def transform(self, X: str):
         return self.model.transform(X)
