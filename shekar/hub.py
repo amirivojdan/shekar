@@ -11,6 +11,7 @@ MODEL_HASHES = {
     "albert_persian_mlm_embeddings.onnx": "6b2d987ba409fd6957764742e30bfbbe385ab33c210caeb313aa9a2eb9afa51a",
     "fasttext_d100_w5_v100k_cbow_wiki.bin": "27daf69dc030e028dda33465c488e25f72c2ea65a53b5c1e0695b883a8be061c",
     "fasttext_d300_w10_v250k_cbow_naab.bin": "8db1e1e50f4b889c7e1774501541be2832240892b9ca00053772f0af7cd2526b",
+    "tfidf_logistic_offensive.onnx": "1ac778114c9e2ec1f94fe463df03008032ce75306c5ed494bb06c4542430df44",
 }
 
 
@@ -68,7 +69,7 @@ class Hub:
                 unit_scale=True,
                 unit_divisor=1024,
                 miniters=1,
-                desc=dest_path.name,
+                desc="Downloading model: ",
                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
             ) as t:
                 urllib.request.urlretrieve(
