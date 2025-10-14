@@ -6,6 +6,7 @@ import numpy as np
 from shekar.utils import get_onnx_providers
 from shekar.preprocessing import StopWordRemover
 
+
 class LogisticOffensiveClassifier(BaseTransform):
     def __init__(self, model_path: str | Path = None):
         super().__init__()
@@ -19,7 +20,7 @@ class LogisticOffensiveClassifier(BaseTransform):
 
         self.id2label = {0: "neutral", 1: "offensive"}
         self.stopword_remover = StopWordRemover()
-    
+
     def transform(self, X: str) -> str:
         X = self.stopword_remover(X)
 

@@ -5,6 +5,7 @@ POS_REGISTRY = {
     "logistic_offensive": LogisticOffensiveClassifier,
 }
 
+
 class OffensiveLanguageClassifier(BaseTransform):
     def __init__(self, model: str = "logistic_offensive", model_path=None):
         model = model.lower()
