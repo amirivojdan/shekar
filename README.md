@@ -38,6 +38,7 @@ It provides tools for text preprocessing, tokenization, part-of-speech(POS) tagg
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
 - [Sentiment Analysis](#sentiment-analysis)
+- [Toxicity Detection](#toxicity-detection)
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
@@ -354,6 +355,24 @@ print(sentiment_classifier("فیلم ۳۰۰ افتضاح بود!"))
 ('negative', 0.9330866932868958)
 ```
 
+## Toxicity Detection
+
+The `toxicity` module currently includes a Logistic Regression classifier trained on TF-IDF features extracted from the [Naseza (ناسزا) dataset](https://github.com/amirivojdan/naseza), a large-scale collection of Persian text labeled for offensive and neutral language. The `OffensiveLanguageClassifier` processes input text to determine whether it is neutral or offensive, returning both the predicted label and its confidence score.
+
+```python
+from shekar.toxicity import OffensiveLanguageClassifier
+
+offensive_classifier = OffensiveLanguageClassifier()
+
+print(offensive_classifier("زبان فارسی میهن من است!"))
+print(offensive_classifier("تو خیلی احمق و بی‌شرفی!"))
+```
+
+```output
+('neutral', 0.7651197910308838)
+('offensive', 0.7607775330543518)
+```
+
 ## Keyword Extraction
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/keyword_extraction.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/keyword_extraction.ipynb)
@@ -483,6 +502,8 @@ If Shekar Hub is unavailable, you can manually download the models and place the
 | SentenceEmbedding    | [Download](https://drive.google.com/file/d/1PftSG2QD2M9qzhAltWk_S38eQLljPUiG/view?usp=drive_link) (60MB)|
 | POS Tagger  | [Download](https://drive.google.com/file/d/1d80TJn7moO31nMXT4WEatAaTEUirx2Ju/view?usp=drive_link) (38MB)|
 | NER       | [Download](https://drive.google.com/file/d/1DLoMJt8TWlNnGGbHDWjwNGsD7qzlLHfu/view?usp=drive_link) (38MB)|
+| Sentiment Classifier       | [Download](https://drive.google.com/file/d/17gTip7RwipEkA7Rf3-Cv1W8XNHTdaS4c/view?usp=drive_link) (38MB)|
+| Offensive Language Classifier       | [Download](https://drive.google.com/file/d/1ZLiFI6nzpQ2rYjJTKxOYKTfD9IqHZ5tc/view?usp=drive_link) (8MB)|
 | AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
 
 -----
