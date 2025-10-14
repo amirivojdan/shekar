@@ -140,7 +140,7 @@ The `SentenceTokenizer` class is designed to split a given text into individual 
 Below is an example of how to use the `SentenceTokenizer`:
 
 ```python
-from shekar.tokenizers import SentenceTokenizer
+from shekar.tokenization import SentenceTokenizer
 
 text = "هدف ما کمک به یکدیگر است! ما می‌توانیم با هم کار کنیم."
 tokenizer = SentenceTokenizer()
