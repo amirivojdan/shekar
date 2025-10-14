@@ -23,12 +23,12 @@ class SentimentClassifier(BaseTransform):
 
         self.model = SENTIMENT_REGISTRY[model](model_path=model_path)
 
-    def transform(self, X: str) -> list:
+    def transform(self, X: str) -> tuple:
         """Perform sentiment analysis on the input text.
         Args:
             X (str): Input text.
             Returns:
-                list: A tuple containing the predicted sentiment label and its confidence score.
+                tuple: A tuple containing the predicted sentiment label and its confidence score.
 
         Example:
             >>> model = AlbertBinarySentimentClassifier()

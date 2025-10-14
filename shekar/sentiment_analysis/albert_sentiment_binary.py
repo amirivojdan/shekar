@@ -27,12 +27,12 @@ class AlbertBinarySentimentClassifier(BaseTransform):
 
         self.id2tag = {0: "negative", 1: "positive"}
 
-    def transform(self, X: str) -> list:
+    def transform(self, X: str) -> tuple:
         """Perform sentiment analysis on the input text.
         Args:
             X (str): Input text.
             Returns:
-                list: A tuple containing the predicted sentiment label and its confidence score.
+                tuple: A tuple containing the predicted sentiment label and its confidence score.
         Example:
             >>> model = AlbertBinarySentimentClassifier()
             >>> model.transform("فیلم ۳۰۰ افتضاح بود.")
