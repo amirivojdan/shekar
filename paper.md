@@ -70,6 +70,9 @@ Implements algorithms for identifying the most informative terms and phrases wit
 - **Embeddings**
 Supports both static embeddings (FastText) and contextual embeddings (ALBERT-based) for representing words and sentences as numerical vectors.
 
+- **Sentiment and Toxicity Detection**
+The Sentiment Analysis module features an ALBERT-based transformer model trained on the Snapfood dataset [@farahani2021parsbert] to classify Persian text as positive or negative. The Toxicity Detection module includes an offensive language classifier based on Logistic Regression trained on character-level TF-IDF features using the Naseza dataset [@amirivojdan_2025_naseza]. Together, they provide efficient and accurate tools for sentiment understanding and content moderation in Persian text.
+
 - **Spell Checking**
 Identifies and corrects common spelling errors and spacing mistakes in Persian text. The spell checker uses a frequency-based approach built on a combined dictionary constructed from Persian generative lexicon dataset [@eslami2004persian] and unique words extracted from the Naab dataset [@sabouri2022naab], cross-checked against the Moein and Dehkhoda dictionaries for improved accuracy and coverage.
 
