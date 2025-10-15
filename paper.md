@@ -77,7 +77,11 @@ The Sentiment Analysis module features an ALBERT-based transformer model trained
 Identifies and corrects common spelling errors and spacing mistakes in Persian text. The spell checker uses a frequency-based approach built on a combined dictionary constructed from Persian generative lexicon dataset [@eslami2004persian] and unique words extracted from the Naab dataset [@sabouri2022naab], cross-checked against the Moein and Dehkhoda dictionaries for improved accuracy and coverage.
 
 - **Visualization**
-Provides visualization tools such as word clouds for exploring word frequencies and text patterns in large corpora.
+
+Includes a WordCloud class offering an easy way to create visually rich Persian word clouds. It supports reshaping and right-to-left rendering, Persian fonts, color maps, and custom shape masks for accurate and elegant visualization of word frequencies.
+
+![Word cloud visualization of selected words from Ferdowsi’s Persian epic, the *Shahnameh*, arranged within the outline of Iran. \label{fig:fig1}](assets/wordcloud_example.png){ width=50% }
+
 
 # Efficiency and Reliability
 
