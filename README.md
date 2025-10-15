@@ -433,15 +433,15 @@ from collections import Counter
 from shekar import WordCloud
 from shekar import WordTokenizer
 from shekar.preprocessing import (
-  HTMLRemover,
+  HTMLTagRemover,
   PunctuationRemover,
   StopWordRemover,
   NonPersianRemover,
 )
-preprocessing_pipeline = HTMLRemover() | PunctuationRemover() | StopWordRemover() | NonPersianRemover()
+preprocessing_pipeline = HTMLTagRemover() | PunctuationRemover() | StopWordRemover() | NonPersianRemover()
 
 
-url = f"https://ganjoor.net/ferdousi/shahname/siavosh/sh9"
+url = f"https://shahnameh.me/p.php?id=F82F6CED"
 response = requests.get(url)
 html_content = response.text
 clean_text = preprocessing_pipeline(html_content)
@@ -453,14 +453,14 @@ word_freqs = Counter(tokens)
 
 wordCloud = WordCloud(
         mask="Iran",
-        width=1000,
-        height=500,
+        width=640,
+        height=480,
         max_font_size=220,
-        min_font_size=5,
+        min_font_size=6,
         bg_color="white",
         contour_color="black",
-        contour_width=3,
-        color_map="Set2",
+        contour_width=5,
+        color_map="greens",
     )
 
 # if shows disconnect words, try again with bidi_reshape=True
