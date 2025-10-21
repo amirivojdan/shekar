@@ -52,7 +52,7 @@ Shekar provides a set of key functionalities covering essential tasks in Persian
 Provides text normalization tools to handle Persian-specific challenges such as inconsistent diacritics and spacing rules. The normalization steps follow the orthographic and typographic guidelines defined by [The Academy of Persian Language and Literature](https://apll.ir/) and include filters for punctuation, digits, emojis, non-Persian characters, and corrections for spacing and script variants.
 
 - **Tokenization**
-Offers word-level,sentence-level, and SentencePiece [@kudo2018sentencepiece] tokenizers built specifically for Persian text. These tokenizers use Unicode-aware rules to handle zero-width non-joiners, punctuation boundaries, and other language-specific edge cases.
+Offers word-level, sentence-level, and SentencePiece [@kudo2018sentencepiece] tokenizers built specifically for Persian text. These tokenizers use Unicode-aware rules to handle zero-width non-joiners, punctuation boundaries, and other language-specific edge cases.
 
 - **Morphological Analysis**
 Includes stemming, lemmatization, inflection, and verb conjugation tools. The stemmer applies rule-based suffix removal, while the lemmatizer combines vocabulary lookups with morphological rules to generate accurate base forms. The inflector and verb conjugator support the generation of correct word forms and verb tenses for diverse linguistic applications.
