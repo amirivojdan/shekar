@@ -4,10 +4,20 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shekar"
-version = "0.1.31"
+version = "1.0.0"
 description = "Simplifying Persian NLP for Modern Applications"
 readme = "README.md"
 license = "MIT"
+keywords = [
+    "NLP",
+    "Natural Language Processing",
+    "Persian",
+    "Shekar",
+    "Text Processing",
+    "Machine Learning",
+    "Deep Learning",
+]
+
 authors = [{ name = "Ahmad Amirivojdan", email = "amirivojdan@gmail.com" }]
 requires-python = ">=3.10"
 dependencies = [
@@ -26,7 +36,7 @@ dependencies = [
 ]
 
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -40,6 +50,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
     "Operating System :: OS Independent",
 ]
@@ -63,3 +74,6 @@ shekar = "shekar.cli:main"
 [project.urls]
 Homepage = "https://github.com/amirivojdan/shekar"
 Repository = "https://github.com/amirivojdan/shekar"
+Documentation = "https://lib.shekar.io"
+Issues = "https://github.com/amirivojdan/shekar/issues"
+Changelog = "https://github.com/amirivojdan/shekar/releases"
