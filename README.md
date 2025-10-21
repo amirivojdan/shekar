@@ -7,6 +7,8 @@
 <a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/amirivojdan/shekar?color=00A693"></a>
 <a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="PyPI - License" src="https://img.shields.io/pypi/l/shekar?color=00A693"></a>
 <a href="https://pypi.python.org/pypi/shekar" target="_blank"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/shekar?color=00A693"></a>
+<a href="https://doi.org/10.21105/joss.09128" target="_blank">
+<img alt="Static Badge" src="https://img.shields.io/badge/JOSS-10.21105%2Fjoss.09128-00A693"></a>
 </p>
 
 <p align="center">
