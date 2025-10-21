@@ -1,0 +1,32 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Amirivojdan
+  given-names: Ahmad
+  orcid: "https://orcid.org/0000-0003-3741-3979"
+contact:
+- family-names: Amirivojdan
+  given-names: Ahmad
+  orcid: "https://orcid.org/0000-0003-3741-3979"
+doi: 10.5281/zenodo.17408443
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Amirivojdan
+    given-names: Ahmad
+    orcid: "https://orcid.org/0000-0003-3741-3979"
+  date-published: 2025-10-21
+  doi: 10.21105/joss.09128
+  issn: 2475-9066
+  issue: 114
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 9128
+  title: "Shekar: A Python Toolkit for Persian Natural Language
+    Processing"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.09128"
+  volume: 10
+title: "Shekar: A Python Toolkit for Persian Natural Language
+  Processing"
