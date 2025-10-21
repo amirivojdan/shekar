@@ -46,6 +46,7 @@ It provides tools for text preprocessing, tokenization, part-of-speech(POS) tagg
 - [WordCloud](#wordcloud)
 - [Command-Line Interface (CLI)](#command-line-interface-cli)
 - [Download Models](#download-models)
+- [Citation](#citation)
 
 
 ## Installation
@@ -509,6 +510,25 @@ If Shekar Hub is unavailable, you can manually download the models and place the
 | AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
 
 -----
+
+## Citation
+
+If you find **Shekar** useful in your research, please consider citing the following paper:
+
+```
+@article{Amirivojdan_Shekar,
+author = {Amirivojdan, Ahmad},
+doi = {10.21105/joss.09128},
+journal = {Journal of Open Source Software},
+month = oct,
+number = {114},
+pages = {9128},
+title = {{Shekar: A Python Toolkit for Persian Natural Language Processing}},
+url = {https://joss.theoj.org/papers/10.21105/joss.09128},
+volume = {10},
+year = {2025}
+}
+```
 
 <p align="center"><em>With ❤️ for <strong>IRAN</strong></em></p>
 
