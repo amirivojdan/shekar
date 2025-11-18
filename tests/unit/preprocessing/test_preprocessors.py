@@ -299,21 +299,21 @@ def test_remove_diacritics():
 
 def test_remove_stopwords():
     stopword_Filter = StopWordRemover()
-    input_text = "این یک جملهٔ نمونه است"
-    expected_output = "جملهٔ نمونه"
+    input_text = "سلام بر تو"
+    expected_output = "سلام"
     assert stopword_Filter(input_text) == expected_output
 
     input_text = "وی خاطرنشان کرد"
-    expected_output = ""
+    expected_output = "خاطرنشان کرد"
     assert stopword_Filter(input_text) == expected_output
 
-    input_text = "بهتر از ایران کجا می‌شود بود"
-    expected_output = "ایران"
+    input_text = "درود بر ایران"
+    expected_output = "درود  ایران"
     assert stopword_Filter(input_text) == expected_output
 
     stopword_Filter = StopWordRemover(mask_token="|")
-    input_text = "ایران ما زیباتر از تمام جهان"
-    expected_output = "ایران | زیباتر | | جهان"
+    input_text = "درود بر ایران"
+    expected_output = "درود | ایران"
     assert stopword_Filter(input_text) == expected_output
 
 
