@@ -39,5 +39,7 @@ class Stemmer(BaseTextTransform):
 
     def _function(self, text: str) -> str:
         if text not in data.vocab:
-            return self._map_patterns(text, self._patterns)
+            stem = self._map_patterns(text, self._patterns)
+            if stem in data.vocab:
+                return stem
         return text
