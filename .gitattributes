@@ -1,0 +1,31 @@
+# Default: text files use LF
+# on Windows run "git config --global core.autocrlf false"
+# to renomalize line endings, run: "git add --renormalize ."
+
+* text=auto eol=lf
+
+# Common binary types that must never be touched
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.bmp  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.tar  binary
+*.7z   binary
+*.mp4  binary
+*.mov  binary
+*.avi  binary
+*.mp3  binary
+*.wav  binary
+*.ogg  binary
+*.ttf  binary
+*.otf  binary
+*.woff binary
+*.woff2 binary
+*.eot  binary
+*.exe  binary
+*.dll  binary
