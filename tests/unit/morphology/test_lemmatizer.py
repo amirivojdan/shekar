@@ -13,6 +13,16 @@ def test_conjugated_verb(lemmatizer, monkeypatch):
     monkeypatch.setitem(data.conjugated_verbs, "رفتند", ("رفت", "رو"))
     assert lemmatizer("رفتند") == "رفت/رو"
 
+    # test هست
+    monkeypatch.setitem(data.conjugated_verbs, "هستند", (None, "هست"))
+    assert lemmatizer("هستند") == "هست"
+
+
+def test_informal_verb(lemmatizer, monkeypatch):
+    assert lemmatizer("می‌خونم") == "خواند/خوان"
+    assert lemmatizer("می‌خوابم") == "خوابید/خواب"
+    assert lemmatizer("نمی‌رم") == "رفت/رو"
+
 
 def test_stemmer_and_vocab(lemmatizer, monkeypatch):
     # Example: "کتاب‌ها" -> "کتاب"
