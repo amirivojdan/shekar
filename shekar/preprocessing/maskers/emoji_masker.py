@@ -1,4 +1,3 @@
-import emoji
 from shekar.base import BaseTextTransform
 
 
@@ -34,5 +33,19 @@ class EmojiMasker(BaseTextTransform):
         super().__init__()
         self._mask_token = mask_token
 
+        self._emoji_mappings = [
+            (
+                r"(?:"
+                r"\p{Extended_Pictographic}(?:\p{Emoji_Modifier})?(?:\uFE0F)?"
+                r"(?:\u200D\p{Extended_Pictographic}(?:\p{Emoji_Modifier})?(?:\uFE0F)?)*"
+                r"|"
+                r"(?:\p{Regional_Indicator}{2})"  # country flags
+                r")",
+                self._mask_token,
+            ),
+        ]
+
+        self._patterns = self._compile_patterns(self._emoji_mappings)
+
     def _function(self, text: str) -> str:
-        return emoji.replace_emoji(text, replace=self._mask_token).strip()
+        return self._map_patterns(text, self._patterns).strip()
