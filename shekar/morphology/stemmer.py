@@ -30,9 +30,14 @@ class Stemmer(BaseTextTransform):
             # plurals: remove if joined by ZWNJ or base ends with a non-left-joiner
             (rf"(?:(?:{ZWNJ})|(?<={NLJ_CLASS}))(?:هایی|های|ها)$", ""),
             # comparative/superlative: only when explicitly joined with ZWNJ or hyphen
-            (rf"(?:{ZWNJ})(?:ترین|تر)$", ""),
+            (rf"(?:(?:{ZWNJ})|(?<={NLJ_CLASS}))(?:ترین|تر)$", ""),
             # ezafe after vowel or heh written as ZWNJ + ی / یی; be conservative, do not strip bare 'ی'
-            (rf"{ZWNJ}(?:ی|یی)$", ""),
+            (rf"{ZWNJ}(?:ی|ای)$", ""),
+            (r"(?<=[او])یی$", ""),
+            (
+                r"ی$",
+                "",
+            ),  # this should be the last rule to not mess up with other suffix removals
         ]
 
         self._patterns = self._compile_patterns(self._mappings)

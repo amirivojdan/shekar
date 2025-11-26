@@ -23,15 +23,35 @@ def test_stemmer_removes_possessive_suffix(stemmer):
 def test_stemmer_removes_comparative_superlative(stemmer):
     word = f"خوب{data.ZWNJ}ترین"
     assert stemmer(word) == "خوب"
+
     word2 = f"سریع{data.ZWNJ}تر"
     assert stemmer(word2) == "سریع"
+
+    word3 = "دشوارترین"
+    assert stemmer(word3) == "دشوار"
+
+    word4 = "شدیدترین"
+    assert stemmer(word4) == "شدید"
 
 
 def test_stemmer_removes_ezafe_after_zwnj(stemmer):
     word = f"خانه{data.ZWNJ}ی"
     assert stemmer(word) == "خانه"
-    word2 = f"خانه{data.ZWNJ}یی"
-    assert stemmer(word2) == "خانه"
+
+    word = "پیتزایی"
+    assert stemmer(word) == "پیتزا"
+
+    word = "صهیونیستی"
+    assert stemmer(word) == "صهیونیست"
+
+    word = "شورای"
+    assert stemmer(word) == "شورا"
+
+    word = "هندویی"
+    assert stemmer(word) == "هندو"
+
+    word = "کمردردی"
+    assert stemmer(word) == "کمردرد"
 
 
 def test_stemmer_no_change_for_no_suffix(stemmer):
