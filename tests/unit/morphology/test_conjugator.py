@@ -90,6 +90,49 @@ class TestConjugator:
         ]
         assert result == expected
 
+    def test_simple_past_informal(self, conjugator):
+        result = conjugator.simple_past(past_stem="خوند", informal=True)
+        expected = ["خوندم", "خوندی", "خوند", "خوندیم", "خوندید", "خوندین", "خوندن"]
+        assert result == expected
+
+        result = conjugator.simple_past(past_stem="خوند", negative=True, informal=True)
+        expected = [
+            "نخوندم",
+            "نخوندی",
+            "نخوند",
+            "نخوندیم",
+            "نخوندید",
+            "نخوندین",
+            "نخوندن",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_past(past_stem="خوند", passive=True, informal=True)
+        expected = [
+            "خونده شدم",
+            "خونده شدی",
+            "خونده شد",
+            "خونده شدیم",
+            "خونده شدید",
+            "خونده شدین",
+            "خونده شدن",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_past(
+            past_stem="خوند", passive=True, negative=True, informal=True
+        )
+        expected = [
+            "خونده نشدم",
+            "خونده نشدی",
+            "خونده نشد",
+            "خونده نشدیم",
+            "خونده نشدید",
+            "خونده نشدین",
+            "خونده نشدن",
+        ]
+        assert result == expected
+
     def test_simple_past_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.simple_past("")
@@ -196,6 +239,50 @@ class TestConjugator:
         ]
         assert result == expected
 
+    def test_present_perfect_informal(self, conjugator):
+        result = conjugator.present_perfect(past_stem="خوند", informal=True)
+        expected = ["خوندم", "خوندی", "خونده", "خوندیم", "خوندید", "خوندین", "خوندن"]
+        assert result == expected
+        result = conjugator.present_perfect(
+            past_stem="خوند", negative=True, informal=True
+        )
+        expected = [
+            "نخوندم",
+            "نخوندی",
+            "نخونده",
+            "نخوندیم",
+            "نخوندید",
+            "نخوندین",
+            "نخوندن",
+        ]
+        assert result == expected
+        result = conjugator.present_perfect(
+            past_stem="خوند", passive=True, informal=True
+        )
+        expected = [
+            "خونده شدم",
+            "خونده شدی",
+            "خونده شد",
+            "خونده شدیم",
+            "خونده شدید",
+            "خونده شدین",
+            "خونده شدن",
+        ]
+        assert result == expected
+        result = conjugator.present_perfect(
+            past_stem="خوند", passive=True, negative=True, informal=True
+        )
+        expected = [
+            "خونده نشدم",
+            "خونده نشدی",
+            "خونده نشد",
+            "خونده نشدیم",
+            "خونده نشدید",
+            "خونده نشدین",
+            "خونده نشدن",
+        ]
+        assert result == expected
+
     def test_present_perfect_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.present_perfect("")
@@ -285,6 +372,61 @@ class TestConjugator:
             "خوانده نمی‌شدیم",
             "خوانده نمی‌شدید",
             "خوانده نمی‌شدند",
+        ]
+        assert result == expected
+
+    def test_past_continuous_informal(self, conjugator):
+        result = conjugator.past_continuous(past_stem="خوند", informal=True)
+        expected = [
+            "می\u200cخوندم",
+            "می\u200cخوندی",
+            "می\u200cخوند",
+            "می\u200cخوندیم",
+            "می\u200cخوندید",
+            "می\u200cخوندین",
+            "می\u200cخوندن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_continuous(
+            past_stem="خوند", negative=True, informal=True
+        )
+        expected = [
+            "نمی\u200cخوندم",
+            "نمی\u200cخوندی",
+            "نمی\u200cخوند",
+            "نمی\u200cخوندیم",
+            "نمی\u200cخوندید",
+            "نمی\u200cخوندین",
+            "نمی\u200cخوندن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_continuous(
+            past_stem="خوند", passive=True, informal=True
+        )
+        expected = [
+            "خونده می\u200cشدم",
+            "خونده می\u200cشدی",
+            "خونده می\u200cشد",
+            "خونده می\u200cشدیم",
+            "خونده می\u200cشدید",
+            "خونده می\u200cشدین",
+            "خونده می\u200cشدن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_continuous(
+            past_stem="خوند", passive=True, negative=True, informal=True
+        )
+        expected = [
+            "خونده نمی\u200cشدم",
+            "خونده نمی\u200cشدی",
+            "خونده نمی\u200cشد",
+            "خونده نمی\u200cشدیم",
+            "خونده نمی\u200cشدید",
+            "خونده نمی\u200cشدین",
+            "خونده نمی\u200cشدن",
         ]
         assert result == expected
 
@@ -501,6 +643,57 @@ class TestConjugator:
             "خوانده نشده بودیم",
             "خوانده نشده بودید",
             "خوانده نشده بودند",
+        ]
+        assert result == expected
+
+    def test_past_perfect_informal(self, conjugator):
+        result = conjugator.past_perfect(past_stem="خوند", informal=True)
+        expected = [
+            "خونده بودم",
+            "خونده بودی",
+            "خونده بود",
+            "خونده بودیم",
+            "خونده بودید",
+            "خونده بودین",
+            "خونده بودن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_perfect(past_stem="خوند", negative=True, informal=True)
+        expected = [
+            "نخونده بودم",
+            "نخونده بودی",
+            "نخونده بود",
+            "نخونده بودیم",
+            "نخونده بودید",
+            "نخونده بودین",
+            "نخونده بودن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_perfect(past_stem="خوند", passive=True, informal=True)
+        expected = [
+            "خونده شده بودم",
+            "خونده شده بودی",
+            "خونده شده بود",
+            "خونده شده بودیم",
+            "خونده شده بودید",
+            "خونده شده بودین",
+            "خونده شده بودن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_perfect(
+            past_stem="خوند", passive=True, negative=True, informal=True
+        )
+        expected = [
+            "خونده نشده بودم",
+            "خونده نشده بودی",
+            "خونده نشده بود",
+            "خونده نشده بودیم",
+            "خونده نشده بودید",
+            "خونده نشده بودین",
+            "خونده نشده بودن",
         ]
         assert result == expected
 
@@ -727,6 +920,61 @@ class TestConjugator:
         ]
         assert result == expected
 
+    def test_past_subjunctive_informal(self, conjugator):
+        result = conjugator.past_subjunctive(past_stem="خوند", informal=True)
+        expected = [
+            "خونده باشم",
+            "خونده باشی",
+            "خونده باشه",
+            "خونده باشیم",
+            "خونده باشید",
+            "خونده باشین",
+            "خونده باشن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_subjunctive(
+            past_stem="خوند", negative=True, informal=True
+        )
+        expected = [
+            "نخونده باشم",
+            "نخونده باشی",
+            "نخونده باشه",
+            "نخونده باشیم",
+            "نخونده باشید",
+            "نخونده باشین",
+            "نخونده باشن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_subjunctive(
+            past_stem="خوند", passive=True, informal=True
+        )
+        expected = [
+            "خونده شده باشم",
+            "خونده شده باشی",
+            "خونده شده باشه",
+            "خونده شده باشیم",
+            "خونده شده باشید",
+            "خونده شده باشین",
+            "خونده شده باشن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_subjunctive(
+            past_stem="خوند", passive=True, negative=True, informal=True
+        )
+        expected = [
+            "خونده نشده باشم",
+            "خونده نشده باشی",
+            "خونده نشده باشه",
+            "خونده نشده باشیم",
+            "خونده نشده باشید",
+            "خونده نشده باشین",
+            "خونده نشده باشن",
+        ]
+        assert result == expected
+
     def test_past_subjunctive_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.past_subjunctive("")
@@ -793,6 +1041,33 @@ class TestConjugator:
             "داشتیم می‌یم",
             "داشتید می‌ید",
             "داشتند می‌ند",
+        ]
+        assert result == expected
+
+    def test_past_progressive_informal(self, conjugator):
+        result = conjugator.past_progressive(past_stem="خوند", informal=True)
+        expected = [
+            "داشتم می\u200cخوندم",
+            "داشتی می\u200cخوندی",
+            "داشت می\u200cخوند",
+            "داشتیم می\u200cخوندیم",
+            "داشتید می\u200cخوندید",
+            "داشتین می\u200cخوندین",
+            "داشتن می\u200cخوندن",
+        ]
+        assert result == expected
+
+        result = conjugator.past_progressive(
+            past_stem="خوند", passive=True, informal=True
+        )
+        expected = [
+            "داشتم خونده می\u200cشدم",
+            "داشتی خونده می\u200cشدی",
+            "داشت خونده می\u200cشد",
+            "داشتیم خونده می\u200cشدیم",
+            "داشتید خونده می\u200cشدید",
+            "داشتین خونده می\u200cشدین",
+            "داشتن خونده می\u200cشدن",
         ]
         assert result == expected
 
@@ -947,6 +1222,50 @@ class TestConjugator:
         ]
         assert result == expected
 
+    def test_simple_present_informal(self, conjugator):
+        result = conjugator.simple_present(
+            present_stem="خون", past_stem="خوند", informal=True
+        )
+        expected = ["خونم", "خونی", "خونه", "خونیم", "خونید", "خونین", "خونن"]
+        assert result == expected
+
+        result = conjugator.simple_present(
+            present_stem="خون", past_stem="خوند", negative=True, informal=True
+        )
+        expected = ["نخونم", "نخونی", "نخونه", "نخونیم", "نخونید", "نخونین", "نخونن"]
+        assert result == expected
+
+        result = conjugator.simple_present(
+            present_stem="خون", past_stem="خوند", passive=True, informal=True
+        )
+        expected = [
+            "خونده شم",
+            "خونده شی",
+            "خونده شه",
+            "خونده شیم",
+            "خونده شید",
+            "خونده شین",
+            "خونده شن",
+        ]
+        assert result == expected
+        result = conjugator.simple_present(
+            present_stem="خون",
+            past_stem="خوند",
+            passive=True,
+            negative=True,
+            informal=True,
+        )
+        expected = [
+            "خونده نشم",
+            "خونده نشی",
+            "خونده نشه",
+            "خونده نشیم",
+            "خونده نشید",
+            "خونده نشین",
+            "خونده نشن",
+        ]
+        assert result == expected
+
     def test_simple_present_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.simple_present("", "")
@@ -1044,6 +1363,71 @@ class TestConjugator:
         ]
         assert result == expected
 
+    def test_present_indicative_informal(self, conjugator):
+        result = conjugator.present_indicative(
+            past_stem="خوند", present_stem="خون", informal=True
+        )
+        expected = [
+            "می\u200cخونم",
+            "می\u200cخونی",
+            "می\u200cخونه",
+            "می\u200cخونیم",
+            "می\u200cخونید",
+            "می\u200cخونین",
+            "می\u200cخونن",
+            "می\u200cخونید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_indicative(
+            past_stem="خوند", present_stem="خون", negative=True, informal=True
+        )
+        expected = [
+            "نمی\u200cخونم",
+            "نمی\u200cخونی",
+            "نمی\u200cخونه",
+            "نمی\u200cخونیم",
+            "نمی\u200cخونید",
+            "نمی\u200cخونین",
+            "نمی\u200cخونن",
+            "نمی\u200cخونید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_indicative(
+            past_stem="خوند", present_stem="خون", passive=True, informal=True
+        )
+        expected = [
+            "خونده می\u200cشم",
+            "خونده می\u200cشی",
+            "خونده می\u200cشه",
+            "خونده می\u200cشیم",
+            "خونده می\u200cشید",
+            "خونده می\u200cشین",
+            "خونده می\u200cشن",
+            "خونده می\u200cشید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_indicative(
+            past_stem="خوند",
+            present_stem="خون",
+            passive=True,
+            negative=True,
+            informal=True,
+        )
+        expected = [
+            "خونده نمی\u200cشم",
+            "خونده نمی\u200cشی",
+            "خونده نمی\u200cشه",
+            "خونده نمی\u200cشیم",
+            "خونده نمی\u200cشید",
+            "خونده نمی\u200cشین",
+            "خونده نمی\u200cشن",
+            "خونده نمی\u200cشید",
+        ]
+        assert result == expected
+
     def test_present_indicative_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.present_indicative("", "")
@@ -1134,6 +1518,72 @@ class TestConjugator:
         ]
         assert result == expected
 
+    def test_present_subjunctive_informal(self, conjugator):
+        result = conjugator.present_subjunctive(
+            past_stem="خوند", present_stem="خون", informal=True
+        )
+        expected = [
+            "بخونم",
+            "بخونی",
+            "بخونه",
+            "بخونیم",
+            "بخونید",
+            "بخونین",
+            "بخونن",
+            "بخونید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_subjunctive(
+            past_stem="خوند", present_stem="خون", negative=True, informal=True
+        )
+        expected = [
+            "نخونم",
+            "نخونی",
+            "نخونه",
+            "نخونیم",
+            "نخونید",
+            "نخونین",
+            "نخونن",
+            "نخونید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_subjunctive(
+            past_stem="خوند", present_stem="خون", passive=True, informal=True
+        )
+
+        expected = [
+            "خونده بشم",
+            "خونده بشی",
+            "خونده بشه",
+            "خونده بشیم",
+            "خونده بشید",
+            "خونده بشین",
+            "خونده بشن",
+            "خونده بشید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_subjunctive(
+            past_stem="خوند",
+            present_stem="خون",
+            passive=True,
+            negative=True,
+            informal=True,
+        )
+        expected = [
+            "خونده نشم",
+            "خونده نشی",
+            "خونده نشه",
+            "خونده نشیم",
+            "خونده نشید",
+            "خونده نشین",
+            "خونده نشن",
+            "خونده نشید",
+        ]
+        assert result == expected
+
     def test_present_subjunctive_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.present_subjunctive("", "", passive=False)
@@ -1218,6 +1668,44 @@ class TestConjugator:
 
         # Test specifically focusing on third person plural
         assert result[5] == "دارند می‌روند"
+
+    def test_present_progressive_informal(self, conjugator):
+        result = conjugator.present_progressive("خوند", "خون", informal=True)
+        expected = [
+            "دارم می\u200cخونم",
+            "داری می\u200cخونی",
+            "داره می\u200cخونه",
+            "داریم می\u200cخونیم",
+            "دارید می\u200cخونید",
+            "دارین می\u200cخونین",
+            "دارن می\u200cخونن",
+            "دارید می\u200cخونید",
+        ]
+        assert result == expected
+
+        result = conjugator.present_progressive(
+            past_stem="خوند", present_stem="خون", passive=True, informal=True
+        )
+        expected = [
+            "دارم خونده می\u200cشم",
+            "داری خونده می\u200cشی",
+            "داره خونده می\u200cشه",
+            "داریم خونده می\u200cشیم",
+            "دارید خونده می\u200cشید",
+            "دارین خونده می\u200cشین",
+            "دارن خونده می\u200cشن",
+            "دارید خونده می\u200cشید",
+        ]
+        assert result == expected
+
+    def test_imperative_informal(self, conjugator):
+        result = conjugator.imperative("خون", informal=True)
+        expected = ["بخون", "بخونید", "بخونین"]
+        assert result == expected
+
+        result = conjugator.imperative("خون", negative=True, informal=True)
+        expected = ["نخون", "نخونید", "نخونین"]
+        assert result == expected
 
     def test_future_simple_regular(self, conjugator):
         # Test with example from docstring
@@ -1385,7 +1873,7 @@ class TestConjugator:
 
         # Check that we got the expected number of conjugations
         # 30 forms (past tenses) + 20 forms (present/future tenses) = 50 forms x 6 persons = 300 conjugated forms
-        assert len(result) == 306
+        assert len(result) == 574
 
         # Verify specific expected forms are present
         # Sample from each tense to ensure they're all included
@@ -1414,7 +1902,7 @@ class TestConjugator:
         # Test conjugation of a verb with only past stem
         result = conjugator.conjugate("شناخت")
 
-        assert len(result) == 194
+        assert len(result) == 348
 
         # Verify specific expected forms are present
         assert "شناختم" in result  # simple past
@@ -1434,10 +1922,10 @@ class TestConjugator:
         assert len(result) == 0
 
         result = conjugator.conjugate("", "شناس")
-        assert len(result) == 112
+        assert len(result) == 226
 
         result = conjugator.conjugate("شناخت", "")
-        assert len(result) == 194
+        assert len(result) == 348
 
     def test_conjugate_different_verbs(self, conjugator):
         # Test with different verbs to ensure general functionality

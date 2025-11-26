@@ -153,9 +153,13 @@ def load_verbs():
     with open(verbs_csv_path, "r", encoding="utf-8") as file:
         for line in file.read().splitlines():
             parts = line.strip().split(",")
-            past_stem = parts[1]
             present_stem = parts[0]
-            verbs.add((past_stem, present_stem))
+            past_stem = parts[1]
+            informal_present_stem = parts[2] if len(parts) > 2 else None
+            informal_past_stem = parts[3] if len(parts) > 3 else None
+            verbs.add(
+                (past_stem, present_stem, informal_past_stem, informal_present_stem)
+            )
     return verbs
 
 
@@ -196,11 +200,18 @@ vocab = {word: count - min_count for word, count in vocab.items()}
 conjugator = Conjugator()
 conjugated_verbs = {}
 
-
-for past_stem, present_stem in verbs:
-    conjugations = conjugator.conjugate(past_stem, present_stem)
+for past_stem, present_stem, informal_past_stem, informal_present_stem in verbs:
+    conjugations = conjugator.conjugate(
+        past_stem, present_stem, informal_past_stem, informal_present_stem
+    )
     for form in conjugations:
         conjugated_verbs[form] = (past_stem, present_stem)
+
+# Manually add conjugations for "هست" and "نیست"
+for form in conjugator.simple_present(past_stem=None, present_stem="هست"):
+    conjugated_verbs[form] = (None, "هست")
+for form in conjugator.simple_present(past_stem=None, present_stem="نیست"):
+    conjugated_verbs[form] = (None, "نیست")
 
 compound_words = compound_words - set(conjugated_verbs.keys())
 
