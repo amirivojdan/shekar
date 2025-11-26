@@ -8,6 +8,15 @@ def normalizer():
     return Normalizer()
 
 
+def test_normalize_informal_verbs(normalizer):
+    assert normalizer("دارم درس میخونم!") == "دارم درس می‌خونم!"
+    assert normalizer("نمی تونم بهت بگم چی میشه!") == "نمی‌تونم بهت بگم چی می‌شه!"
+    assert (
+        normalizer("می دونی که نمیخاستم ناراحتت کنم.")
+        == "می‌دونی که نمی‌خاستم ناراحتت کنم."
+    )
+
+
 def test_normalize_basic_spacing_and_quotes(normalizer):
     # Exercises punctuation spacing, ZWNJ for "می + verb", and Persian quotes
     inp = "ناصر گفت:«من میروم.»  \u200c 🎉 she+kar@she-kar.io"
