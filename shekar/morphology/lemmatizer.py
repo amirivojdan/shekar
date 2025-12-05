@@ -21,15 +21,18 @@ class Lemmatizer(BaseTextTransform):
 
     """
 
-    def __init__(self):
+    def __init__(self, return_infinitive=False):
         super().__init__()
         self.stemmer = Stemmer()
+        self.return_infinitive = return_infinitive
 
     def _function(self, text):
         if text in data.conjugated_verbs:
             (past_stem, present_stem) = data.conjugated_verbs[text]
             if past_stem is None:
                 return present_stem
+            if self.return_infinitive:
+                return past_stem + "ن"
             return past_stem + "/" + present_stem
 
         stem = self.stemmer(text)

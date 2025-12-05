@@ -8,6 +8,14 @@ def lemmatizer():
     return Lemmatizer()
 
 
+def test_return_infinitive_option():
+    lemmatizer = Lemmatizer(return_infinitive=True)
+    assert lemmatizer("رفتند") == "رفتن"
+    assert lemmatizer("می‌خونم") == "خواندن"
+    assert lemmatizer("رفته بودم") == "رفتن"
+    assert lemmatizer("خواهم رفت") == "رفتن"
+
+
 def test_conjugated_verb(lemmatizer, monkeypatch):
     # Example: "رفتند" -> "رفت/رو"
     monkeypatch.setitem(data.conjugated_verbs, "رفتند", ("رفت", "رو"))
