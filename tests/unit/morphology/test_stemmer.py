@@ -11,6 +11,33 @@ def stemmer():
 def test_stemmer_removes_plural_suffix(stemmer):
     assert stemmer("کتاب‌ها") == "کتاب"
     assert stemmer("خانه‌ها") == "خانه"
+    assert stemmer("خونه‌هامون") == "خانه"
+    assert stemmer("حیوون") == "حیوان"
+    assert stemmer("دوستان") == "دوست"
+    assert stemmer("زورگیران") == "زورگیر"
+    assert stemmer("مدیران") == "مدیر"
+    assert stemmer("حیوانات") == "حیوان"
+    assert stemmer("دانش‌آموزان") == "دانش‌آموز"
+    assert stemmer("کشته‌شدگان") == "کشته‌شده"
+    assert stemmer("رزمندگان") == "رزمنده"
+
+    assert stemmer("زعفران") != "زعفر"
+    assert stemmer("زعفرون") == "زعفران"
+
+    assert stemmer("بیکران") == "بیکران"
+    assert stemmer("شوکران") == "شوکران"
+    assert stemmer("میهمان") == "میهمان"
+    assert stemmer("ایران") == "ایران"
+    assert stemmer("امان") == "امان"
+    assert stemmer("پایان") == "پایان"
+    assert stemmer("پهلوان") == "پهلوان"
+
+    assert stemmer("شاتگان") != "شاته"
+    assert stemmer("یگان") != "یه"
+    assert stemmer("رایگان") != "رایه"
+    assert stemmer("شایگان") != "شایه"
+
+    assert stemmer("آقایون") == "آقا"
 
 
 def test_stemmer_removes_possessive_suffix(stemmer):
@@ -18,6 +45,10 @@ def test_stemmer_removes_possessive_suffix(stemmer):
     assert stemmer("کتابم") == "کتاب"
     assert stemmer("خانه‌مان") == "خانه"
     assert stemmer("دوستت") == "دوست"
+
+    assert stemmer("کتاب‌هامون") == "کتاب"
+    assert stemmer("کتاب‌هام") == "کتاب"
+    assert stemmer("رفیق‌هامون") == "رفیق"
 
 
 def test_stemmer_removes_comparative_superlative(stemmer):
