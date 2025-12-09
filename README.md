@@ -19,7 +19,13 @@
 
 It provides tools for text preprocessing, tokenization, part-of-speech(POS) tagging, named entity recognition(NER), embeddings, spell checking, and more. With its modular pipeline design, Shekar makes it easy to build reproducible workflows for both research and production applications.
 
-📖 Documentation: https://lib.shekar.io/
+<div dir="rtl">
+<b>شکر</b> یک کتابخانهٔ پایتون برای پردازش زبان فارسی است که نام خود را از داستان طنز <b>«فارسی شکر است»</b> وام گرفته است؛ اثری ماندگار که در سال ۱۹۲۱ به قلم محمدعلی جمالزاده منتشر شد. این داستان به یکی از ارکان نوزایی ادبی ایران بدل شد که با ترویج زبانی ساده و روان، مسیر تازه‌ای در ادبیات معاصر گشود. 
+کتابخانهٔ <b>شکر</b> نیز با الهام از همین نگرش، تلاش می‌کند ابزارهایی کاربردی، ساده و در عین حال دقیق برای پردازش متن فارسی فراهم کند تا پژوهشگران، توسعه‌دهندگان و علاقه‌مندان بتوانند به‌راحتی از آن در پروژه‌های خود استفاده کنند.
+</div>
+
+
+Documentation: https://lib.shekar.io/
 
 ### Table of Contents
 
@@ -79,7 +85,6 @@ $ pip install shekar && pip uninstall -y onnxruntime && pip install onnxruntime-
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/preprocessing.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/preprocessing.ipynb)
 
-
 ### Normalizer
 
 The built-in `Normalizer` class provides a ready-to-use pipeline that combines the most common filters and normalization steps, offering a default configuration that covers the majority of use cases.
@@ -88,19 +93,29 @@ The built-in `Normalizer` class provides a ready-to-use pipeline that combines t
 from shekar import Normalizer
 
 normalizer = Normalizer()
-text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده ی گرامی می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
 
+text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده ی گرامی می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
+print(normalizer(text))
+
+text = "می دونی که نمیخاستم ناراحتت کنم."
+print(normalizer(text))
+
+text = "خونه هاشون خیلی گرون تر شده"
 print(normalizer(text))
 ```
 
 ```shell
 «فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده‌ی گرامی می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
-```
 
+می‌دونی که نمی‌خاستم ناراحتت کنم.
+
+خونه‌هاشون خیلی گرون‌تر شده
+```
 
 ### Customization
 
 For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
+A comprehensive list of operators is available at https://lib.shekar.io/tutorials/preprocessing/
 
 You can combine any of the preprocessing components using the `|` operator:
 
@@ -219,11 +234,13 @@ stemmer = Stemmer()
 print(stemmer("نوه‌ام"))
 print(stemmer("کتاب‌ها"))
 print(stemmer("خانه‌هایی"))
+print(stemmer("خونه‌هامون"))
 ```
 
 ```output
 نوه
 کتاب
+خانه
 خانه
 ```
 
