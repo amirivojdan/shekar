@@ -14,7 +14,7 @@ compound_words_csv_path = resources_root.joinpath("compound_words.csv")
 verbs_csv_path = resources_root.joinpath("verbs.csv")
 stopwords_csv_path = resources_root.joinpath("stopwords.csv")
 offensive_words_csv_path = resources_root.joinpath("offensive_words.csv")
-
+informal_words_csv_path = resources_root.joinpath("informal_words.csv")
 
 ZWNJ = "\u200c"
 newline = "\n"
@@ -58,6 +58,13 @@ morph_suffixes = [
     "هایمان",
     "هایتان",
     "هایشان",
+    # informal plurals
+    "هام",
+    "هات",
+    "هاش",
+    "هامون",
+    "هاتون",
+    "هاشون",
 ]
 
 suffixes = [
@@ -187,11 +194,25 @@ def read_vocab(path):
     return vocab
 
 
+def read_word_mappings(path):
+    vocab = {}
+    with open(path, mode="r", newline="", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row:  # avoid empty rows
+                vocab[row[0]] = row[1]
+    return vocab
+
+
 verbs = load_verbs()
 stopwords = read_words(stopwords_csv_path)
 offensive_words = read_words(offensive_words_csv_path)
+informal_words = read_word_mappings(informal_words_csv_path)
 vocab = read_vocab(vocab_csv_path)
 compound_words = read_words(compound_words_csv_path)
+
+for keyword, formal_word in informal_words.items():
+    vocab[keyword] = vocab.get(formal_word, 1)
 
 min_count = min(vocab.values())
 vocab = {word: count - min_count for word, count in vocab.items()}

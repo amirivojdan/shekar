@@ -39,6 +39,10 @@ def test_correct_spacings():
     )
     assert spacing_normalizer(input_text) == expected_output
 
+    input_text = "خونه هاشون خیلی گرون تر شده"
+    expected_output = "خونه‌هاشون خیلی گرون‌تر شده"
+    assert spacing_normalizer(input_text) == expected_output
+
     input_text = "دوقلو های هم خون"
     expected_output = "دوقلوهای هم‌خون"
     assert spacing_normalizer(input_text) == expected_output
