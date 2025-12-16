@@ -7,6 +7,15 @@ class TestConjugator:
     def conjugator(self):
         return Conjugator()
 
+    def test_verb_prefix(self, conjugator):
+        stem, verb_prefix = conjugator.get_verb_prefix("برگشت")
+        assert verb_prefix == "بر"
+        assert stem == "گشت"
+
+        stem, verb_prefix = conjugator.get_verb_prefix("برید")
+        assert verb_prefix == ""
+        assert stem == "برید"
+
     def test_init(self, conjugator):
         assert conjugator._past_personal_suffixes == ["م", "ی", "", "یم", "ید", "ند"]
         assert conjugator._present_personal_suffixes == [
@@ -29,7 +38,6 @@ class TestConjugator:
         expected = ["خوردم", "خوردی", "خورد", "خوردیم", "خوردید", "خوردند"]
         assert result == expected
 
-    def test_simple_past_negative(self, conjugator):
         # Test with example from docstring
         result = conjugator.simple_past("شناخت", negative=True)
         expected = ["نشناختم", "نشناختی", "نشناخت", "نشناختیم", "نشناختید", "نشناختند"]
@@ -40,7 +48,6 @@ class TestConjugator:
         expected = ["نرفتم", "نرفتی", "نرفت", "نرفتیم", "نرفتید", "نرفتند"]
         assert result == expected
 
-    def test_simple_past_passive(self, conjugator):
         # Test with example from docstring
         result = conjugator.simple_past("شناخت", passive=True)
         expected = [
@@ -65,7 +72,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_simple_past_negative_passive(self, conjugator):
         # Test with example from docstring
         result = conjugator.simple_past("شناخت", negative=True, passive=True)
         expected = [
@@ -90,7 +96,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_simple_past_informal(self, conjugator):
         result = conjugator.simple_past(past_stem="خوند", informal=True)
         expected = ["خوندم", "خوندی", "خوند", "خوندیم", "خوندید", "خوندین", "خوندن"]
         assert result == expected
@@ -133,14 +138,89 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.simple_past(
+            past_stem="گشت",
+            prefix="بر",
+            compound_preverb="خوش",
+            negative=False,
+            passive=False,
+            informal=False,
+        )
+
+        expected = [
+            "خوش برگشتم",
+            "خوش برگشتی",
+            "خوش برگشت",
+            "خوش برگشتیم",
+            "خوش برگشتید",
+            "خوش برگشتند",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_past(
+            past_stem="گشت",
+            prefix="بر",
+            compound_preverb="خوش",
+            negative=True,
+            passive=False,
+            informal=False,
+        )
+
+        expected = [
+            "خوش برنگشتم",
+            "خوش برنگشتی",
+            "خوش برنگشت",
+            "خوش برنگشتیم",
+            "خوش برنگشتید",
+            "خوش برنگشتند",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_past(
+            past_stem="گشت",
+            prefix="بر",
+            compound_preverb="خوش",
+            negative=True,
+            passive=True,
+            informal=False,
+        )
+
+        expected = [
+            "خوش برگشته نشدم",
+            "خوش برگشته نشدی",
+            "خوش برگشته نشد",
+            "خوش برگشته نشدیم",
+            "خوش برگشته نشدید",
+            "خوش برگشته نشدند",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_past(
+            past_stem="گشت",
+            prefix="بر",
+            compound_preverb="خوش",
+            negative=True,
+            passive=True,
+            informal=True,
+        )
+
+        expected = [
+            "خوش برگشته نشدم",
+            "خوش برگشته نشدی",
+            "خوش برگشته نشد",
+            "خوش برگشته نشدیم",
+            "خوش برگشته نشدید",
+            "خوش برگشته نشدین",
+            "خوش برگشته نشدن",
+        ]
+        assert result == expected
+
     def test_simple_past_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.simple_past("")
         expected = ["م", "ی", "", "یم", "ید", "ند"]
         assert result == expected
 
-    def test_present_perfect_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect("شناخت")
         expected = [
             "شناخته‌ام",
@@ -152,7 +232,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_perfect("خورد")
         expected = [
             "خورده‌ام",
@@ -164,8 +243,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_perfect_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect("شناخت", negative=True)
         expected = [
             "نشناخته‌ام",
@@ -177,20 +254,17 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.present_perfect("رفت", negative=True)
+        result = conjugator.present_perfect("آمد", negative=True)
         expected = [
-            "نرفته‌ام",
-            "نرفته‌ای",
-            "نرفته‌است",
-            "نرفته‌ایم",
-            "نرفته‌اید",
-            "نرفته‌اند",
+            "نیامده\u200cام",
+            "نیامده\u200cای",
+            "نیامده\u200cاست",
+            "نیامده\u200cایم",
+            "نیامده\u200cاید",
+            "نیامده\u200cاند",
         ]
         assert result == expected
 
-    def test_present_perfect_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect("شناخت", passive=True)
         expected = [
             "شناخته شده‌ام",
@@ -202,20 +276,17 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.present_perfect("دید", passive=True)
+        result = conjugator.present_perfect("آمد", passive=True)
         expected = [
-            "دیده شده‌ام",
-            "دیده شده‌ای",
-            "دیده شده‌است",
-            "دیده شده‌ایم",
-            "دیده شده‌اید",
-            "دیده شده‌اند",
+            "آمده شده\u200cام",
+            "آمده شده\u200cای",
+            "آمده شده\u200cاست",
+            "آمده شده\u200cایم",
+            "آمده شده\u200cاید",
+            "آمده شده\u200cاند",
         ]
         assert result == expected
 
-    def test_present_perfect_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect("شناخت", negative=True, passive=True)
         expected = [
             "شناخته نشده‌ام",
@@ -227,19 +298,17 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.present_perfect("خواند", negative=True, passive=True)
+        result = conjugator.present_perfect("ایستاد", negative=True, passive=True)
         expected = [
-            "خوانده نشده‌ام",
-            "خوانده نشده‌ای",
-            "خوانده نشده‌است",
-            "خوانده نشده‌ایم",
-            "خوانده نشده‌اید",
-            "خوانده نشده‌اند",
+            "ایستاده نشده\u200cام",
+            "ایستاده نشده\u200cای",
+            "ایستاده نشده\u200cاست",
+            "ایستاده نشده\u200cایم",
+            "ایستاده نشده\u200cاید",
+            "ایستاده نشده\u200cاند",
         ]
         assert result == expected
 
-    def test_present_perfect_informal(self, conjugator):
         result = conjugator.present_perfect(past_stem="خوند", informal=True)
         expected = ["خوندم", "خوندی", "خونده", "خوندیم", "خوندید", "خوندین", "خوندن"]
         assert result == expected
@@ -283,6 +352,75 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.present_perfect(
+            "گشت", prefix="بر", compound_preverb="خوش", negative=True, passive=False
+        )
+        expected = [
+            "خوش برنگشته\u200cام",
+            "خوش برنگشته\u200cای",
+            "خوش برنگشته\u200cاست",
+            "خوش برنگشته\u200cایم",
+            "خوش برنگشته\u200cاید",
+            "خوش برنگشته\u200cاند",
+        ]
+        assert result == expected
+
+        result = conjugator.present_perfect(
+            "گشت",
+            prefix="بر",
+            compound_preverb="خوش",
+            informal=True,
+            negative=True,
+            passive=True,
+        )
+        expected = [
+            "خوش  برگشته نشدم",
+            "خوش  برگشته نشدی",
+            "خوش  برگشته نشد",
+            "خوش  برگشته نشدیم",
+            "خوش  برگشته نشدید",
+            "خوش  برگشته نشدین",
+            "خوش  برگشته نشدن",
+        ]
+        assert result == expected
+
+        result = conjugator.present_perfect(
+            "گشت",
+            prefix="بر",
+            compound_preverb="خوش",
+            informal=True,
+            negative=True,
+            passive=False,
+        )
+        expected = [
+            "خوش برنگشتم",
+            "خوش برنگشتی",
+            "خوش برنگشته",
+            "خوش برنگشتیم",
+            "خوش برنگشتید",
+            "خوش برنگشتین",
+            "خوش برنگشتن",
+        ]
+        assert result == expected
+
+        result = conjugator.present_perfect(
+            "آمد",
+            prefix="بر",
+            compound_preverb="باز",
+            informal=False,
+            negative=True,
+            passive=False,
+        )
+        expected = [
+            "باز برنیامده\u200cام",
+            "باز برنیامده\u200cای",
+            "باز برنیامده\u200cاست",
+            "باز برنیامده\u200cایم",
+            "باز برنیامده\u200cاید",
+            "باز برنیامده\u200cاند",
+        ]
+        assert result == expected
+
     def test_present_perfect_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.present_perfect("")
@@ -307,8 +445,6 @@ class TestConjugator:
         expected = ["می‌خوردم", "می‌خوردی", "می‌خورد", "می‌خوردیم", "می‌خوردید", "می‌خوردند"]
         assert result == expected
 
-    def test_past_continuous_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_continuous("شناخت", negative=True)
         expected = [
             "نمی‌شناختم",
@@ -325,8 +461,6 @@ class TestConjugator:
         expected = ["نمی‌رفتم", "نمی‌رفتی", "نمی‌رفت", "نمی‌رفتیم", "نمی‌رفتید", "نمی‌رفتند"]
         assert result == expected
 
-    def test_past_continuous_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_continuous("شناخت", passive=True)
         expected = [
             "شناخته می‌شدم",
@@ -338,20 +472,17 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.past_continuous("دید", passive=True)
+        result = conjugator.past_continuous("آمد", passive=True)
         expected = [
-            "دیده می‌شدم",
-            "دیده می‌شدی",
-            "دیده می‌شد",
-            "دیده می‌شدیم",
-            "دیده می‌شدید",
-            "دیده می‌شدند",
+            "آمده می\u200cشدم",
+            "آمده می\u200cشدی",
+            "آمده می\u200cشد",
+            "آمده می\u200cشدیم",
+            "آمده می\u200cشدید",
+            "آمده می\u200cشدند",
         ]
         assert result == expected
 
-    def test_past_continuous_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_continuous("شناخت", negative=True, passive=True)
         expected = [
             "شناخته نمی‌شدم",
@@ -363,7 +494,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_continuous("خواند", negative=True, passive=True)
         expected = [
             "خوانده نمی‌شدم",
@@ -375,7 +505,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_continuous_informal(self, conjugator):
         result = conjugator.past_continuous(past_stem="خوند", informal=True)
         expected = [
             "می\u200cخوندم",
@@ -430,6 +559,42 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.past_continuous(
+            "آمد",
+            prefix="بر",
+            compound_preverb="باز",
+            informal=False,
+            negative=True,
+            passive=False,
+        )
+        expected = [
+            "باز برنمی\u200cآمدم",
+            "باز برنمی\u200cآمدی",
+            "باز برنمی\u200cآمد",
+            "باز برنمی\u200cآمدیم",
+            "باز برنمی\u200cآمدید",
+            "باز برنمی\u200cآمدند",
+        ]
+        assert result == expected
+
+        result = conjugator.past_continuous(
+            "آمد",
+            prefix="بر",
+            compound_preverb="باز",
+            informal=False,
+            negative=True,
+            passive=True,
+        )
+        expected = [
+            "باز برآمده نمی\u200cشدم",
+            "باز برآمده نمی\u200cشدی",
+            "باز برآمده نمی\u200cشد",
+            "باز برآمده نمی\u200cشدیم",
+            "باز برآمده نمی\u200cشدید",
+            "باز برآمده نمی\u200cشدند",
+        ]
+        assert result == expected
+
     def test_past_continuous_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.past_continuous("")
@@ -449,7 +614,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_perfect_continuous("خورد")
         expected = [
             "می‌خورده‌ام",
@@ -461,8 +625,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_perfect_continuous_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect_continuous("شناخت", negative=True)
         expected = [
             "نمی‌شناخته‌ام",
@@ -474,7 +636,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_perfect_continuous("رفت", negative=True)
         expected = [
             "نمی‌رفته‌ام",
@@ -486,8 +647,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_perfect_continuous_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect_continuous("شناخت", passive=True)
         expected = [
             "شناخته می‌شده‌ام",
@@ -499,7 +658,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_perfect_continuous("دید", passive=True)
         expected = [
             "دیده می‌شده‌ام",
@@ -511,8 +669,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_perfect_continuous_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_perfect_continuous(
             "شناخت", negative=True, passive=True
         )
@@ -526,7 +682,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_perfect_continuous(
             "خواند", negative=True, passive=True
         )
@@ -540,6 +695,19 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.present_perfect_continuous(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=True
+        )
+        expected = [
+            "باز برآمده نمی\u200cشده\u200cام",
+            "باز برآمده نمی\u200cشده\u200cای",
+            "باز برآمده نمی\u200cشده\u200cاست",
+            "باز برآمده نمی\u200cشده\u200cایم",
+            "باز برآمده نمی\u200cشده\u200cاید",
+            "باز برآمده نمی\u200cشده\u200cاند",
+        ]
+        assert result == expected
+
     def test_present_perfect_continuous_empty_string(self, conjugator):
         # Test with empty string
         result = conjugator.present_perfect_continuous("")
@@ -547,7 +715,6 @@ class TestConjugator:
         assert result == expected
 
     def test_past_perfect_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect("شناخت")
         expected = [
             "شناخته بودم",
@@ -559,7 +726,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect("خورد")
         expected = [
             "خورده بودم",
@@ -571,8 +737,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect("شناخت", negative=True)
         expected = [
             "نشناخته بودم",
@@ -584,20 +748,19 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.past_perfect("رفت", negative=True)
+        result = result = conjugator.past_perfect(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=False
+        )
         expected = [
-            "نرفته بودم",
-            "نرفته بودی",
-            "نرفته بود",
-            "نرفته بودیم",
-            "نرفته بودید",
-            "نرفته بودند",
+            "باز برنیامده بودم",
+            "باز برنیامده بودی",
+            "باز برنیامده بود",
+            "باز برنیامده بودیم",
+            "باز برنیامده بودید",
+            "باز برنیامده بودند",
         ]
         assert result == expected
 
-    def test_past_perfect_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect("شناخت", passive=True)
         expected = [
             "شناخته شده بودم",
@@ -609,20 +772,19 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.past_perfect("دید", passive=True)
+        result = result = conjugator.past_perfect(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=True
+        )
         expected = [
-            "دیده شده بودم",
-            "دیده شده بودی",
-            "دیده شده بود",
-            "دیده شده بودیم",
-            "دیده شده بودید",
-            "دیده شده بودند",
+            "باز برآمده نشده بودم",
+            "باز برآمده نشده بودی",
+            "باز برآمده نشده بود",
+            "باز برآمده نشده بودیم",
+            "باز برآمده نشده بودید",
+            "باز برآمده نشده بودند",
         ]
         assert result == expected
 
-    def test_past_perfect_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect("شناخت", negative=True, passive=True)
         expected = [
             "شناخته نشده بودم",
@@ -634,7 +796,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect("خواند", negative=True, passive=True)
         expected = [
             "خوانده نشده بودم",
@@ -646,7 +807,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_informal(self, conjugator):
         result = conjugator.past_perfect(past_stem="خوند", informal=True)
         expected = [
             "خونده بودم",
@@ -704,7 +864,6 @@ class TestConjugator:
         assert result == expected
 
     def test_past_perfect_of_past_perfect_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect_of_past_perfect("شناخت")
         expected = [
             "شناخته بوده‌ام",
@@ -716,7 +875,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect_of_past_perfect("خورد")
         expected = [
             "خورده بوده‌ام",
@@ -728,8 +886,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_of_past_perfect_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect_of_past_perfect("شناخت", negative=True)
         expected = [
             "نشناخته بوده‌ام",
@@ -741,20 +897,32 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.past_perfect_of_past_perfect("رفت", negative=True)
+        result = conjugator.past_perfect_of_past_perfect(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=True
+        )
         expected = [
-            "نرفته بوده‌ام",
-            "نرفته بوده‌ای",
-            "نرفته بوده‌است",
-            "نرفته بوده‌ایم",
-            "نرفته بوده‌اید",
-            "نرفته بوده‌اند",
+            "باز برآمده نشده بوده\u200cام",
+            "باز برآمده نشده بوده\u200cای",
+            "باز برآمده نشده بوده\u200cاست",
+            "باز برآمده نشده بوده\u200cایم",
+            "باز برآمده نشده بوده\u200cاید",
+            "باز برآمده نشده بوده\u200cاند",
         ]
         assert result == expected
 
-    def test_past_perfect_of_past_perfect_passive(self, conjugator):
-        # Test with example from docstring
+        result = conjugator.past_perfect_of_past_perfect(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=False
+        )
+        expected = [
+            "باز برنیامده بوده\u200cام",
+            "باز برنیامده بوده\u200cای",
+            "باز برنیامده بوده\u200cاست",
+            "باز برنیامده بوده\u200cایم",
+            "باز برنیامده بوده\u200cاید",
+            "باز برنیامده بوده\u200cاند",
+        ]
+        assert result == expected
+
         result = conjugator.past_perfect_of_past_perfect("شناخت", passive=True)
         expected = [
             "شناخته شده بوده‌ام",
@@ -766,7 +934,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect_of_past_perfect("دید", passive=True)
         expected = [
             "دیده شده بوده‌ام",
@@ -778,8 +945,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_of_past_perfect_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect_of_past_perfect(
             "شناخت", negative=True, passive=True
         )
@@ -793,7 +958,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect_of_past_perfect(
             "خواند", negative=True, passive=True
         )
@@ -808,7 +972,6 @@ class TestConjugator:
         assert result == expected
 
     def test_past_perfect_of_past_perfect_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.past_perfect_of_past_perfect("")
         expected = [
             "ه بوده‌ام",
@@ -821,7 +984,6 @@ class TestConjugator:
         assert result == expected
 
     def test_past_subjunctive_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_subjunctive("شناخت")
         expected = [
             "شناخته باشم",
@@ -833,7 +995,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_subjunctive("خورد")
         expected = [
             "خورده باشم",
@@ -845,8 +1006,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_subjunctive_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_subjunctive("شناخت", negative=True)
         expected = [
             "نشناخته باشم",
@@ -858,7 +1017,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_subjunctive("رفت", negative=True)
         expected = [
             "نرفته باشم",
@@ -870,8 +1028,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_subjunctive_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_subjunctive("شناخت", passive=True)
         expected = [
             "شناخته شده باشم",
@@ -883,7 +1039,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_subjunctive("دید", passive=True)
         expected = [
             "دیده شده باشم",
@@ -895,8 +1050,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_subjunctive_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_subjunctive("شناخت", negative=True, passive=True)
         expected = [
             "شناخته نشده باشم",
@@ -908,7 +1061,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_subjunctive("خواند", negative=True, passive=True)
         expected = [
             "خوانده نشده باشم",
@@ -920,7 +1072,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_subjunctive_informal(self, conjugator):
         result = conjugator.past_subjunctive(past_stem="خوند", informal=True)
         expected = [
             "خونده باشم",
@@ -975,14 +1126,38 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.past_subjunctive(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=False
+        )
+        expected = [
+            "باز برنیامده باشم",
+            "باز برنیامده باشی",
+            "باز برنیامده باشد",
+            "باز برنیامده باشیم",
+            "باز برنیامده باشید",
+            "باز برنیامده باشند",
+        ]
+        assert result == expected
+
+        result = conjugator.past_subjunctive(
+            "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=True
+        )
+        expected = [
+            "باز برآمده نشده باشم",
+            "باز برآمده نشده باشی",
+            "باز برآمده نشده باشد",
+            "باز برآمده نشده باشیم",
+            "باز برآمده نشده باشید",
+            "باز برآمده نشده باشند",
+        ]
+        assert result == expected
+
     def test_past_subjunctive_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.past_subjunctive("")
         expected = ["ه باشم", "ه باشی", "ه باشد", "ه باشیم", "ه باشید", "ه باشند"]
         assert result == expected
 
     def test_past_progressive_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_progressive("شناخت")
         expected = [
             "داشتم می‌شناختم",
@@ -994,7 +1169,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_progressive("خورد")
         expected = [
             "داشتم می‌خوردم",
@@ -1006,8 +1180,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_progressive_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_progressive("شناخت", passive=True)
         expected = [
             "داشتم شناخته می‌شدم",
@@ -1019,7 +1191,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_progressive("دید", passive=True)
         expected = [
             "داشتم دیده می‌شدم",
@@ -1031,8 +1202,20 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.past_progressive(
+            "آمد", prefix="بر", compound_preverb="باز", passive=True
+        )
+        expected = [
+            "داشتم باز برآمده می\u200cشدم",
+            "داشتی باز برآمده می\u200cشدی",
+            "داشت باز برآمده می\u200cشد",
+            "داشتیم باز برآمده می\u200cشدیم",
+            "داشتید باز برآمده می\u200cشدید",
+            "داشتند باز برآمده می\u200cشدند",
+        ]
+        assert result == expected
+
     def test_past_progressive_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.past_progressive("")
         expected = [
             "داشتم می‌م",
@@ -1080,7 +1263,6 @@ class TestConjugator:
         assert result[5] == "داشتند می‌رفتند"
 
     def test_past_perfect_progressive_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect_progressive("شناخت")
         expected = [
             "داشته‌ام می‌شناخته‌ام",
@@ -1092,7 +1274,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect_progressive("خورد")
         expected = [
             "داشته‌ام می‌خورده‌ام",
@@ -1104,8 +1285,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_progressive_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.past_perfect_progressive("شناخت", passive=True)
         expected = [
             "داشته‌ام شناخته می‌شده‌ام",
@@ -1117,7 +1296,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.past_perfect_progressive("دید", passive=True)
         expected = [
             "داشته‌ام دیده می‌شده‌ام",
@@ -1129,8 +1307,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_progressive_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.past_perfect_progressive("")
         expected = [
             "داشته‌ام می‌ه‌ام",
@@ -1142,38 +1318,41 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_past_perfect_progressive_third_person(self, conjugator):
-        # Test specifically focusing on third person singular
         result = conjugator.past_perfect_progressive("رفت")
         assert result[2] == "داشته‌است می‌رفته‌است"
 
-        # Test specifically focusing on third person plural
         assert result[5] == "داشته‌اند می‌رفته‌اند"
 
+        result = conjugator.past_perfect_progressive(
+            "آمد", prefix="بر", compound_preverb="باز", passive=True
+        )
+        expected = [
+            "داشته\u200cام باز برآمده می\u200cشده\u200cام",
+            "داشته\u200cای باز برآمده می\u200cشده\u200cای",
+            "داشته\u200cاست باز برآمده می\u200cشده\u200cاست",
+            "داشته\u200cایم باز برآمده می\u200cشده\u200cایم",
+            "داشته\u200cاید باز برآمده می\u200cشده\u200cاید",
+            "داشته\u200cاند باز برآمده می\u200cشده\u200cاند",
+        ]
+        assert result == expected
+
     def test_simple_present_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.simple_present("شناخت", "شناس")
         expected = ["شناسم", "شناسی", "شناسد", "شناسیم", "شناسید", "شناسند"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.simple_present("خورد", "خور")
         expected = ["خورم", "خوری", "خورد", "خوریم", "خورید", "خورند"]
         assert result == expected
 
-    def test_simple_present_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.simple_present("شناخت", "شناس", negative=True)
         expected = ["نشناسم", "نشناسی", "نشناسد", "نشناسیم", "نشناسید", "نشناسند"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.simple_present("رفت", "رو", negative=True)
         expected = ["نروم", "نروی", "نرود", "نرویم", "نروید", "نروند"]
         assert result == expected
 
-    def test_simple_present_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.simple_present("شناخت", "شناس", passive=True)
         expected = [
             "شناخته شوم",
@@ -1185,7 +1364,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.simple_present("دید", "بین", passive=True)
         expected = [
             "دیده شوم",
@@ -1197,8 +1375,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_simple_present_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.simple_present("شناخت", "شناس", negative=True, passive=True)
         expected = [
             "شناخته نشوم",
@@ -1210,7 +1386,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.simple_present("خواند", "خوان", negative=True, passive=True)
         expected = [
             "خوانده نشوم",
@@ -1222,7 +1397,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_simple_present_informal(self, conjugator):
         result = conjugator.simple_present(
             present_stem="خون", past_stem="خوند", informal=True
         )
@@ -1266,33 +1440,60 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.simple_present(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            passive=False,
+        )
+        expected = [
+            "باز برآیم",
+            "باز برآیی",
+            "باز برآید",
+            "باز برآییم",
+            "باز برآیید",
+            "باز برآیند",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_present(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            negative=True,
+            passive=False,
+        )
+        expected = [
+            "باز برنیایم",
+            "باز برنیایی",
+            "باز برنیاید",
+            "باز برنیاییم",
+            "باز برنیایید",
+            "باز برنیایند",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_present("رفت", "رو")
+        assert result[2] == "رود"
+        assert result[5] == "روند"
+
     def test_simple_present_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.simple_present("", "")
         expected = ["م", "ی", "د", "یم", "ید", "ند"]
         assert result == expected
 
-    def test_simple_present_third_person(self, conjugator):
-        # Test specifically focusing on third person singular
-        result = conjugator.simple_present("رفت", "رو")
-        assert result[2] == "رود"
-
-        # Test specifically focusing on third person plural
-        assert result[5] == "روند"
-
     def test_present_indicative_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_indicative("شناخت", "شناس")
         expected = ["می‌شناسم", "می‌شناسی", "می‌شناسد", "می‌شناسیم", "می‌شناسید", "می‌شناسند"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_indicative("خورد", "خور")
         expected = ["می‌خورم", "می‌خوری", "می‌خورد", "می‌خوریم", "می‌خورید", "می‌خورند"]
         assert result == expected
 
     def test_present_indicative_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_indicative("شناخت", "شناس", negative=True)
         expected = [
             "نمی‌شناسم",
@@ -1304,13 +1505,10 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_indicative("رفت", "رو", negative=True)
         expected = ["نمی‌روم", "نمی‌روی", "نمی‌رود", "نمی‌رویم", "نمی‌روید", "نمی‌روند"]
         assert result == expected
 
-    def test_present_indicative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_indicative("شناخت", "شناس", passive=True)
         expected = [
             "شناخته می‌شوم",
@@ -1322,7 +1520,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_indicative("دید", "بین", passive=True)
         expected = [
             "دیده می‌شوم",
@@ -1334,8 +1531,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_indicative_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_indicative(
             "شناخت", "شناس", negative=True, passive=True
         )
@@ -1349,7 +1544,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_indicative(
             "خواند", "خوان", negative=True, passive=True
         )
@@ -1363,7 +1557,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_indicative_informal(self, conjugator):
         result = conjugator.present_indicative(
             past_stem="خوند", present_stem="خون", informal=True
         )
@@ -1428,44 +1621,68 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.present_indicative(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            negative=True,
+            passive=False,
+        )
+        expected = [
+            "باز برنمی\u200cآیم",
+            "باز برنمی\u200cآیی",
+            "باز برنمی\u200cآید",
+            "باز برنمی\u200cآییم",
+            "باز برنمی\u200cآیید",
+            "باز برنمی\u200cآیند",
+        ]
+        assert result == expected
+
+        result = conjugator.present_indicative(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            negative=True,
+            passive=True,
+        )
+        expected = [
+            "باز برآمده نمی\u200cشوم",
+            "باز برآمده نمی\u200cشوی",
+            "باز برآمده نمی\u200cشود",
+            "باز برآمده نمی\u200cشویم",
+            "باز برآمده نمی\u200cشوید",
+            "باز برآمده نمی\u200cشوند",
+        ]
+        assert result == expected
+
+        result = conjugator.present_indicative("رفت", "رو")
+        assert result[2] == "می‌رود"
+        assert result[5] == "می‌روند"
+
     def test_present_indicative_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.present_indicative("", "")
         expected = ["می‌م", "می‌ی", "می‌د", "می‌یم", "می‌ید", "می‌ند"]
         assert result == expected
 
-    def test_present_indicative_third_person(self, conjugator):
-        # Test specifically focusing on third person singular
-        result = conjugator.present_indicative("رفت", "رو")
-        assert result[2] == "می‌رود"
-
-        # Test specifically focusing on third person plural
-        assert result[5] == "می‌روند"
-
     def test_present_subjunctive_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_subjunctive("شناخت", "شناس")
         expected = ["بشناسم", "بشناسی", "بشناسد", "بشناسیم", "بشناسید", "بشناسند"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_subjunctive("خورد", "خور")
         expected = ["بخورم", "بخوری", "بخورد", "بخوریم", "بخورید", "بخورند"]
         assert result == expected
 
-    def test_present_subjunctive_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_subjunctive("شناخت", "شناس", negative=True)
         expected = ["نشناسم", "نشناسی", "نشناسد", "نشناسیم", "نشناسید", "نشناسند"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_subjunctive("رفت", "رو", negative=True)
         expected = ["نروم", "نروی", "نرود", "نرویم", "نروید", "نروند"]
         assert result == expected
 
-    def test_present_subjunctive_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_subjunctive("شناخت", "شناس", passive=True)
         expected = [
             "شناخته بشوم",
@@ -1477,7 +1694,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_subjunctive("دید", "بین", passive=True)
         expected = [
             "دیده بشوم",
@@ -1489,8 +1705,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_subjunctive_negative_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_subjunctive(
             "شناخت", "شناس", negative=True, passive=True
         )
@@ -1504,7 +1718,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_subjunctive(
             "خواند", "خوان", negative=True, passive=True
         )
@@ -1518,7 +1731,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_subjunctive_informal(self, conjugator):
         result = conjugator.present_subjunctive(
             past_stem="خوند", present_stem="خون", informal=True
         )
@@ -1584,22 +1796,76 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.present_subjunctive("رفت", "رو")
+        assert result[2] == "برود"
+        assert result[5] == "بروند"
+
+        result = conjugator.present_subjunctive(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            negative=False,
+            passive=False,
+        )
+        expected = [
+            "باز برآیم",
+            "باز برآیی",
+            "باز برآید",
+            "باز برآییم",
+            "باز برآیید",
+            "باز برآیند",
+            "باز بربیایم",
+            "باز بربیایی",
+            "باز بربیاید",
+            "باز بربیاییم",
+            "باز بربیایید",
+            "باز بربیایند",
+        ]
+        assert result == expected
+
+        result = conjugator.present_subjunctive(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            negative=True,
+            passive=False,
+        )
+        expected = [
+            "باز برنیایم",
+            "باز برنیایی",
+            "باز برنیاید",
+            "باز برنیاییم",
+            "باز برنیایید",
+            "باز برنیایند",
+        ]
+        assert result == expected
+
+        result = conjugator.present_subjunctive(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            negative=True,
+            passive=True,
+        )
+        expected = [
+            "باز برآمده نشوم",
+            "باز برآمده نشوی",
+            "باز برآمده نشود",
+            "باز برآمده نشویم",
+            "باز برآمده نشوید",
+            "باز برآمده نشوند",
+        ]
+        assert result == expected
+
     def test_present_subjunctive_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.present_subjunctive("", "", passive=False)
         expected = ["بم", "بی", "بد", "بیم", "بید", "بند"]
         assert result == expected
 
-    def test_present_subjunctive_third_person(self, conjugator):
-        # Test specifically focusing on third person singular
-        result = conjugator.present_subjunctive("رفت", "رو")
-        assert result[2] == "برود"
-
-        # Test specifically focusing on third person plural
-        assert result[5] == "بروند"
-
     def test_present_progressive_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_progressive("شناخت", "شناس")
         expected = [
             "دارم می‌شناسم",
@@ -1611,7 +1877,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_progressive("خورد", "خور")
         expected = [
             "دارم می‌خورم",
@@ -1623,8 +1888,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_progressive_passive(self, conjugator):
-        # Test with example from docstring
         result = conjugator.present_progressive("شناخت", "شناس", passive=True)
         expected = [
             "دارم شناخته می‌شوم",
@@ -1636,7 +1899,6 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.present_progressive("دید", "بین", passive=True)
         expected = [
             "دارم دیده می‌شوم",
@@ -1648,28 +1910,12 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_present_progressive_empty_string(self, conjugator):
-        # Test with empty string
-        result = conjugator.present_progressive("", "")
-        expected = [
-            "دارم می‌م",
-            "داری می‌ی",
-            "دارد می‌د",
-            "داریم می‌یم",
-            "دارید می‌ید",
-            "دارند می‌ند",
-        ]
-        assert result == expected
-
-    def test_present_progressive_third_person(self, conjugator):
-        # Test specifically focusing on third person singular
         result = conjugator.present_progressive("رفت", "رو")
         assert result[2] == "دارد می‌رود"
 
         # Test specifically focusing on third person plural
         assert result[5] == "دارند می‌روند"
 
-    def test_present_progressive_informal(self, conjugator):
         result = conjugator.present_progressive("خوند", "خون", informal=True)
         expected = [
             "دارم می\u200cخونم",
@@ -1698,18 +1944,57 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_imperative_informal(self, conjugator):
-        result = conjugator.imperative("خون", informal=True)
-        expected = ["بخون", "بخونید", "بخونین"]
+        result = conjugator.present_progressive(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            passive=True,
+        )
+        expected = [
+            "دارم باز برآمده می\u200cشوم",
+            "داری باز برآمده می\u200cشوی",
+            "دارد باز برآمده می\u200cشود",
+            "داریم باز برآمده می\u200cشویم",
+            "دارید باز برآمده می\u200cشوید",
+            "دارند باز برآمده می\u200cشوند",
+        ]
         assert result == expected
 
-        result = conjugator.imperative("خون", negative=True, informal=True)
-        expected = ["نخون", "نخونید", "نخونین"]
+        result = conjugator.present_progressive(
+            past_stem="آمد",
+            present_stem="آ",
+            prefix="بر",
+            compound_preverb="باز",
+            passive=False,
+            informal=True,
+        )
+        expected = [
+            "دارم باز برمی\u200cآم",
+            "داری باز برمی\u200cآی",
+            "داره باز برمی\u200cآد",
+            "داریم باز برمی\u200cآیم",
+            "دارید باز برمی\u200cآید",
+            "دارین باز برمی\u200cآین",
+            "دارن باز برمی\u200cآن",
+            "دارید باز برمی\u200cآید",
+        ]
+        assert result == expected
+
+    def test_present_progressive_empty_string(self, conjugator):
+        result = conjugator.present_progressive("", "")
+        expected = [
+            "دارم می‌م",
+            "داری می‌ی",
+            "دارد می‌د",
+            "داریم می‌یم",
+            "دارید می‌ید",
+            "دارند می‌ند",
+        ]
         assert result == expected
 
     def test_future_simple_regular(self, conjugator):
-        # Test with example from docstring
-        result = conjugator.future_simple("شناخت")
+        result = conjugator.simple_future("شناخت")
         expected = [
             "خواهم شناخت",
             "خواهی شناخت",
@@ -1720,8 +2005,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.future_simple("خورد")
+        result = conjugator.simple_future("خورد")
         expected = [
             "خواهم خورد",
             "خواهی خورد",
@@ -1732,9 +2016,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_future_simple_negative(self, conjugator):
-        # Test with example from docstring
-        result = conjugator.future_simple("شناخت", negative=True)
+        result = conjugator.simple_future("شناخت", negative=True)
         expected = [
             "نخواهم شناخت",
             "نخواهی شناخت",
@@ -1745,8 +2027,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.future_simple("رفت", negative=True)
+        result = conjugator.simple_future("رفت", negative=True)
         expected = [
             "نخواهم رفت",
             "نخواهی رفت",
@@ -1757,9 +2038,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_future_simple_passive(self, conjugator):
-        # Test with example from docstring
-        result = conjugator.future_simple("شناخت", passive=True)
+        result = conjugator.simple_future("شناخت", passive=True)
         expected = [
             "شناخته خواهم شد",
             "شناخته خواهی شد",
@@ -1770,8 +2049,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.future_simple("دید", passive=True)
+        result = conjugator.simple_future("دید", passive=True)
         expected = [
             "دیده خواهم شد",
             "دیده خواهی شد",
@@ -1782,9 +2060,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-    def test_future_simple_negative_passive(self, conjugator):
-        # Test with example from docstring
-        result = conjugator.future_simple("شناخت", negative=True, passive=True)
+        result = conjugator.simple_future("شناخت", negative=True, passive=True)
         expected = [
             "شناخته نخواهم شد",
             "شناخته نخواهی شد",
@@ -1795,8 +2071,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-        # Test with another verb
-        result = conjugator.future_simple("خواند", negative=True, passive=True)
+        result = conjugator.simple_future("خواند", negative=True, passive=True)
         expected = [
             "خوانده نخواهم شد",
             "خوانده نخواهی شد",
@@ -1807,44 +2082,88 @@ class TestConjugator:
         ]
         assert result == expected
 
+        result = conjugator.simple_future("رفت")
+        assert result[2] == "خواهد رفت"
+        assert result[5] == "خواهند رفت"
+
+        result = conjugator.simple_future(
+            past_stem="گشت",
+            prefix="بر",
+            compound_preverb="باز",
+            passive=False,
+            negative=True,
+        )
+        expected = [
+            "باز بر نخواهم گشت",
+            "باز بر نخواهی گشت",
+            "باز بر نخواهد گشت",
+            "باز بر نخواهیم گشت",
+            "باز بر نخواهید گشت",
+            "باز بر نخواهند گشت",
+        ]
+        assert result == expected
+
+        result = conjugator.simple_future(
+            past_stem="گشت",
+            prefix="بر",
+            compound_preverb="باز",
+            passive=True,
+            negative=True,
+        )
+        expected = [
+            "باز برگشته نخواهم شد",
+            "باز برگشته نخواهی شد",
+            "باز برگشته نخواهد شد",
+            "باز برگشته نخواهیم شد",
+            "باز برگشته نخواهید شد",
+            "باز برگشته نخواهند شد",
+        ]
+        assert result == expected
+
     def test_future_simple_empty_string(self, conjugator):
-        # Test with empty string
-        result = conjugator.future_simple("")
+        result = conjugator.simple_future("")
         expected = ["خواهم ", "خواهی ", "خواهد ", "خواهیم ", "خواهید ", "خواهند "]
         assert result == expected
 
-    def test_future_simple_third_person(self, conjugator):
-        # Test specifically focusing on third person singular
-        result = conjugator.future_simple("رفت")
-        assert result[2] == "خواهد رفت"
+    def test_imperative_informal(self, conjugator):
+        result = conjugator.imperative("خون", informal=True)
+        expected = ["بخون", "بخونید", "بخونین"]
+        assert result == expected
 
-        # Test specifically focusing on third person plural
-        assert result[5] == "خواهند رفت"
+        result = conjugator.imperative("خون", negative=True, informal=True)
+        expected = ["نخون", "نخونید", "نخونین"]
+        assert result == expected
 
     def test_imperative_regular(self, conjugator):
-        # Test with example from docstring
         result = conjugator.imperative("شناس")
         expected = ["بشناس", "بشناسید"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.imperative("خور")
         expected = ["بخور", "بخورید"]
         assert result == expected
 
-    def test_imperative_negative(self, conjugator):
-        # Test with example from docstring
         result = conjugator.imperative("شناس", negative=True)
         expected = ["نشناس", "نشناسید"]
         assert result == expected
 
-        # Test with another verb
         result = conjugator.imperative("رو", negative=True)
         expected = ["نرو", "نروید"]
         assert result == expected
 
+        result = conjugator.imperative(
+            present_stem="آ", prefix="بر", compound_preverb="باز", negative=True
+        )
+        expected = ["باز برنیا", "باز برنیایید"]
+        assert result == expected
+
+        result = conjugator.imperative(
+            present_stem="آ", prefix="بر", compound_preverb="باز", negative=False
+        )
+        expected = ["باز برآ", "باز برآیید", "باز بربیا", "باز بربیایید"]
+        assert result == expected
+
     def test_imperative_empty_string(self, conjugator):
-        # Test with empty string
         result = conjugator.imperative("")
         expected = ["ب", "بید"]
         assert result == expected
@@ -1854,7 +2173,6 @@ class TestConjugator:
         assert result == expected
 
     def test_imperative_special_verbs(self, conjugator):
-        # Test with common irregular verbs
         result = conjugator.imperative("گوی")  # گفتن (to say)
         expected = ["بگوی", "بگویید"]
         assert result == expected
@@ -1868,15 +2186,10 @@ class TestConjugator:
         assert result == expected
 
     def test_conjugate(self, conjugator):
-        # Test conjugation of a verb with both past and present stem
         result = conjugator.conjugate("شناخت", "شناس")
 
-        # Check that we got the expected number of conjugations
-        # 30 forms (past tenses) + 20 forms (present/future tenses) = 50 forms x 6 persons = 300 conjugated forms
         assert len(result) == 574
 
-        # Verify specific expected forms are present
-        # Sample from each tense to ensure they're all included
         assert "شناختم" in result  # simple past
         assert "نشناختم" in result  # negative simple past
         assert "شناخته شدم" in result  # passive simple past
@@ -1899,26 +2212,19 @@ class TestConjugator:
         assert "شناخته خواهم شد" in result  # passive future simple
 
     def test_conjugate_past_only(self, conjugator):
-        # Test conjugation of a verb with only past stem
         result = conjugator.conjugate("شناخت")
 
         assert len(result) == 348
 
-        # Verify specific expected forms are present
         assert "شناختم" in result  # simple past
         assert "شناخته‌ام" in result  # present perfect
         assert "می‌شناختم" in result  # past continuous
         assert "شناخته بودم" in result  # past perfect
-
-        # Verify that no present/future forms are included
         assert "می‌شناسم" not in result  # present indicative should not be present
         assert "خواهم شناخت" not in result  # future simple should not be present
 
     def test_conjugate_empty_strings(self, conjugator):
-        # Test with empty strings
         result = conjugator.conjugate("", "")
-
-        # Should still produce conjugations with empty stems
         assert len(result) == 0
 
         result = conjugator.conjugate("", "شناس")
@@ -1928,40 +2234,31 @@ class TestConjugator:
         assert len(result) == 348
 
     def test_conjugate_different_verbs(self, conjugator):
-        # Test with different verbs to ensure general functionality
-
-        # Test with verb "رفتن" (to go)
         result_go = conjugator.conjugate("رفت", "رو")
         assert "رفتم" in result_go
         assert "می‌روم" in result_go
         assert "نخواهم رفت" in result_go
 
-        # Test with verb "خوردن" (to eat)
         result_eat = conjugator.conjugate("خورد", "خور")
         assert "خوردم" in result_eat
         assert "می‌خورم" in result_eat
         assert "خواهم خورد" in result_eat
 
-        # Test with verb "دیدن" (to see)
         result_see = conjugator.conjugate("دید", "بین")
         assert "دیدم" in result_see
         assert "می‌بینم" in result_see
         assert "دیده خواهم شد" in result_see
 
     def test_conjugate_consistency(self, conjugator):
-        # Test that the conjugate method outputs match individual method outputs
         past_stem = "شناخت"
         present_stem = "شناس"
 
-        # Get the full conjugation
         full_result = conjugator.conjugate(past_stem, present_stem)
 
-        # Get individual conjugations for comparison
         simple_past = conjugator.simple_past(past_stem)
         present_indicative = conjugator.present_indicative(past_stem, present_stem)
-        future_simple = conjugator.future_simple(past_stem)
+        future_simple = conjugator.simple_future(past_stem)
 
-        # Verify that individual conjugations are included in the full result
         for form in simple_past:
             assert form in full_result
 

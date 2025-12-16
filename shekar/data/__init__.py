@@ -153,6 +153,8 @@ prefixes = [
     "نیمه",
 ]
 
+conjugator = Conjugator()
+
 
 def load_verbs():
     # Read the verbs from the CSV file
@@ -164,8 +166,15 @@ def load_verbs():
             past_stem = parts[1]
             informal_present_stem = parts[2] if len(parts) > 2 else None
             informal_past_stem = parts[3] if len(parts) > 3 else None
+            _, prefix = conjugator.get_verb_prefix(past_stem)
             verbs.add(
-                (past_stem, present_stem, informal_past_stem, informal_present_stem)
+                (
+                    past_stem,
+                    present_stem,
+                    informal_past_stem,
+                    informal_present_stem,
+                    prefix,
+                )
             )
     return verbs
 
@@ -217,13 +226,15 @@ for keyword, formal_word in informal_words.items():
 min_count = min(vocab.values())
 vocab = {word: count - min_count for word, count in vocab.items()}
 
-
-conjugator = Conjugator()
 conjugated_verbs = {}
 
-for past_stem, present_stem, informal_past_stem, informal_present_stem in verbs:
+for past_stem, present_stem, informal_past_stem, informal_present_stem, prefix in verbs:
     conjugations = conjugator.conjugate(
-        past_stem, present_stem, informal_past_stem, informal_present_stem
+        past_stem,
+        present_stem,
+        informal_past_stem,
+        informal_present_stem,
+        prefix=prefix,
     )
     for form in conjugations:
         conjugated_verbs[form] = (past_stem, present_stem)
