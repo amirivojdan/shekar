@@ -1,4 +1,8 @@
+from __future__ import annotations
 from typing import List
+from shekar.data import ZWNJ, non_left_joiner_letters
+from functools import lru_cache
+from shekar.data import verbs
 
 
 class Conjugator:
@@ -14,7 +18,6 @@ class Conjugator:
     """
 
     def __init__(self):
-        self.ZWNJ = "\u200c"
         self._past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ند"]
         self._informal_past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ین", "ن"]
         self._present_personal_suffixes = ["م", "ی", "د", "یم", "ید", "ند"]
@@ -29,8 +32,8 @@ class Conjugator:
             "فرا",
             "به‌در",
             "دربر",
-            "پس" + self.ZWNJ,
-            "پیش" + self.ZWNJ,
+            "پس" + ZWNJ,
+            "پیش" + ZWNJ,
         ]
         self.compound_verb_exceptions = [
             ("بر", "برد"),
@@ -38,7 +41,6 @@ class Conjugator:
             ("فروش", "فروخت"),
             ("فروز", "فروزاند"),
         ]
-        self.non_left_joiner_letters = "دۀذاأآورژز"
 
     def get_verb_prefix(self, stem: str):
         if any(
@@ -60,10 +62,10 @@ class Conjugator:
     def normalize_prefix(self, prefix: str):
         if (
             prefix
-            and (prefix[-1] not in self.non_left_joiner_letters)
-            and prefix[-1] != self.ZWNJ
+            and (prefix[-1] not in non_left_joiner_letters)
+            and prefix[-1] != ZWNJ
         ):
-            prefix = prefix + self.ZWNJ
+            prefix = prefix + ZWNJ
             return prefix
         return prefix
 
@@ -1727,3 +1729,37 @@ class Conjugator:
                 )
 
         return conjugations
+
+
+@lru_cache(maxsize=1)
+def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
+    conjugator = Conjugator()
+    conjugated_verbs: dict[str, tuple[str | None, str]] = {}
+
+    for past_stem, present_stem, informal_past_stem, informal_present_stem in verbs:
+        base_past_stem, prefix = conjugator.get_verb_prefix(past_stem)
+        base_present_stem, _ = conjugator.get_verb_prefix(present_stem)
+
+        informal_base_past_stem, _ = conjugator.get_verb_prefix(informal_past_stem)
+        informal_base_present_stem, _ = conjugator.get_verb_prefix(
+            informal_present_stem
+        )
+
+        conjugations = conjugator.conjugate(
+            base_past_stem,
+            base_present_stem,
+            informal_base_past_stem,
+            informal_base_present_stem,
+            prefix=prefix,
+        )
+
+        for form in conjugations:
+            conjugated_verbs[form] = (past_stem, present_stem)
+
+    for form in conjugator.simple_present(past_stem=None, present_stem="هست"):
+        conjugated_verbs[form] = (None, "هست")
+
+    for form in conjugator.simple_present(past_stem=None, present_stem="نیست"):
+        conjugated_verbs[form] = (None, "نیست")
+
+    return conjugated_verbs

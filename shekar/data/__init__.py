@@ -3,7 +3,6 @@ from importlib import resources
 from . import files as data
 from . import fonts
 from . import masks
-from shekar.morphology import Conjugator
 
 resources_root = resources.files(data)
 fonts_root = resources.files(fonts)
@@ -153,8 +152,6 @@ prefixes = [
     "نیمه",
 ]
 
-conjugator = Conjugator()
-
 
 def load_verbs():
     # Read the verbs from the CSV file
@@ -166,14 +163,12 @@ def load_verbs():
             past_stem = parts[1]
             informal_present_stem = parts[2] if len(parts) > 2 else None
             informal_past_stem = parts[3] if len(parts) > 3 else None
-            _, prefix = conjugator.get_verb_prefix(past_stem)
             verbs.add(
                 (
                     past_stem,
                     present_stem,
                     informal_past_stem,
                     informal_present_stem,
-                    prefix,
                 )
             )
     return verbs
@@ -225,28 +220,3 @@ for keyword, formal_word in informal_words.items():
 
 min_count = min(vocab.values())
 vocab = {word: count - min_count for word, count in vocab.items()}
-
-conjugated_verbs = {}
-
-for past_stem, present_stem, informal_past_stem, informal_present_stem, prefix in verbs:
-    conjugations = conjugator.conjugate(
-        past_stem,
-        present_stem,
-        informal_past_stem,
-        informal_present_stem,
-        prefix=prefix,
-    )
-    for form in conjugations:
-        conjugated_verbs[form] = (past_stem, present_stem)
-
-# Manually add conjugations for "هست" and "نیست"
-for form in conjugator.simple_present(past_stem=None, present_stem="هست"):
-    conjugated_verbs[form] = (None, "هست")
-for form in conjugator.simple_present(past_stem=None, present_stem="نیست"):
-    conjugated_verbs[form] = (None, "نیست")
-
-compound_words = compound_words - set(conjugated_verbs.keys())
-
-compound_words_space = {}
-for word in compound_words:
-    compound_words_space[word.replace(ZWNJ, " ")] = word

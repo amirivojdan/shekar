@@ -1,6 +1,7 @@
 from shekar.base import BaseTextTransform
 from .stemmer import Stemmer
 from shekar import data
+from .conjugator import get_conjugated_verbs
 
 
 class Lemmatizer(BaseTextTransform):
@@ -27,8 +28,10 @@ class Lemmatizer(BaseTextTransform):
         self.return_infinitive = return_infinitive
 
     def _function(self, text):
-        if text in data.conjugated_verbs:
-            (past_stem, present_stem) = data.conjugated_verbs[text]
+        conjugated_verbs = get_conjugated_verbs()
+
+        if text in conjugated_verbs:
+            (past_stem, present_stem) = conjugated_verbs[text]
             if past_stem is None:
                 return present_stem
             if self.return_infinitive:

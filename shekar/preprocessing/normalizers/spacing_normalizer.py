@@ -2,6 +2,7 @@ from functools import partial
 from typing import Set
 from shekar.base import BaseTextTransform
 from shekar import data
+from shekar.morphology.conjugator import get_conjugated_verbs
 import re
 
 
@@ -14,6 +15,13 @@ class SpacingNormalizer(BaseTextTransform):
 
     def __init__(self):
         super().__init__()
+
+        self.conjugated_verbs = get_conjugated_verbs()
+        compound_words = data.compound_words - set(self.conjugated_verbs.keys())
+
+        self.compound_words_space = {}
+        for word in compound_words:
+            self.compound_words_space[word.replace(data.ZWNJ, " ")] = word
 
         self._other_mappings = [
             (r"هها", f"ه{data.ZWNJ}ها"),
@@ -103,10 +111,10 @@ class SpacingNormalizer(BaseTextTransform):
         self._other_patterns = self._compile_patterns(self._other_mappings)
 
         self.verbal_prefix_corrector = partial(
-            self._prefix_spacing, vocab=data.conjugated_verbs
+            self._prefix_spacing, vocab=self.conjugated_verbs
         )
         self.verbal_suffix_corrector = partial(
-            self._suffix_spacing, vocab=data.conjugated_verbs
+            self._suffix_spacing, vocab=self.conjugated_verbs
         )
 
         self._word_suffix_corrector = partial(
@@ -124,11 +132,11 @@ class SpacingNormalizer(BaseTextTransform):
         )
 
         self.compound_words_pattern = re.compile(
-            "|".join(map(re.escape, data.compound_words_space.keys()))
+            "|".join(map(re.escape, self.compound_words_space.keys()))
         )
 
     def _compound_replacer(self, m):
-        return data.compound_words_space[m.group(0)]
+        return self.compound_words_space[m.group(0)]
 
     def _prefix_spacing(
         self, m: re.Match, vocab: Set[str], only_stem: bool = False
