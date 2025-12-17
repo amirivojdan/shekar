@@ -1,5 +1,6 @@
 import pytest
 from shekar.morphology.lemmatizer import Lemmatizer
+from shekar.morphology.conjugator import get_conjugated_verbs
 from shekar import data
 
 
@@ -17,12 +18,13 @@ def test_return_infinitive_option():
 
 
 def test_conjugated_verb(lemmatizer, monkeypatch):
+    conjugated_verbs = get_conjugated_verbs()
     # Example: "رفتند" -> "رفت/رو"
-    monkeypatch.setitem(data.conjugated_verbs, "رفتند", ("رفت", "رو"))
+    monkeypatch.setitem(conjugated_verbs, "رفتند", ("رفت", "رو"))
     assert lemmatizer("رفتند") == "رفت/رو"
 
     # test هست
-    monkeypatch.setitem(data.conjugated_verbs, "هستند", (None, "هست"))
+    monkeypatch.setitem(conjugated_verbs, "هستند", (None, "هست"))
     assert lemmatizer("هستند") == "هست"
 
 
@@ -51,3 +53,12 @@ def test_no_match(lemmatizer, monkeypatch):
     monkeypatch.setattr(lemmatizer.stemmer, "__call__", lambda self, text: "ناشناخته")
     monkeypatch.setitem(data.vocab, "ناشناخته", False)
     assert lemmatizer("ناشناخته") == "ناشناخته"
+
+
+def test_prefixed_verbs(lemmatizer):
+    assert lemmatizer("فراخواند") == "فراخواند/فراخوان"
+    assert lemmatizer("فرابخوان") == "فراخواند/فراخوان"
+    assert lemmatizer("فرا نخواهم خواند") == "فراخواند/فراخوان"
+    assert lemmatizer("پس‌نمی‌انداخت") == "پس\u200cانداخت/پس\u200cانداز"
+    assert lemmatizer("ورنیامد") == "ورآمد/ورآ"
+    assert lemmatizer("باز نخواهم گشت") == "بازگشت/بازگرد"
