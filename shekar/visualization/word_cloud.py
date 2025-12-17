@@ -1,13 +1,21 @@
-import arabic_reshaper
-import matplotlib
-from wordcloud import WordCloud as wc
-from bidi import get_display
-from PIL import Image
+from __future__ import annotations
 import numpy as np
 from typing import Counter
 import os
 from shekar import data
 from importlib import resources
+
+try:
+    import arabic_reshaper
+    import matplotlib
+    from wordcloud import WordCloud as wc
+    from bidi import get_display
+    from PIL import Image
+
+except ModuleNotFoundError as e:
+    _WORDCLOUD_IMPORT_ERROR = e
+else:
+    _WORDCLOUD_IMPORT_ERROR = None
 
 
 class WordCloud:
@@ -31,6 +39,12 @@ class WordCloud:
         max_font_size: int = 80,
         horizontal_ratio: float = 0.75,
     ):
+        if _WORDCLOUD_IMPORT_ERROR is not None:
+            raise ModuleNotFoundError(
+                "Optional dependencies for visualization are missing.\n"
+                "Install with: pip install 'shekar[viz]' "
+            ) from _WORDCLOUD_IMPORT_ERROR
+
         self.predefined_masks = {
             "Iran": "iran.png",
             "Head": "head.png",

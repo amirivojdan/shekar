@@ -9,6 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .pytest_cache
+.python-version
 
 # Jupyter Notebook
 .ipynb_checkpoints

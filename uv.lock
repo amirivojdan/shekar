@@ -163,15 +163,6 @@ wheels = [
 ]
 
 [[package]]
-name = "chardet"
-version = "5.2.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f3/0d/f7b6ab21ec75897ed80c17d79b15951a719226b9fababf1e40ea74d69079/chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7", size = 2069618, upload-time = "2023-08-01T19:23:02.662Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/6f/f5fbc992a329ee4e0f288c1fe0e2ad9485ed064cac731ed2fe47dcc38cbf/chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970", size = 199385, upload-time = "2023-08-01T19:23:00.661Z" },
-]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.4.4"
 source = { registry = "https://pypi.org/simple" }
@@ -2321,20 +2312,29 @@ wheels = [
 
 [[package]]
 name = "shekar"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "." }
 dependencies = [
-    { name = "arabic-reshaper" },
-    { name = "chardet" },
     { name = "click" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.3.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "onnxruntime" },
-    { name = "pillow" },
-    { name = "python-bidi" },
     { name = "regex" },
     { name = "tokenizers" },
     { name = "tqdm" },
+]
+
+[package.optional-dependencies]
+all = [
+    { name = "arabic-reshaper" },
+    { name = "pillow" },
+    { name = "python-bidi" },
+    { name = "wordcloud" },
+]
+viz = [
+    { name = "arabic-reshaper" },
+    { name = "pillow" },
+    { name = "python-bidi" },
     { name = "wordcloud" },
 ]
 
@@ -2353,18 +2353,19 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "arabic-reshaper", specifier = ">=3.0.0" },
-    { name = "chardet", specifier = ">=5.2.0" },
+    { name = "arabic-reshaper", marker = "extra == 'viz'", specifier = ">=3.0.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "numpy", specifier = ">=1.24.4" },
     { name = "onnxruntime", specifier = ">=1.22.1" },
-    { name = "pillow", specifier = ">=11.2.1" },
-    { name = "python-bidi", specifier = ">=0.6.6" },
+    { name = "pillow", marker = "extra == 'viz'", specifier = ">=11.2.1" },
+    { name = "python-bidi", marker = "extra == 'viz'", specifier = ">=0.6.6" },
     { name = "regex", specifier = ">=2024.11.6" },
+    { name = "shekar", extras = ["viz"], marker = "extra == 'all'" },
     { name = "tokenizers", specifier = ">=0.21.2" },
     { name = "tqdm", specifier = ">=4.67.1" },
-    { name = "wordcloud", specifier = ">=1.9.4" },
+    { name = "wordcloud", marker = "extra == 'viz'", specifier = ">=1.9.4" },
 ]
+provides-extras = ["viz", "all"]
 
 [package.metadata.requires-dev]
 dev = [

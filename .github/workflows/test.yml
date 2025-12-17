@@ -30,6 +30,9 @@ jobs:
 
       - name: Upgrade hatch
         run: uv pip install --upgrade hatch hatchling
+      
+      - name: Install all dependencies
+        run: uv pip install -e ".[all]"
 
       - name: Install base + dev dependencies
         run: uv pip install -e ".[dev]"

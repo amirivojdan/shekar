@@ -1,6 +1,5 @@
 from .pipeline import Pipeline
 from .base import BaseTransform, BaseTextTransform
-from .visualization import WordCloud
 from .normalizer import Normalizer
 from .tokenization import WordTokenizer, SentenceTokenizer, Tokenizer
 from .keyword_extraction import KeywordExtractor
@@ -18,7 +17,6 @@ __all__ = [
     "BaseTransform",
     "BaseTextTransform",
     "Normalizer",
-    "WordCloud",
     "KeywordExtractor",
     "NER",
     "POSTagger",

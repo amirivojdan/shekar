@@ -1,7 +1,14 @@
 import pytest
+
+pytest.importorskip("wordcloud")
+pytest.importorskip("matplotlib")
+pytest.importorskip("arabic_reshaper")
+pytest.importorskip("bidi")
+pytest.importorskip("PIL")
+
+from shekar.visualization import WordCloud
 from PIL import Image
 from collections import Counter
-from shekar import WordCloud
 import numpy as np
 import os
 from importlib import resources

@@ -4,10 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shekar"
-version = "1.2.0"
+version = "1.3.0"
 description = "Simplifying Persian NLP for Modern Applications"
 readme = "README.md"
 license = "MIT"
+
+authors = [{ name = "Ahmad Amirivojdan", email = "amirivojdan@gmail.com" }]
+requires-python = ">=3.10"
+
 keywords = [
     "NLP",
     "Natural Language Processing",
@@ -16,22 +20,6 @@ keywords = [
     "Text Processing",
     "Machine Learning",
     "Deep Learning",
-]
-
-authors = [{ name = "Ahmad Amirivojdan", email = "amirivojdan@gmail.com" }]
-requires-python = ">=3.10"
-dependencies = [
-    "arabic-reshaper>=3.0.0",
-    "chardet>=5.2.0",
-    "click>=8.1.8",
-    "numpy>=1.24.4",
-    "pillow>=11.2.1",
-    "python-bidi>=0.6.6",
-    "regex>=2024.11.6",
-    "tokenizers>=0.21.2",
-    "tqdm>=4.67.1",
-    "wordcloud>=1.9.4",
-    "onnxruntime>=1.22.1",
 ]
 
 classifiers = [
@@ -54,6 +42,27 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+dependencies = [
+    "click>=8.1.8",
+    "numpy>=1.24.4",
+    "regex>=2024.11.6",
+    "tokenizers>=0.21.2",
+    "tqdm>=4.67.1",
+    "onnxruntime>=1.22.1",
+]
+
+[project.optional-dependencies]
+viz = [
+    "wordcloud>=1.9.4",
+    "arabic-reshaper>=3.0.0",
+    "python-bidi>=0.6.6",
+    "pillow>=11.2.1",
+]
+
+all = [
+  "shekar[viz]"
+]
+
 [dependency-groups]
 dev = [
     "mkdocs-material>=9.5.49",
@@ -66,6 +75,7 @@ dev = [
     "ruff>=0.12.5",
     "mkdocs-static-i18n>=1.3.0",
 ]
+
 
 [project.scripts]
 shekar = "shekar.cli:main"
