@@ -193,6 +193,20 @@ def test_ya_normalizer():
     expected_output = "خانه‌ی ما"
     assert ya_normalizer(input_text) == expected_output
 
+def test_non_left_joiner_compound_words():
+    space_normalizer = SpacingNormalizer()
+
+    input_text = "دیدن آن صحنه منزجر کننده بود!"
+    expected_output = "دیدن آن صحنه منزجرکننده بود!"
+    assert space_normalizer(input_text) == expected_output
+
+    input_text = "کار آفرینی بسیار ارزشمند است."
+    expected_output = "کارآفرینی بسیار ارزشمند است."
+    assert space_normalizer(input_text) == expected_output
+
+    input_text = "یک کتابخانه خوب باید کاربر پسند باشد!"
+    expected_output = "یک کتابخانه خوب باید کاربرپسند باشد!"
+    assert space_normalizer(input_text) == expected_output
 
 def test_mask_email():
     email_masker = EmailMasker(mask_token="")

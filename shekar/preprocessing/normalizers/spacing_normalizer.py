@@ -21,7 +21,10 @@ class SpacingNormalizer(BaseTextTransform):
 
         self.compound_words_space = {}
         for word in compound_words:
-            self.compound_words_space[word.replace(data.ZWNJ, " ")] = word
+            if "#" not in word:
+                self.compound_words_space[word.replace(data.ZWNJ, " ")] = word
+            else:
+                self.compound_words_space[word.replace("#", " ")] = word.replace("#", "")
 
         self._other_mappings = [
             (r"هها", f"ه{data.ZWNJ}ها"),
