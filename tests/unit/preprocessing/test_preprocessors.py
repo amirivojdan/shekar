@@ -27,6 +27,8 @@ from shekar.transforms import (
     Flatten,
 )
 
+from shekar.data import ZWNJ
+
 
 def test_correct_spacings():
     spacing_normalizer = SpacingNormalizer()
@@ -88,6 +90,66 @@ def test_correct_spacings():
     expected_output = "Input must be a string or a Iterable of strings."
     with pytest.raises(ValueError, match=expected_output):
         spacing_normalizer(input_text)
+
+
+def test_prefixed_verbs_packed():
+    spacing_normalizer = SpacingNormalizer()
+
+    input_text = "می روم کتاب هایم را بر می دارم."
+    expected_output = "می‌روم کتاب‌هایم را برمی‌دارم."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "می روم کتاب هایم را بر می‌دارم."
+    expected_output = "می‌روم کتاب‌هایم را برمی‌دارم."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "می روم کتاب هایم را بر میدارم."
+    expected_output = "می‌روم کتاب‌هایم را برمی‌دارم."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = f"می روم کتاب هایم را بر{ZWNJ}میدارم."
+    expected_output = "می‌روم کتاب‌هایم را برمی‌دارم."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "کتاب هایم را پس بده!"
+    expected_output = "کتاب‌هایم را پس‌بده!"
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "کتاب هایم را پس‌بده!"
+    expected_output = "کتاب‌هایم را پس‌بده!"
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "کتاب هایم را پسبده!"
+    expected_output = "کتاب‌هایم را پس‌بده!"
+    assert spacing_normalizer(input_text) == expected_output
+
+
+def test_prefixed_verbs_spacing():
+    spacing_normalizer = SpacingNormalizer()
+
+    input_text = "او بر خواهد گشت."
+    expected_output = "او بر خواهد گشت."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "او برخواهد گشت."
+    expected_output = "او بر خواهد گشت."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "او بر خواهدگشت."
+    expected_output = "او بر خواهد گشت."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "او بر نخواهدگشت."
+    expected_output = "او بر نخواهد گشت."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = "او برنخواهدگشت."
+    expected_output = "او بر نخواهد گشت."
+    assert spacing_normalizer(input_text) == expected_output
+
+    input_text = f"او بر{ZWNJ}نخواهد{ZWNJ}گشت."
+    expected_output = "او بر نخواهد گشت."
+    assert spacing_normalizer(input_text) == expected_output
 
 
 def test_remove_extra_spaces():

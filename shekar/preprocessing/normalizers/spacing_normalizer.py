@@ -104,6 +104,29 @@ class SpacingNormalizer(BaseTextTransform):
             rf"(?<!\S)(?P<stem>[{data.persian_letters}]+)\s+(?P<suffix>(?:{_morph_suffix_alt}))(?=$|[\s{_punc_class}])"
         )
 
+        _verbal_prefixes_alt = "|".join(map(re.escape, data.verbal_prefixes))
+        self._preverb_mi_stem_pattern = re.compile(
+            rf"(?<!\S)"
+            rf"(?P<preverb>(?:{_verbal_prefixes_alt}))"
+            rf"(?:{data.ZWNJ}|\s+|)"
+            rf"(?:(?P<mi>ن?می)(?:{data.ZWNJ}|\s+|))?"
+            rf"(?P<verb>[{data.persian_letters}]+)"
+            rf"(?=$|[\s{_punc_class}])"
+        )
+
+        _prefixed_simple_future_alt = "|".join(
+            map(re.escape, ["خواهم", "خواهی", "خواهد", "خواهیم", "خواهید", "خواهند"])
+        )
+        self._prefixed_simple_future_pattern = re.compile(
+            rf"(?<!\S)"
+            rf"(?P<preverb>(?:{_verbal_prefixes_alt}))"
+            rf"(?:{data.ZWNJ}|\s+|)"
+            rf"(?P<aux>ن?(?:{_prefixed_simple_future_alt}))"
+            rf"(?:{data.ZWNJ}|\s+|)"
+            rf"(?P<verb>[{data.persian_letters}]+)"
+            rf"(?=$|[\s{_punc_class}])"
+        )
+
         self._punctuation_spacing_patterns = self._compile_patterns(
             self._punctuation_spacing_mappings
         )
@@ -135,8 +158,38 @@ class SpacingNormalizer(BaseTextTransform):
             "|".join(map(re.escape, self.compound_words_space.keys()))
         )
 
+        self.prefixed_verbs_corrector = partial(self._preverb_mi_stem_replacer)
+        self.prefixed_simple_future_verbs_corrector = partial(
+            self._prefixed_simple_future_verb_replacer
+        )
+
     def _compound_replacer(self, m):
         return self.compound_words_space[m.group(0)]
+
+    def _preverb_mi_stem_replacer(self, m: re.Match) -> str:
+        preverb = m.group("preverb")
+        mi = m.group("mi")
+        verb = m.group("verb")
+
+        if preverb[-1] not in data.non_left_joiner_letters:
+            preverb = preverb + data.ZWNJ
+
+        if mi:
+            # preverb + mi + ZWNJ + verb  -> برمی‌دارم / برنمی‌دارم
+            candidate = f"{preverb}{mi}{data.ZWNJ}{verb}"
+        else:
+            # preverb + stem -> بر‌گردم
+            candidate = f"{preverb}{verb}"
+
+        return candidate if candidate in self.conjugated_verbs else m.group(0)
+
+    def _prefixed_simple_future_verb_replacer(self, m: re.Match) -> str:
+        preverb = m.group("preverb")
+        aux = m.group("aux")
+        verb = m.group("verb")
+        candidate = f"{preverb} {aux} {verb}"
+
+        return candidate if candidate in self.conjugated_verbs else m.group(0)
 
     def _prefix_spacing(
         self, m: re.Match, vocab: Set[str], only_stem: bool = False
@@ -187,6 +240,12 @@ class SpacingNormalizer(BaseTextTransform):
 
         # Apply the verbal suffix spacing patterns
         text = self._verbal_suffix_space_pattern.sub(self.verbal_suffix_corrector, text)
+
+        # Apply prefixed verb spacing patterns
+        text = self._preverb_mi_stem_pattern.sub(self.prefixed_verbs_corrector, text)
+        text = self._prefixed_simple_future_pattern.sub(
+            self.prefixed_simple_future_verbs_corrector, text
+        )
 
         # Apply the mi spacing patterns
         text = self._mi_space_pattern.sub(self.verbal_prefix_corrector, text)
