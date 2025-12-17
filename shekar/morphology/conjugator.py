@@ -1,8 +1,7 @@
 from __future__ import annotations
 from typing import List
-from shekar.data import ZWNJ, non_left_joiner_letters
+from shekar import data
 from functools import lru_cache
-from shekar.data import verbs
 
 
 class Conjugator:
@@ -18,29 +17,19 @@ class Conjugator:
     """
 
     def __init__(self):
-        self._past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ند"]
-        self._informal_past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ین", "ن"]
-        self._present_personal_suffixes = ["م", "ی", "د", "یم", "ید", "ند"]
-        self._perfect_personal_suffixes = ["‌ام", "‌ای", "‌است", "‌ایم", "‌اید", "‌اند"]
-        self.verbal_prefixes = [
-            "بر",
-            "باز",
-            "در",
-            "فرو",
-            "وا",
-            "ور",
-            "فرا",
-            "به‌در",
-            "دربر",
-            "پس" + ZWNJ,
-            "پیش" + ZWNJ,
-        ]
-        self.compound_verb_exceptions = [
-            ("بر", "برد"),
-            ("بر", "برید"),
-            ("فروش", "فروخت"),
-            ("فروز", "فروزاند"),
-        ]
+        self._past_personal_suffixes = data.past_personal_suffixes
+        self._informal_past_personal_suffixes = data.informal_past_personal_suffixes
+        self._present_personal_suffixes = data.present_personal_suffixes
+        self._perfect_personal_suffixes = data.perfect_personal_suffixes
+        self.verbal_prefixes = []
+
+        for pref in data.verbal_prefixes:
+            if pref[-1] not in data.non_left_joiner_letters:
+                self.verbal_prefixes.append(pref + data.ZWNJ)
+                continue
+            self.verbal_prefixes.append(pref)
+
+        self.compound_verb_exceptions = data.compound_verb_exceptions
 
     def get_verb_prefix(self, stem: str):
         if any(
@@ -62,10 +51,10 @@ class Conjugator:
     def normalize_prefix(self, prefix: str):
         if (
             prefix
-            and (prefix[-1] not in non_left_joiner_letters)
-            and prefix[-1] != ZWNJ
+            and (prefix[-1] not in data.non_left_joiner_letters)
+            and prefix[-1] != data.ZWNJ
         ):
-            prefix = prefix + ZWNJ
+            prefix = prefix + data.ZWNJ
             return prefix
         return prefix
 
@@ -1736,7 +1725,12 @@ def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
     conjugator = Conjugator()
     conjugated_verbs: dict[str, tuple[str | None, str]] = {}
 
-    for past_stem, present_stem, informal_past_stem, informal_present_stem in verbs:
+    for (
+        past_stem,
+        present_stem,
+        informal_past_stem,
+        informal_present_stem,
+    ) in data.verbs:
         base_past_stem, prefix = conjugator.get_verb_prefix(past_stem)
         base_present_stem, _ = conjugator.get_verb_prefix(present_stem)
 

@@ -37,6 +37,32 @@ numbers = persian_digits + english_digits + arabic_digits
 
 non_left_joiner_letters = "دۀذاأآورژز"
 
+
+past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ند"]
+informal_past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ین", "ن"]
+present_personal_suffixes = ["م", "ی", "د", "یم", "ید", "ند"]
+perfect_personal_suffixes = ["‌ام", "‌ای", "‌است", "‌ایم", "‌اید", "‌اند"]
+verbal_prefixes = [
+    "بر",
+    "باز",
+    "در",
+    "فرو",
+    "وا",
+    "ور",
+    "فرا",
+    "به‌در",
+    "دربر",
+    "پس",
+    "پیش",
+]
+
+compound_verb_exceptions = [
+    ("بر", "برد"),
+    ("بر", "برید"),
+    ("فروش", "فروخت"),
+    ("فروز", "فروزاند"),
+]
+
 morph_suffixes = [
     "ام",
     "ات",
