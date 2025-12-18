@@ -87,7 +87,9 @@ $ pip install shekar && pip uninstall -y onnxruntime && pip install onnxruntime-
 
 ### Normalizer
 
-The built-in `Normalizer` class provides a ready-to-use pipeline that combines the most common filters and normalization steps, offering a default configuration that covers the majority of use cases.
+The built-in `Normalizer` class provides a ready-to-use, opinionated normalization pipeline for Persian text. It combines the most common and error-prone normalization steps into a single component, covering the majority of real-world use cases such as web text, social media, OCR output, and mixed informal–formal writing.
+
+Most importantly, the normalization rules in Shekar strictly follow the official guidelines of **Academy of Persian Language and Literature** (فرهنگستان زبان و ادب فارسی) published on **apll.ir**. This makes the output suitable not only for NLP pipelines, but also for linguistically correct and publishable Persian text.
 
 ```python
 from shekar import Normalizer
@@ -97,19 +99,22 @@ normalizer = Normalizer()
 text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده ی گرامی می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
 print(normalizer(text))
 
-text = "می دونی که نمیخاستم ناراحتت کنم."
-print(normalizer(text))
+# نرمال‌سازی نویسه‌های گفتاری و روزمره
+text = normalizer("می دونی که نمیخاستم ناراحتت کنم.اما خونه هاشون خیلی گرون تر شده")
+print(text)
 
-text = "خونه هاشون خیلی گرون تر شده"
-print(normalizer(text))
+# نرمال‌سازی واژه‌های مرکب و افعال پیشوندی! 
+text = normalizer("یک کار آفرین نمونه و سخت کوش ، پیروز مندانه از پس دشواری ها برخواهدآمد.")
+print(text) 
+
 ```
 
 ```shell
 «فارسی شکر است» نام داستان کوتاه طنزآمیزی از محمد‌علی جمالزاده‌ی گرامی می‌باشد که در سال ۱۹۲۱ منتشر شده‌است و آغازگر تحول بزرگی در ادبیات معاصر ایران به شمار می‌رود.
 
-می‌دونی که نمی‌خاستم ناراحتت کنم.
+می‌دونی که نمی‌خاستم ناراحتت کنم. اما خونه‌هاشون خیلی گرون‌تر شده
 
-خونه‌هاشون خیلی گرون‌تر شده
+یک کارآفرین نمونه و سخت‌کوش، پیروزمندانه از پس دشواری‌ها بر خواهد آمد.
 ```
 
 ### Customization
@@ -253,17 +258,28 @@ from shekar import Lemmatizer
 
 lemmatizer = Lemmatizer()
 
+# ریشه‌یابی افعال
 print(lemmatizer("رفتند"))
+print(lemmatizer("گفته بوده‌ایم"))
+
+# ریشه‌یابی واژه‌ها
 print(lemmatizer("کتاب‌ها"))
 print(lemmatizer("خانه‌هایی"))
-print(lemmatizer("گفته بوده‌ایم"))
+print(lemmatizer("خونه‌هامون"))
+
+# ریشه‌یابی افعال پیشوندی
+print(lemmatizer("بر نخواهم گشت"))
+print(lemmatizer("برنمی‌دارم"))
 ```
 
 ```output
 رفت/رو
+گفت/گو
 کتاب
 خانه
-گفت/گو
+خانه
+برگشت/برگرد
+برداشت/بردار
 ```
 
 ## Part-of-Speech Tagging
@@ -415,6 +431,7 @@ keywords = extractor(input_text)
 for kw in keywords:
     print(kw)
 ```
+
 ```output
 فرهنگ ایرانی
 گسترش فرهنگ
@@ -444,13 +461,21 @@ print(spell_checker.suggest("درود"))
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/word_cloud.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/word_cloud.ipynb)
 
-The WordCloud class offers an easy way to create visually rich Persian word clouds. It supports reshaping and right-to-left rendering, Persian fonts, color maps, and custom shape masks for accurate and elegant visualization of word frequencies.
+The `WordCloud` class provides a convenient interface for generating Persian word clouds with correct shaping, directionality, and typography. It is specifically designed to work with right-to-left Persian text and integrates seamlessly with Shekar’s normalization utilities to produce visually accurate and linguistically correct results.
+
+The WordCloud functionality depends on visualization libraries that are not installed by default. To enable this feature, install Shekar with the optional visualization dependencies:
+
+<!-- termynal -->
+```bash
+$ pip install 'shekar[viz]'
+```
+**Example usage:**
 
 ```python
 import requests
 from collections import Counter
 
-from shekar import WordCloud
+from shekar.visualization import WordCloud
 from shekar import WordTokenizer
 from shekar.preprocessing import (
   HTMLTagRemover,
