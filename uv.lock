@@ -2356,7 +2356,7 @@ requires-dist = [
     { name = "arabic-reshaper", marker = "extra == 'viz'", specifier = ">=3.0.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "numpy", specifier = ">=1.24.4" },
-    { name = "onnxruntime", specifier = ">=1.22.1" },
+    { name = "onnxruntime", specifier = ">=1.23.2" },
     { name = "pillow", marker = "extra == 'viz'", specifier = ">=11.2.1" },
     { name = "python-bidi", marker = "extra == 'viz'", specifier = ">=0.6.6" },
     { name = "regex", specifier = ">=2024.11.6" },
