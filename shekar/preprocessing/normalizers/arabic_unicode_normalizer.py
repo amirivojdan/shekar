@@ -37,7 +37,7 @@ class ArabicUnicodeNormalizer(BaseTextTransform):
         self.unicode_mappings = [
             ("﷽", "بسم الله الرحمن الرحیم"),
             ("﷼", "ریال"),
-            ("(ﷰ|ﷹ)", "صلی"),
+            ("ﷰﷹ", "صلی"),
             ("ﷲ", "الله"),
             ("ﷳ", "اکبر"),
             ("ﷴ", "محمد"),
@@ -45,10 +45,10 @@ class ArabicUnicodeNormalizer(BaseTextTransform):
             ("ﷶ", "رسول"),
             ("ﷷ", "علیه"),
             ("ﷸ", "وسلم"),
-            ("ﻵ|ﻶ|ﻷ|ﻸ|ﻹ|ﻺ|ﻻ|ﻼ", "لا"),
+            ("ﻵﻶﻷﻸﻹﻺﻻﻼ", "لا"),
         ]
 
-        self._patterns = self._compile_patterns(self.unicode_mappings)
+        self._translation_table = self._create_translation_table(self.unicode_mappings)
 
     def _function(self, X, y=None):
-        return self._map_patterns(X, self._patterns)
+        return X.translate(self._translation_table)

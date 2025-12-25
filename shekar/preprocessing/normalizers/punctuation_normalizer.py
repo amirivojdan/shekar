@@ -36,27 +36,29 @@ class PunctuationNormalizer(BaseTextTransform):
     def __init__(self):
         super().__init__()
         self.punctuation_mappings = [
-            (r"[▕❘❙❚▏│]", "|"),
-            (r"[ㅡ一—–ー̶]", "-"),
-            (r"[▁_̲]", "_"),
-            (r"[❔?�؟ʕʔ🏻\x08\x97\x9d]", "؟"),
-            (r"[❕！]", "!"),
-            (r"[⁉]", "!؟"),
-            (r"[‼]", "!!"),
-            (r"[℅%]", "٪"),
-            (r"[÷]", "/"),
-            (r"[×]", "*"),
-            (r"[：]", ":"),
-            (r"[›]", ">"),
-            (r"[‹＜]", "<"),
-            (r"[《]", "«"),
-            (r"[》]", "»"),
-            (r"[•]", "."),
-            (r"[٬,]", "،"),
-            (r"[;；]", "؛"),
+            ("▕❘❙❚▏│", "|"),
+            ("ㅡ一—–ー̶", "-"),
+            ("▁_̲", "_"),
+            ("❔?�؟ʕʔ🏻\x08\x97\x9d", "؟"),
+            ("❕！", "!"),
+            ("⁉", "!؟"),
+            ("‼", "!!"),
+            ("℅%", "٪"),
+            ("÷", "/"),
+            ("×", "*"),
+            ("：", ":"),
+            ("›", ">"),
+            ("‹＜", "<"),
+            ("《", "«"),
+            ("》", "»"),
+            ("•", "."),
+            ("٬,", "،"),
+            (";；", "؛"),
         ]
 
-        self._patterns = self._compile_patterns(self.punctuation_mappings)
+        self._translation_table = self._create_translation_table(
+            self.punctuation_mappings
+        )
 
     def _function(self, X, y=None):
-        return self._map_patterns(X, self._patterns)
+        return X.translate(self._translation_table)

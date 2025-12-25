@@ -36,10 +36,12 @@ class DiacriticMasker(BaseTextTransform):
     def __init__(self):
         super().__init__()
         self._diacritic_mappings = [
-            (rf"[{data.diacritics}]", ""),
+            (data.diacritics, ""),
         ]
 
-        self._patterns = self._compile_patterns(self._diacritic_mappings)
+        self._translation_table = self._create_translation_table(
+            self._diacritic_mappings
+        )
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns).strip()
+        return text.translate(self._translation_table)
