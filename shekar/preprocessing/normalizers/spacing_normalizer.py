@@ -4,6 +4,7 @@ from shekar.base import BaseTextTransform
 from shekar import data
 from shekar.morphology.conjugator import get_conjugated_verbs
 import re
+from flashtext import KeywordProcessor
 
 
 class SpacingNormalizer(BaseTextTransform):
@@ -19,24 +20,36 @@ class SpacingNormalizer(BaseTextTransform):
         self.conjugated_verbs = get_conjugated_verbs()
         compound_words = data.compound_words - set(self.conjugated_verbs.keys())
 
-        self.compound_words_space = {}
-        for word in compound_words:
-            if "#" not in word:
-                self.compound_words_space[word.replace(data.ZWNJ, " ")] = word
+        self.compound_kp = KeywordProcessor(case_sensitive=True)
+        for correct_word in compound_words:
+            if "#" not in correct_word:
+                self.compound_kp.add_keyword(
+                    correct_word.replace(data.ZWNJ, " "), correct_word
+                )
             else:
-                self.compound_words_space[word.replace("#", " ")] = word.replace(
-                    "#", ""
+                self.compound_kp.add_keyword(
+                    correct_word.replace("#", " "), correct_word.replace("#", "")
                 )
 
         self._other_mappings = [
             (r"هها", f"ه{data.ZWNJ}ها"),
         ]
 
+        _arabic_script = (
+            r"\u0600-\u06FF"  # Arabic
+            r"\u0750-\u077F"  # Arabic Supplement
+            r"\u08A0-\u08FF"  # Arabic Extended-A
+            r"\uFB50-\uFDFF"  # Arabic Presentation Forms-A
+            r"\uFE70-\uFEFF"  # Arabic Presentation Forms-B
+        )
+
+        # Remove invisible control marks except ZWNJ
+        self._invisible_translation_table = dict.fromkeys(
+            map(ord, "\u200b\u200d\u200e\u200f\u2066\u2067\u202a\u202b\u202d"),
+            None,
+        )
+
         self._spacing_mappings = [
-            (
-                r"[\u200b\u200d\u200e\u200f\u2066\u2067\u202a\u202b\u202d]",
-                "",
-            ),  # Remove invisible control marks except ZWNJ
             (
                 r"[^\S\r\n]+",
                 " ",
@@ -45,7 +58,7 @@ class SpacingNormalizer(BaseTextTransform):
             (r"\u200c+(?= )|(?<= )\u200c+", ""),  # Remove ZWNJ before or after a space
             (r"\u200c{2,}", "\u200c"),  # Collapse multiple ZWNJs
             (
-                r"(?<![\p{Arabic}0-9])\u200c+|\u200c+(?![\p{Arabic}0-9])",
+                rf"(?<![{_arabic_script}0-9]){data.ZWNJ}+|{data.ZWNJ}+(?![{_arabic_script}0-9])",
                 "",
             ),  # Remove ZWNJ at edges of tokens (not between Arabic letters/digits)
             (r" {2,}", " "),  # Final collapse of extra spaces
@@ -159,17 +172,10 @@ class SpacingNormalizer(BaseTextTransform):
             self._suffix_spacing, vocab=data.vocab, only_stem=True
         )
 
-        self.compound_words_pattern = re.compile(
-            "|".join(map(re.escape, self.compound_words_space.keys()))
-        )
-
         self.prefixed_verbs_corrector = partial(self._preverb_mi_stem_replacer)
         self.prefixed_simple_future_verbs_corrector = partial(
             self._prefixed_simple_future_verb_replacer
         )
-
-    def _compound_replacer(self, m):
-        return self.compound_words_space[m.group(0)]
 
     def _preverb_mi_stem_replacer(self, m: re.Match) -> str:
         preverb = m.group("preverb")
@@ -229,12 +235,15 @@ class SpacingNormalizer(BaseTextTransform):
         )
 
     def _function(self, text: str) -> str:
+        # remove invisible control marks
+        text = text.translate(self._invisible_translation_table)
+
         text = self._map_patterns(text, self._spacing_patterns)
         text = self._map_patterns(text, self._other_patterns)
         text = self._map_patterns(text, self._punctuation_spacing_patterns).strip()
 
         # correct compound words spacing
-        text = self.compound_words_pattern.sub(self._compound_replacer, text)
+        text = self.compound_kp.replace_keywords(text)
 
         # correct word prefixes/suffix spacing
         text = self._word_prefix_space_pattern.sub(self._word_prefix_corrector, text)
