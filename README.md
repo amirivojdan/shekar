@@ -15,45 +15,15 @@
     <em>Simplifying Persian NLP for Modern Applications</em>
 </p>
 
-**Shekar** (meaning 'sugar' in Persian) is an open-source Python library for Persian natural language processing, named after the influential satirical story *"فارسی شکر است"* (Persian is Sugar) published in 1921 by Mohammad Ali Jamalzadeh. The story became a cornerstone of Iran's literary renaissance, advocating for accessible yet eloquent expression. Shekar embodies this philosophy in its design and development.
+**Shekar** is an open-source Python library for Persian natural language processing, inspired by the satirical story *[فارسی شکر است (Persian is Sugar)](https://fa.wikipedia.org/wiki/%D9%81%D8%A7%D8%B1%D8%B3%DB%8C_%D8%B4%DA%A9%D8%B1_%D8%A7%D8%B3%D8%AA)* by Mohammad Ali Jamalzadeh. Reflecting its emphasis on clear and accessible language, Shekar provides fast, modular tools for Persian text processing, including normalization, tokenization, POS tagging, NER, embeddings, and spell checking, enabling reproducible workflows for both research and production.
 
-It provides tools for text preprocessing, tokenization, part-of-speech(POS) tagging, named entity recognition(NER), embeddings, spell checking, and more. With its modular pipeline design, Shekar makes it easy to build reproducible workflows for both research and production applications.
+## Why Shekar?
 
-<div dir="rtl">
-<b>شکر</b> یک کتابخانهٔ پایتون برای پردازش زبان فارسی است که نام خود را از داستان طنز <b>«فارسی شکر است»</b> وام گرفته است؛ اثری ماندگار که در سال ۱۹۲۱ به قلم محمدعلی جمالزاده منتشر شد. این داستان به یکی از ارکان نوزایی ادبی ایران بدل شد که با ترویج زبانی ساده و روان، مسیر تازه‌ای در ادبیات معاصر گشود. 
-کتابخانهٔ <b>شکر</b> نیز با الهام از همین نگرش، تلاش می‌کند ابزارهایی کاربردی، ساده و در عین حال دقیق برای پردازش متن فارسی فراهم کند تا پژوهشگران، توسعه‌دهندگان و علاقه‌مندان بتوانند به‌راحتی از آن در پروژه‌های خود استفاده کنند.
-</div>
-
-
-Documentation: https://lib.shekar.io/
-
-### Table of Contents
-
-- [Installation](#installation)
-  - [CPU Installation (All Platforms)](#cpu-installation-all-platforms)
-  - [GPU Acceleration (NVIDIA CUDA)](#gpu-acceleration-nvidia-cuda)
-- [Preprocessing](#preprocessing)
-  - [Normalizer](#normalizer)
-  - [Customization](#customization)
-- [Tokenization](#tokenization)
-  - [WordTokenizer](#wordtokenizer)
-  - [SentenceTokenizer](#sentencetokenizer)
-- [Embeddings](#embeddings)
-  - [Word Embeddings](#word-embeddings)
-  - [Contextual Embeddings](#contextual-embeddings)
-- [Stemming](#stemming)
-- [Lemmatization](#lemmatization)
-- [Part-of-Speech Tagging](#part-of-speech-tagging)
-- [Named Entity Recognition (NER)](#named-entity-recognition-ner)
-- [Sentiment Analysis](#sentiment-analysis)
-- [Toxicity Detection](#toxicity-detection)
-- [Keyword Extraction](#keyword-extraction)
-- [Spell Checking](#spell-checking)
-- [WordCloud](#wordcloud)
-- [Command-Line Interface (CLI)](#command-line-interface-cli)
-- [Download Models](#download-models)
-- [Citation](#citation)
-
+- **Advanced text normalization**: Built for the complexity of Persian text.
+- **Blazing fast and production-ready**: Optimized for large-scale processing and real-time use.
+- **Modular and highly customizable**: Independent, composable components for flexible NLP pipelines.
+- **Lightweight and efficient**: Minimal dependencies and small models for fast CPU inference.  
+- **Reliable and well-tested**: Backed by **hundreds of test cases** with **95%+ code coverage**.
 
 ## Installation
 
@@ -89,14 +59,14 @@ $ pip install shekar && pip uninstall -y onnxruntime && pip install onnxruntime-
 
 The built-in `Normalizer` class provides a ready-to-use, opinionated normalization pipeline for Persian text. It combines the most common and error-prone normalization steps into a single component, covering the majority of real-world use cases such as web text, social media, OCR output, and mixed informal–formal writing.
 
-Most importantly, the normalization rules in Shekar strictly follow the official guidelines of **Academy of Persian Language and Literature** (فرهنگستان زبان و ادب فارسی) published on **apll.ir**. This makes the output suitable not only for NLP pipelines, but also for linguistically correct and publishable Persian text.
+Most importantly, the normalization rules in Shekar strictly follow the official guidelines of **[Academy of Persian Language and Literature](https://apll.ir/)** (فرهنگستان زبان و ادب فارسی). This makes the output suitable not only for NLP pipelines, but also for linguistically correct and publishable Persian text.
 
 ```python
 from shekar import Normalizer
 
 normalizer = Normalizer()
 
-text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده ی گرامی می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران 🇮🇷 بۃ شمار میرود."
+text = "«فارسی شِکَر است» نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده ی گرامی می   باشد که در سال 1921 منتشر  شده است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران بۃ شمار میرود."
 print(normalizer(text))
 
 # نرمال‌سازی نویسه‌های گفتاری و روزمره
@@ -119,10 +89,38 @@ print(text)
 
 ### Customization
 
-For advanced customization, Shekar offers a modular and composable framework for text preprocessing. It includes components such as `filters`, `normalizers`, and `maskers`, which can be applied individually or flexibly combined using the `Pipeline` class with the `|` operator.
-A comprehensive list of operators is available at https://lib.shekar.io/tutorials/preprocessing/
+Shekar is built around a modular and composable preprocessing framework that allows fine-grained control over each step of text processing. Preprocessing is implemented as small, independent operators such as `filters`, `normalizers`, and `maskers`, which can be used on their own or combined into flexible pipelines.
 
-You can combine any of the preprocessing components using the `|` operator:
+Pipelines are constructed using the Pipeline abstraction and composed with the `|` operator, making preprocessing logic explicit, readable, and easy to customize. Any operator from the [full list of preprocessing components](https://lib.shekar.io/tutorials/preprocessing/)
+ can be freely combined.
+
+For example, the following pipeline is functionally equivalent to the default normalizer:
+
+```python
+from shekar.preprocessing import (
+    PunctuationNormalizer,
+    AlphabetNormalizer,
+    DigitNormalizer,
+    SpacingNormalizer,
+    RemoveDiacritics,
+    RepeatedLetterNormalizer,
+    ArabicUnicodeNormalizer,
+    YaNormalizer,
+)
+
+normalizer = (
+            AlphabetNormalizer()
+            | ArabicUnicodeNormalizer()
+            | DigitNormalizer()
+            | PunctuationNormalizer()
+            | RemoveDiacritics()
+            | RepeatedLetterNormalizer()
+            | SpacingNormalizer()
+            | YaNormalizer(style="joda")
+        )
+```
+
+Operators can also be composed for lightweight, task-specific preprocessing. For example, removing emojis and punctuation:
 
 ```python
 from shekar.preprocessing import EmojiRemover, PunctuationRemover
@@ -515,26 +513,6 @@ image.show()
 
 ![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)
 
-## Command-Line Interface (CLI)
-
-Shekar includes a command-line interface (CLI) for quick text processing and visualization.  
-You can normalize Persian text or generate wordclouds directly from files or inline strings.
-
-**Usage**
-
-```console
-shekar [COMMAND] [OPTIONS]
-```
-
-**Examples**
-
-```console
-# Normalize a text file and save output
-shekar normalize -i ./corpus.txt -o ./normalized_corpus.txt
-
-# Normalize inline text
-shekar normalize -t "درود پرودگار بر ایران و ایرانی"
-```
 
 ## Download Models
 
