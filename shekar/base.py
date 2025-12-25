@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Iterable, List
-import regex as re
+import re
 
 
 class BaseTransform(ABC):
@@ -84,7 +84,7 @@ class BaseTextTransform(BaseTransform):
 
     @classmethod
     def _compile_patterns(
-        cls, mappings: Iterable[tuple[str, str]]
+        cls, mappings: Iterable[tuple[str, str]], flags: int = re.UNICODE
     ) -> List[tuple[re.Pattern, str]]:
         """
         Compiles a list of regex patterns and their corresponding replacement strings.
@@ -100,7 +100,8 @@ class BaseTextTransform(BaseTransform):
             compiled regex pattern (`re.Pattern`) and its corresponding replacement string.
         """
         compiled_patterns = [
-            (re.compile(pattern), replacement) for pattern, replacement in mappings
+            (re.compile(pattern, flags=flags), replacement)
+            for pattern, replacement in mappings
         ]
         return compiled_patterns
 
@@ -111,3 +112,13 @@ class BaseTextTransform(BaseTransform):
         for pattern, replacement in patterns:
             text = pattern.sub(replacement, text)
         return text
+
+    @classmethod
+    def _create_translation_table(
+        cls, mappings: Iterable[tuple[str, str]]
+    ) -> dict[int, str | None]:
+        trans: dict[int, str | None] = {}
+        for chars, repl in mappings:
+            for ch in chars:
+                trans[ord(ch)] = repl
+        return trans
