@@ -1,6 +1,5 @@
 import pytest
 import re
-import regex
 from shekar.base import BaseTextTransform
 
 
@@ -48,7 +47,7 @@ class TestBaseTextTransformer:
         compiled_patterns = BaseTextTransform._compile_patterns(mappings)
         print(compiled_patterns)
         assert len(compiled_patterns) == 2
-        assert isinstance(compiled_patterns[0][0], (re.Pattern, regex.Pattern))
+        assert isinstance(compiled_patterns[0][0], (re.Pattern, re.Pattern))
         assert compiled_patterns[0][1] == "سگ"
 
     def test_map_patterns(self):
