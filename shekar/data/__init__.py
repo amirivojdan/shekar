@@ -94,6 +94,7 @@ morph_suffixes = [
 
 suffixes = [
     "گر",
+    "گرا",
     "آسا",
     "فام",
     "جات",
@@ -133,33 +134,66 @@ suffixes = [
     "ناپذیر",
     "پراکن",
     "پژوه",
+    "پرست",
+    "پرور",
+    "گون",
+    "دهی",
+    "ستیز",
+    "رسان",
+    "نما",
+    "ورز",
+    "پرداز",
+    "افکن",
+    "خیز",
+    "اندیش",
+    "گیر",
+    "گذار",
+    "ساز",
+    "پسند",
+    "فشان",
+    "بخش",
 ]
 
 e_suffixes = [
     "باره",
     "بارگی",
+    "گیرنده",
+    "گیرندگی",
+    "کارانه",
     "دهنده",
     "دهندگی",
+    "کننده",
+    "کنندگی",
     "مایه",
     "مایگی",
+    "گرایانه",
+    "افکنانه",
     # "شده", # TODO: if POS tag is adjective
     "شدگی",
+    # "افتاده",
+    "افتادگی",
     # "زده",
     "زدگی",
+    "شونده",
+    "شوندگی",
+    "گونه",
+    "گونگی",
+    "پیشه",
+    "پیشگی",
 ]
 
-expanded_prefixes = []
+expanded_suffixes = []
 for suffix in suffixes:
-    expanded_prefixes.append(suffix)
+    expanded_suffixes.append(suffix)
     if suffix.endswith("ا") or suffix.endswith("آ"):
-        expanded_prefixes.append(suffix + "یی")
+        expanded_suffixes.append(suffix + "یی")
     # TODO: check if the suffix ends with e sound and POS is adjective to add "گی" otherwise add "ی"
     # elif suffix.endswith("ه"):
-    #     expanded_prefixes.append(suffix[:-1] + "گی")
+    #     expanded_suffixes.append(suffix[:-1] + "گی")
     elif not suffix.endswith("ی"):
-        expanded_prefixes.append(suffix + "ی")
+        expanded_suffixes.append(suffix + "ی")
 
-suffixes = expanded_prefixes
+suffixes = expanded_suffixes + e_suffixes
 
 prefixes = [
     "برون",
@@ -176,6 +210,8 @@ prefixes = [
     "نصفه",
     "پاره",
     "نیمه",
+    "نا",
+    "خوش",
 ]
 
 
