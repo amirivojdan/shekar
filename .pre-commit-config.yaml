@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format shekar tests
+        language: system
+        types: [python]
+
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check shekar tests
+        language: system
+        types: [python]
+
+      - id: pytest
+        name: pytest
+        entry: uv run pytest tests
+        language: system
+        types: [python]
+        pass_filenames: false
+
+
