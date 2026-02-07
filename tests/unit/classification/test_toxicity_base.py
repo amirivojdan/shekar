@@ -1,5 +1,5 @@
 import pytest
-from shekar.toxicity import OffensiveLanguageClassifier
+from shekar.classification import OffensiveLanguageClassifier
 
 
 class TestOffensiveLanguageClassifier:

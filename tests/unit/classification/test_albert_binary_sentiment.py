@@ -1,4 +1,4 @@
-from shekar.sentiment_analysis.albert_sentiment_binary import (
+from shekar.classification.albert_sentiment_binary import (
     AlbertBinarySentimentClassifier,
 )
 from shekar.base import BaseTransform

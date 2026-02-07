@@ -1,4 +1,4 @@
-from shekar.toxicity import LogisticOffensiveClassifier
+from shekar.classification import LogisticOffensiveClassifier
 
 
 class TestLogisticOffensiveClassifier:
