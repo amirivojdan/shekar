@@ -12,6 +12,7 @@ MODEL_HASHES = {
     "fasttext_d100_w5_v100k_cbow_wiki.bin": "27daf69dc030e028dda33465c488e25f72c2ea65a53b5c1e0695b883a8be061c",
     "fasttext_d300_w10_v250k_cbow_naab.bin": "8db1e1e50f4b889c7e1774501541be2832240892b9ca00053772f0af7cd2526b",
     "tfidf_logistic_offensive.onnx": "1ac778114c9e2ec1f94fe463df03008032ce75306c5ed494bb06c4542430df44",
+    "albert_persian_tokenizer.model": "5f7e2e33114b079febc60e221a2c2400527b3bef10a8d838720f7810c6984964",
 }
 
 
