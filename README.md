@@ -369,14 +369,18 @@ for text, label in entities:
 فرانسه → LOC
 ```
 
-## Sentiment Analysis
+## Classification
+
+The `classification` module provides high-level text classification utilities for Persian, covering both sentiment analysis and offensive language detection through a unified and consistent interface. Each classifier returns a predicted label along with a confidence score.
+
+### Sentiment Analysis
 
 The `SentimentClassifier` module enables automatic sentiment analysis of Persian text using transformer-based models. It currently supports the `AlbertBinarySentimentClassifier`, a lightweight ALBERT model fine-tuned on Snapfood dataset to classify text as **positive** or **negative**, returning both the predicted label and its confidence score.
 
 **Example usage:**
 
 ```python
-from shekar import SentimentClassifier
+from shekar.classification import SentimentClassifier
 
 sentiment_classifier = SentimentClassifier()
 
@@ -389,12 +393,12 @@ print(sentiment_classifier("فیلم ۳۰۰ افتضاح بود!"))
 ('negative', 0.9330866932868958)
 ```
 
-## Toxicity Detection
+### Toxicity Detection
 
 The `toxicity` module currently includes a Logistic Regression classifier trained on TF-IDF features extracted from the [Naseza (ناسزا) dataset](https://github.com/amirivojdan/naseza), a large-scale collection of Persian text labeled for offensive and neutral language. The `OffensiveLanguageClassifier` processes input text to determine whether it is neutral or offensive, returning both the predicted label and its confidence score.
 
 ```python
-from shekar.toxicity import OffensiveLanguageClassifier
+from shekar.classification import OffensiveLanguageClassifier
 
 offensive_classifier = OffensiveLanguageClassifier()
 
