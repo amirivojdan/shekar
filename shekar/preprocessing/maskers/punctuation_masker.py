@@ -1,6 +1,5 @@
 from shekar.base import BaseTextTransform
 from shekar import data
-import re
 import string
 
 
@@ -33,18 +32,14 @@ class PunctuationMasker(BaseTextTransform):
 
     def __init__(self, punctuations: str | None = None, mask_token: str = ""):
         super().__init__()
+        self._mask_token = mask_token
+
         if not punctuations:
-            self._punctuation_mappings = [
-                (rf"[{re.escape(data.punctuations)}]", mask_token),
-                (rf"[{re.escape(string.punctuation)}]", mask_token),
-            ]
-
+            chars_to_mask = set(data.punctuations + string.punctuation)
         else:
-            self._punctuation_mappings = [
-                (rf"[{re.escape(punctuations)}]", mask_token),
-            ]
+            chars_to_mask = set(punctuations)
 
-        self._patterns = self._compile_patterns(self._punctuation_mappings)
+        self._translation_table = {ord(c): self._mask_token for c in chars_to_mask}
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns).strip()
+        return text.translate(self._translation_table).strip()

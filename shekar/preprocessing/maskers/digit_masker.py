@@ -35,11 +35,7 @@ class DigitMasker(BaseTextTransform):
 
     def __init__(self, mask_token: str = ""):
         super().__init__()
-        self._number_mappings = [
-            (rf"[{data.numbers}]", mask_token),
-        ]
-
-        self._patterns = self._compile_patterns(self._number_mappings)
+        self._translation_table = {ord(ch): mask_token for ch in data.numbers}
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns).strip()
+        return text.translate(self._translation_table).strip()
