@@ -32,6 +32,24 @@ class StatisticalSpellChecker(BaseTransform):
         self.words = {word: freq / self.n_words for word, freq in words.items()}
         self.n_edit = n_edit
 
+    def _is_word_token(self, token: str) -> bool:
+        """
+        Check if token is a valid Persian word candidate for spell correction.
+        """
+        if not token:
+            return False
+
+        if all(ch in data.punctuations for ch in token):
+            return False
+
+        if all(ch in data.numbers for ch in token):
+            return False
+
+        # token should contain at least one Persian letter (or ZWNJ)
+        has_persian = any(ch in data.persian_letters for ch in token)
+
+        return has_persian
+
     @classmethod
     def generate_1edits(cls, word):
         deletes = [word[:i] + word[i + 1 :] for i in range(len(word))]
@@ -97,6 +115,11 @@ class StatisticalSpellChecker(BaseTransform):
         tokens = self.tokenizer.tokenize(text)
         corrected_tokens = []
         for token in tokens:
+            # Only correct valid word tokens, skip all other tokens (punctuations, numbers, etc.)
+            if not self._is_word_token(token):
+                corrected_tokens.append(token)
+                continue
+
             suggestions = self.correct(token)
             if suggestions:
                 corrected_tokens.append(suggestions[0])
