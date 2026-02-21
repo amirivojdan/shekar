@@ -67,6 +67,8 @@ class SpacingNormalizer(BaseTextTransform):
         ]
 
         self._punctuation_spacing_mappings = [
+            # Remove space after leading punctuation like ". این" -> ".این"
+            (r"^([{sg}])\s+".format(sg=re.escape(data.single_punctuations)), r"\1"),
             (r"([{op}])\s+".format(op=re.escape(data.opener_punctuations)), r"\1"),
             (r"\s+([{cl}])".format(cl=re.escape(data.closer_punctuations)), r"\1"),
             (
@@ -82,7 +84,7 @@ class SpacingNormalizer(BaseTextTransform):
             ),
             (r"\s+([{sg}])".format(sg=re.escape(data.single_punctuations)), r"\1"),
             (
-                r"([{sg}])(?=(?![{cl}])\S)".format(
+                r"(?<!^)([{sg}])(?=(?![{cl}])\S)".format(  # <- modified line
                     sg=re.escape(data.single_punctuations),
                     cl=re.escape(data.closer_punctuations),
                 ),
