@@ -35,3 +35,9 @@ def test_tokenize_multiple_sentences_with_question_mark(tokenizer):
     text = "ما چه کردیم؟ و چه خواهیم کرد در این فرصت کم!؟"
     expected = ["ما چه کردیم؟", "و چه خواهیم کرد در این فرصت کم!؟"]
     assert list(tokenizer.tokenize(text)) == expected
+
+
+def test_tokenize_sentences_with_quotation_marks(tokenizer):
+    text = "او گفت: «من فردا به خانه می‌روم.»"
+    expected = ["او گفت: «من فردا به خانه می‌روم.»"]
+    assert list(tokenizer(text)) == expected

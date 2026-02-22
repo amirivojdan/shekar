@@ -20,7 +20,8 @@ class SentenceTokenizer(BaseTextTransform):
     def __init__(self):
         super().__init__()
         self.pattern = re.compile(
-            f"([{re.escape(data.end_sentence_punctuations)}]+)", re.UNICODE
+            f"([{re.escape(data.end_sentence_punctuations)}]+[»”\\]\\)]*)",
+            re.UNICODE,
         )
 
     def _function(self, text: str) -> Iterable[str]:
