@@ -29,9 +29,7 @@ nav:
     - Quick Start: getting_started/quick_start.md
     - CLI: tutorials/cli.md
     - Preprocessing: tutorials/preprocessing.md
-    - Pipeline: tutorials/pipeline.md
     - Tokenization: tutorials/tokenization.md
-    - Normalization: tutorials/normalization.md
     - Embeddings: tutorials/embeddings.md
     - Part-of-Speech Tagging: tutorials/pos.md
     - Named Entity Recognition: tutorials/ner.md
