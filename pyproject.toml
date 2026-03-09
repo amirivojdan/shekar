@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shekar"
-version = "1.4.1"
+version = "1.5.0"
 description = "Simplifying Persian NLP for Modern Applications"
 readme = "README.md"
 license = "MIT"
@@ -78,6 +78,9 @@ dev = [
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 norecursedirs = ["shekar", ".venv", ".git", "examples", "lab"]
+
+[project.scripts]
+shekar = "shekar.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/amirivojdan/shekar"
