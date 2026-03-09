@@ -1,5 +1,7 @@
 from shekar.base import BaseTransform
 from shekar.tokenization import WordTokenizer
+from shekar import Normalizer
+from shekar.morphology import Stemmer
 from shekar import data
 
 
@@ -27,7 +29,9 @@ class StatisticalSpellChecker(BaseTransform):
             # Load the default words from data directory
             words = data.vocab
 
+        self.normalizer = Normalizer()
         self.tokenizer = WordTokenizer()
+        self.stemmer = Stemmer()
         self.n_words = sum(words.values())
         self.words = {word: freq / self.n_words for word, freq in words.items()}
         self.n_edit = n_edit
@@ -112,6 +116,7 @@ class StatisticalSpellChecker(BaseTransform):
         return self.correct(word, n_best=n_best)
 
     def correct_text(self, text):
+        text = self.normalizer(text)
         tokens = self.tokenizer.tokenize(text)
         corrected_tokens = []
         for token in tokens:
@@ -120,12 +125,17 @@ class StatisticalSpellChecker(BaseTransform):
                 corrected_tokens.append(token)
                 continue
 
+            stem = self.stemmer(token)
+            if stem != token and stem in self.words:
+                corrected_tokens.append(token)
+                continue
+
             suggestions = self.correct(token)
             if suggestions:
                 corrected_tokens.append(suggestions[0])
             else:
                 corrected_tokens.append(token)
-        return " ".join(corrected_tokens)
+        return self.normalizer(" ".join(corrected_tokens))
 
     def transform(self, X: str) -> str:
         """

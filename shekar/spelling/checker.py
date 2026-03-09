@@ -20,7 +20,7 @@ class SpellChecker(BaseTransform):
         return self.model.suggest(word, n_best=n_best)
 
     def correct(self, text):
-        return self.model.correct(text)
+        return self.model.correct_text(text)
 
     def fit(self, X, y=None):
         return self.model.fit(X, y)
