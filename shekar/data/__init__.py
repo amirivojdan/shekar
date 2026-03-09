@@ -71,9 +71,15 @@ morph_suffixes = [
     "تان",
     "شان",
     "ای",
+]
+
+comparative_superlative_suffixes = [
     "تر",
     "تری",
     "ترین",
+]
+
+plural_morph_suffixes = [
     "ها",
     "های",
     "هایی",
@@ -91,6 +97,8 @@ morph_suffixes = [
     "هاتون",
     "هاشون",
 ]
+
+morph_suffixes += plural_morph_suffixes + comparative_superlative_suffixes
 
 suffixes = [
     "گر",

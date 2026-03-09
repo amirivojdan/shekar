@@ -59,3 +59,20 @@ def test_non_left_joiner_compound_words():
     input_text = "یک کتابخانه خوب باید کاربر پسند باشد!"
     expected_output = "یک کتابخانه خوب باید کاربرپسند باشد!"
     assert normalizer(input_text) == expected_output
+
+
+def test_attached_morph_suffix_spacing():
+    input_text = "کتابهایش را برد"
+    expected = "کتاب‌هایش را برد"
+    output = normalizer(input_text)
+    assert output == expected, f"Expected: {expected}, Got: {output}"
+
+    input_text = "آدمهایی که کتابهایشان را دوست دارند"
+    expected = "آدم‌هایی که کتاب‌هایشان را دوست دارند"
+    output = normalizer(input_text)
+    assert output == expected, f"Expected: {expected}, Got: {output}"
+
+    input_text = "قشنگترین زبان دنیا فارسی است"
+    expected = "قشنگ‌ترین زبان دنیا فارسی است"
+    output = normalizer(input_text)
+    assert output == expected, f"Expected: {expected}, Got: {output}"

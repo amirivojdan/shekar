@@ -28,6 +28,12 @@ class WordSpacingNormalizer(BaseTextTransform):
         _word_prefix_alt = "|".join(map(re.escape, data.prefixes))
         _word_suffix_alt = "|".join(map(re.escape, data.suffixes))
         _morph_suffix_alt = "|".join(map(re.escape, data.morph_suffixes))
+        _attached_morph_suffix_alt = "|".join(
+            map(
+                re.escape,
+                data.plural_morph_suffixes + data.comparative_superlative_suffixes,
+            )
+        )
 
         self._word_prefix_space_pattern = re.compile(
             rf"(?<!\S)(?P<prefix>(?:{_word_prefix_alt}))\s+(?P<stem>[{data.persian_letters}]+)(?=$|[\s{_punc_class}])"
@@ -37,6 +43,15 @@ class WordSpacingNormalizer(BaseTextTransform):
         )
         self._morph_suffix_space_pattern = re.compile(
             rf"(?<!\S)(?P<stem>[{data.persian_letters}]+)\s+(?P<suffix>(?:{_morph_suffix_alt}))(?=$|[\s{_punc_class}])"
+        )
+
+        self._attached_morph_suffix_space_pattern = re.compile(
+            rf"(?P<stem>[{data.persian_letters}]+)(?P<suffix>(?:{_attached_morph_suffix_alt}))(?=$|[\s{_punc_class}])",
+            re.MULTILINE,
+        )
+
+        self._attached_morph_suffix_corrector = partial(
+            self._suffix_spacing, vocab=data.vocab, only_stem=True
         )
 
         self._word_prefix_corrector = partial(
@@ -71,6 +86,10 @@ class WordSpacingNormalizer(BaseTextTransform):
     ) -> str:
         stem = m.group("stem")
         suffix = m.group("suffix")
+
+        if m.group(0) in vocab:
+            return m.group(0)
+
         candidate = (
             f"{stem}{data.ZWNJ}{suffix}"
             if stem[-1] not in data.non_left_joiner_letters
@@ -94,5 +113,7 @@ class WordSpacingNormalizer(BaseTextTransform):
         text = self._word_prefix_space_pattern.sub(self._word_prefix_corrector, text)
         text = self._word_suffix_space_pattern.sub(self._word_suffix_corrector, text)
         text = self._morph_suffix_space_pattern.sub(self._morph_suffix_corrector, text)
-
+        text = self._attached_morph_suffix_space_pattern.sub(
+            self._attached_morph_suffix_corrector, text
+        )
         return text
