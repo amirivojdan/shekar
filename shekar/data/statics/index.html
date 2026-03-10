@@ -83,6 +83,7 @@
             <li><button class="nav-tab" data-tab="ner">شناسایی موجودیت</button></li>
             <li><button class="nav-tab" data-tab="pos">برچسب‌گذاری نحوی</button></li>
             <li><button class="nav-tab" data-tab="spellchecker">بررسی‌کنندهٔ املا</button></li>
+            <li><button class="nav-tab" data-tab="keywords">استخراج کلیدواژه</button></li>
           </ul>
         </div>
       </div>
@@ -198,7 +199,7 @@
         <div class="card-title">بررسی املای واژگان</div>
         <div class="card-desc">بررسی‌کنندهٔ خودکار املای واژگان فارسی</div>
         <textarea id="input-spellchecker" dir="rtl"
-          placeholder="نوشته فارسی خود را اینجا وارد کنید…">من بروزترین کتاب هارا از کتابخانه امانت گرفتم.</textarea>
+          placeholder="نوشته فارسی خود را اینجا وارد کنید…">دییروز با پژنان به کتبخانه رفتیم.</textarea>
         <div class="btn-row">
           <button class="run-btn" data-tab="spellchecker">اجرا</button>
           <button class="clear-btn" data-tab="spellchecker">پاک کردن</button>
@@ -209,6 +210,31 @@
         <div class="result-box" id="result-spellchecker">
           <div class="result-label">نوشتهٔ ویراش‌شده</div>
           <div class="result-text" id="output-spellchecker"></div>
+        </div>
+      </div>
+
+      <div id="panel-keywords" class="panel card" style="display:none">
+        <div class="card-title">استخراج کلیدواژه</div>
+        <div class="card-desc">شناسایی کلیدواژه‌های مهم از متن با الگوریتم‌های RAKE و TextRank</div>
+        <div class="model-select-row">
+          <label for="model-keywords">الگوریتم:</label>
+          <select id="model-keywords" class="model-select">
+            <option value="rake">RAKE</option>
+            <option value="textrank">TextRank</option>
+          </select>
+        </div>
+        <textarea id="input-keywords" dir="rtl"
+          placeholder="نوشته فارسی خود را اینجا وارد کنید…">زبان و ادبیات فارسی یکی از غنی‌ترین زبان‌های جهان است که تاریخی کهن و فرهنگی پربار دارد.</textarea>
+        <div class="actions">
+          <button class="run-btn" data-tab="keywords">اجرا</button>
+          <button class="clear-btn" data-tab="keywords">پاک کردن</button>
+          <div class="spinner" id="spinner-keywords"></div>
+          <span class="status" id="status-keywords"></span>
+        </div>
+        <div class="error-msg" id="error-keywords"></div>
+        <div class="result-box" id="result-keywords">
+          <div class="result-label">کلیدواژه‌ها</div>
+          <div class="token-list" id="output-keywords"></div>
         </div>
       </div>
 
@@ -268,10 +294,14 @@
       resultBox.classList.remove('visible');
 
       try {
+        const payload = { text };
+        if (tab === 'keywords') {
+          payload.model = document.getElementById('model-keywords').value;
+        }
         const res = await fetch('/api/' + tab, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
+          body: JSON.stringify(payload)
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: 'خطای سرور' }));
@@ -336,6 +366,19 @@
         });
       } else if (tab === 'spellchecker') {
         document.getElementById('output-spellchecker').textContent = data.corrected;
+      } else if (tab === 'keywords') {
+        const el = document.getElementById('output-keywords');
+        el.innerHTML = '';
+        if (!data.keywords || data.keywords.length === 0) {
+          el.innerHTML = '<span class="empty-msg">کلیدواژه‌ای یافت نشد.</span>';
+          return;
+        }
+        data.keywords.forEach(kw => {
+          const chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.textContent = kw;
+          el.appendChild(chip);
+        });
       }
     }
   </script>

@@ -664,3 +664,30 @@ footer a:hover {
         font-size: 13px;
     }
 }
+
+/* Keyword extraction model selector */
+.model-select-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #444;
+}
+
+.model-select {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.model-select:focus {
+    border-color: #00A693;
+}

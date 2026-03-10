@@ -9,6 +9,7 @@ Serves the static UI and exposes REST API endpoints for:
   POST /api/ner           — named-entity recognition
   POST /api/pos           — part-of-speech tagging
   POST /api/spellchecker  — spell checking / correction
+  POST /api/keywords      — keyword extraction (model: rake|textrank)
 """
 
 import json
@@ -28,6 +29,7 @@ _stemmer = None
 _ner = None
 _pos = None
 _spell_checker = None
+_keyword_extractors = {}
 
 
 def get_normalizer():
@@ -84,6 +86,15 @@ def get_spell_checker():
     return _spell_checker
 
 
+def get_keyword_extractor(model: str):
+    global _keyword_extractors
+    if model not in _keyword_extractors:
+        from shekar import KeywordExtractor
+
+        _keyword_extractors[model] = KeywordExtractor(model=model)
+    return _keyword_extractors[model]
+
+
 class ShekarHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split("?")[0]
@@ -108,6 +119,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
             "/api/ner": self._handle_ner,
             "/api/pos": self._handle_pos,
             "/api/spellchecker": self._handle_spellcheck,
+            "/api/keywords": self._handle_keywords,
         }
         handler = routes.get(self.path)
         if handler is None:
@@ -123,17 +135,17 @@ class ShekarHandler(BaseHTTPRequestHandler):
             return
 
         try:
-            handler(text)
+            handler(text, body)
         except Exception as exc:
             self._send_json({"error": str(exc)}, status=500)
 
-    def _handle_normalize(self, text: str):
+    def _handle_normalize(self, text: str, body=None):
         t0 = time.perf_counter()
         result = get_normalizer().normalize(text)
         elapsed = time.perf_counter() - t0
         self._send_json({"result": result, "elapsed_ms": round(elapsed * 1000, 1)})
 
-    def _handle_tokenize(self, text: str):
+    def _handle_tokenize(self, text: str, body=None):
         t0 = time.perf_counter()
         tokens = list(get_word_tokenizer()(text))
         elapsed = time.perf_counter() - t0
@@ -145,7 +157,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
             }
         )
 
-    def _handle_stem(self, text: str):
+    def _handle_stem(self, text: str, body=None):
         t0 = time.perf_counter()
         stemmer = get_stemmer()
         words = list(get_word_tokenizer()(text))
@@ -153,7 +165,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
         elapsed = time.perf_counter() - t0
         self._send_json({"stems": stems, "elapsed_ms": round(elapsed * 1000, 1)})
 
-    def _handle_ner(self, text: str):
+    def _handle_ner(self, text: str, body=None):
         t0 = time.perf_counter()
         entities = get_ner().transform(text)
         elapsed = time.perf_counter() - t0
@@ -164,7 +176,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
             }
         )
 
-    def _handle_pos(self, text: str):
+    def _handle_pos(self, text: str, body=None):
         t0 = time.perf_counter()
         tags = get_pos().transform(text)
         elapsed = time.perf_counter() - t0
@@ -172,7 +184,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
             {"tags": [list(t) for t in tags], "elapsed_ms": round(elapsed * 1000, 1)}
         )
 
-    def _handle_spellcheck(self, text: str):
+    def _handle_spellcheck(self, text: str, body=None):
         t0 = time.perf_counter()
         checker = get_spell_checker()
         corrected = checker.correct(text)
@@ -180,6 +192,13 @@ class ShekarHandler(BaseHTTPRequestHandler):
         self._send_json(
             {"corrected": corrected, "elapsed_ms": round(elapsed * 1000, 1)}
         )
+
+    def _handle_keywords(self, text: str, body=None):
+        model = (body or {}).get("model", "rake").lower()
+        t0 = time.perf_counter()
+        keywords = get_keyword_extractor(model).transform(text)
+        elapsed = time.perf_counter() - t0
+        self._send_json({"keywords": keywords, "elapsed_ms": round(elapsed * 1000, 1)})
 
     def _read_json(self):
         length = int(self.headers.get("Content-Length", 0))
