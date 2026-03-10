@@ -11,6 +11,8 @@ class WordSpacingNormalizer(BaseTextTransform):
         super().__init__()
 
         self.compound_kp = KeywordProcessor(case_sensitive=True)
+        for ch in data.persian_letters + data.persian_digits + data.arabic_digits:
+            self.compound_kp.add_non_word_boundary(ch)
         compound_words = data.compound_words
 
         for correct_word in compound_words:
