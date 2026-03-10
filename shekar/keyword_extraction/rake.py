@@ -48,13 +48,11 @@ class RAKE(BaseTransform):
             words = [
                 w.strip() for w in self._word_tokenizer.tokenize(phrase) if len(w) > 2
             ]
-            degree = len(words) - 1
             for word in words:
                 word_frequency[word] += 1
-                word_degree[word] += degree
+                word_degree[word] += len(words)
         return {
-            word: (word_degree[word] + word_frequency[word]) / word_frequency[word]
-            for word in word_frequency
+            word: word_degree[word] / word_frequency[word] for word in word_frequency
         }
 
     def _generate_candidate_keyword_scores(
