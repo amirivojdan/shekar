@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import MagicMock
 from shekar.morphology.lemmatizer import Lemmatizer
 from shekar.morphology.conjugator import get_conjugated_verbs
 from shekar import data
@@ -35,24 +36,20 @@ def test_informal_verb(lemmatizer, monkeypatch):
 
 
 def test_stemmer_and_vocab(lemmatizer, monkeypatch):
-    # Example: "کتاب‌ها" -> "کتاب"
-    # Simulate stemmer returning "کتاب" and "کتاب" in vocab
     monkeypatch.setattr(lemmatizer.stemmer, "__call__", lambda self, text: "کتاب")
     monkeypatch.setitem(data.vocab, "کتاب", True)
     assert lemmatizer("کتاب‌ها") == "کتاب"
 
 
 def test_vocab_only(lemmatizer, monkeypatch):
-    # If word is in vocab, return as is
-    monkeypatch.setitem(data.vocab, "مدرسه", True)
-    assert lemmatizer("مدرسه") == "مدرسه"
+    monkeypatch.setattr(lemmatizer, "stemmer", MagicMock(return_value=""))
+    assert lemmatizer("مدرسه") == "مدرسه"  # "مدرسه" is in data.vocab
 
 
 def test_no_match(lemmatizer, monkeypatch):
-    # If word is not in conjugated_verbs, stemmer result not in vocab, and not in vocab
-    monkeypatch.setattr(lemmatizer.stemmer, "__call__", lambda self, text: "ناشناخته")
-    monkeypatch.setitem(data.vocab, "ناشناخته", False)
-    assert lemmatizer("ناشناخته") == "ناشناخته"
+    monkeypatch.setattr(lemmatizer, "stemmer", MagicMock(return_value=""))
+    result = lemmatizer("xyzغیرواقعی123")
+    assert result == "xyzغیرواقعی123"
 
 
 def test_prefixed_verbs(lemmatizer):

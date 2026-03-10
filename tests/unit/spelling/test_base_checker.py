@@ -44,3 +44,29 @@ def test_spellchecker_transform_calls_underlying_model():
         result = spell.transform("متن تستی")
         fake_model.transform.assert_called_once_with("متن تستی")
         assert result == "متن اصلاح‌شده"
+
+
+def test_spellchecker_suggest_calls_underlying_model():
+    fake_model = MagicMock()
+    fake_model.suggest.return_value = ["سلام", "سالم"]
+    with patch(
+        "shekar.spelling.checker.SPELL_CHECKING_REGISTRY",
+        {"statistical": lambda: fake_model},
+    ):
+        spell = SpellChecker()
+        result = spell.suggest("سلاام", n_best=3)
+        fake_model.suggest.assert_called_once_with("سلاام", n_best=3)
+        assert result == ["سلام", "سالم"]
+
+
+def test_spellchecker_correct_calls_underlying_model():
+    fake_model = MagicMock()
+    fake_model.correct_text.return_value = "متن درست"
+    with patch(
+        "shekar.spelling.checker.SPELL_CHECKING_REGISTRY",
+        {"statistical": lambda: fake_model},
+    ):
+        spell = SpellChecker()
+        result = spell.correct("متن غلط")
+        fake_model.correct_text.assert_called_once_with("متن غلط")
+        assert result == "متن درست"

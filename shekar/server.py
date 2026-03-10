@@ -248,5 +248,5 @@ def serve(port: int = 8080):
         print("\nServer stopped.")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     serve()

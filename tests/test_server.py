@@ -1,5 +1,6 @@
 import io
 import json
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 import shekar.server as server_module
 from shekar.server import ShekarHandler
@@ -265,6 +266,48 @@ class TestGetRoutes:
 
         status, _ = self._get("/fonts/test.ttf")
         assert status == 200
+
+
+class TestServeFile:
+    def test_file_not_found_returns_404(self):
+        handler = _make_handler("GET", "/")
+        with patch.object(Path, "read_bytes", side_effect=FileNotFoundError):
+            handler._serve_file(Path("/fake/path.html"), "text/html")
+        assert handler._status_code == 404
+        handler.wfile.seek(0)
+        body = json.loads(handler.wfile.read().decode("utf-8"))
+        assert "error" in body
+
+
+class TestLogMessage:
+    def test_log_message_prints(self, capsys):
+        handler = _make_handler("GET", "/")
+        handler.address_string = MagicMock(return_value="127.0.0.1")
+        ShekarHandler.log_message(handler, "%s %s", "GET", "/")
+        captured = capsys.readouterr()
+        assert "127.0.0.1" in captured.out
+        assert "GET" in captured.out
+
+
+class TestServe:
+    def test_missing_static_dir_exits(self, tmp_path, monkeypatch):
+        import pytest
+
+        monkeypatch.setattr(server_module, "STATIC_DIR", tmp_path / "nonexistent")
+        with pytest.raises(SystemExit) as exc_info:
+            server_module.serve(port=19999)
+        assert exc_info.value.code == 1
+
+    def test_keyboard_interrupt_stops_server(self, tmp_path, monkeypatch):
+        static_dir = tmp_path / "statics"
+        static_dir.mkdir()
+        monkeypatch.setattr(server_module, "STATIC_DIR", static_dir)
+
+        mock_server = MagicMock()
+        mock_server.serve_forever.side_effect = KeyboardInterrupt
+
+        with patch("shekar.server.HTTPServer", return_value=mock_server):
+            server_module.serve(port=19999)  # Should not raise
 
 
 class TestLazySingletons:

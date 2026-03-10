@@ -54,3 +54,32 @@ def test_transform_applies_correction_to_sentence():
     assert "دیروز" in corrected
     assert "پژمان" in corrected
     assert "کتابخانه" in corrected
+
+
+def test_is_word_token_empty_string():
+    checker = StatisticalSpellChecker()
+    assert checker._is_word_token("") is False
+
+
+def test_is_word_token_all_numbers():
+    checker = StatisticalSpellChecker()
+    assert checker._is_word_token("۱۲۳") is False
+
+
+def test_suggest_returns_list():
+    checker = StatisticalSpellChecker()
+    suggestions = checker.suggest("سلاام")
+    assert isinstance(suggestions, list)
+    assert "سلام" in suggestions
+
+
+def test_correct_text_no_suggestions_keeps_original():
+    # Use a tiny vocab with no neighbors of the unknown word
+    words = Counter({"سلام": 10})
+    checker = StatisticalSpellChecker(words=words, n_edit=1)
+    # A word far from the only known vocab word should yield no suggestions
+    result = checker.correct("ققققققققق")
+    assert result == []
+    # correct_text should still return a string (keeping the token as-is)
+    corrected = checker.correct_text("ققققققققق")
+    assert isinstance(corrected, str)
