@@ -27,3 +27,11 @@ def test_punctuation_spacings():
     assert (
         list(punct_space_normalizer.fit_transform(batch_input)) == batch_expected_output
     )
+
+
+def test_punctuation_spacing_edge_cases():
+    punct_space_normalizer = PunctuationSpacingNormalizer()
+
+    input_text = "کار ما بوده ؟! حالا که چی؟!"
+    expected_output = "کار ما بوده؟! حالا که چی؟!"
+    assert punct_space_normalizer(input_text) == expected_output

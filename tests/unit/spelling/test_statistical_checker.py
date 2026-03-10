@@ -48,3 +48,9 @@ def test_transform_applies_correction_to_sentence():
     corrected = checker.transform(input_text)
     assert isinstance(corrected, str)
     assert len(corrected.split()) == len(input_text.split())
+
+    input_text = "دییروز با پژنان به کتبخانه رفتیم."
+    corrected = checker.transform(input_text)
+    assert "دیروز" in corrected
+    assert "پژمان" in corrected
+    assert "کتابخانه" in corrected
