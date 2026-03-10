@@ -43,7 +43,7 @@ class PunctuationSpacingNormalizer(BaseTextTransform):
             ),
             # Ensure one space after single punctuations (except at start)
             (
-                r"(?<!^)([{sg}])(?=(?![{cl}])\S)".format(
+                r"(?<!^)([{sg}])(?=(?![{sg}{cl}])\S)".format(
                     sg=re.escape(data.single_punctuations),
                     cl=re.escape(data.closer_punctuations),
                 ),
