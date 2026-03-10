@@ -6,6 +6,9 @@ dist/
 wheels/
 *.egg-info
 
+# uv lock files
+uv.lock
+
 # Virtual environments
 .venv
 .pytest_cache
