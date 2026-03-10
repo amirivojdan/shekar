@@ -1,8 +1,10 @@
 from shekar.base import BaseTransform
 from .rake import RAKE
+from .textrank import TextRank
 
 KEYWORD_EXTRACTION_REGISTRY = {
     "rake": RAKE,
+    "textrank": TextRank,
 }
 
 
