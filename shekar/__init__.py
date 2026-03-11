@@ -5,6 +5,7 @@ from .tokenization import WordTokenizer, SentenceTokenizer, Tokenizer
 from .keyword_extraction import KeywordExtractor
 from .ner import NER
 from .pos import POSTagger
+from .dep_parsing import DependencyParser
 from .classification import SentimentClassifier, OffensiveLanguageClassifier
 from .embeddings import WordEmbedder, ContextualEmbedder
 from .spelling import SpellChecker
@@ -20,6 +21,7 @@ __all__ = [
     "KeywordExtractor",
     "NER",
     "POSTagger",
+    "DependencyParser",
     "SentimentClassifier",
     "OffensiveLanguageClassifier",
     "SpellChecker",
