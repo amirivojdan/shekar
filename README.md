@@ -38,18 +38,22 @@ $ pip install shekar
 This works on **Windows**, **Linux**, and **macOS** (including Apple Silicon M1/M2/M3).
 
 ### GPU Acceleration (NVIDIA CUDA)
-If you have an NVIDIA GPU and want hardware acceleration, you need to replace the CPU runtime with the GPU version.
-
-**Prerequisites**
-
-- NVIDIA GPU with CUDA support
-- Appropriate CUDA Toolkit installed
-- Compatible NVIDIA drivers
 
 <!-- termynal -->
 ```bash
 $ pip install shekar && pip uninstall -y onnxruntime && pip install onnxruntime-gpu
 ```
+
+## Web Interface
+
+Shekar includes a built-in web interface for interactively exploring its NLP capabilities (no coding required). Launch it with a single command:
+
+<!-- termynal -->
+```bash
+$ shekar serve -p 8080
+```
+
+![Shekar WebUI Demo](assets/webui-demo.gif)
 
 ## Preprocessing
 
@@ -369,6 +373,50 @@ for text, label in entities:
 فرانسه → LOC
 ```
 
+## Dependency Parsing
+
+The `DependencyParser` class provides syntactic dependency parsing for Persian text using a transformer-based model (default: ALBERT). It analyzes the grammatical structure of a sentence and returns, for each word, its syntactic head (1-indexed, where 0 means ROOT) and the dependency relation label following the Universal Dependencies standard.
+
+The `print_tree()` method renders the parse result as a readable tree structure.
+
+```python
+from shekar import DependencyParser
+
+parser = DependencyParser()
+text = "ما با آنچه می‌سازیم ایرانی هستیم."
+
+result = parser(text)
+for word, head, deprel in result:
+    print(f"{word} ← (head: {head}, relation: {deprel})")
+```
+
+```output
+ما ← (head: 6, relation: nsubj)
+با ← (head: 3, relation: case)
+آنچه ← (head: 6, relation: obl)
+می‌سازیم ← (head: 3, relation: acl)
+ایرانی ← (head: 6, relation: xcomp)
+هستیم ← (head: 0, relation: root)
+. ← (head: 6, relation: punct)
+```
+
+You can also visualize the parse tree using `print_tree()`:
+
+```python
+parser.print_tree(result)
+```
+
+```output
+ROOT
+└── [root] هستیم
+    ├── [nsubj] ما
+    ├── [obl] آنچه
+    │   ├── [case] با
+    │   └── [acl] می‌سازیم
+    ├── [xcomp] ایرانی
+    └── [punct] .
+```
+
 ## Classification
 
 The `classification` module provides high-level text classification utilities for Persian, covering both sentiment analysis and offensive language detection through a unified and consistent interface. Each classifier returns a predicted label along with a confidence score.
@@ -529,6 +577,7 @@ If Shekar Hub is unavailable, you can manually download the models and place the
 | SentenceEmbedding    | [Download](https://drive.google.com/file/d/1PftSG2QD2M9qzhAltWk_S38eQLljPUiG/view?usp=drive_link) (60MB)|
 | POS Tagger  | [Download](https://drive.google.com/file/d/1d80TJn7moO31nMXT4WEatAaTEUirx2Ju/view?usp=drive_link) (38MB)|
 | NER       | [Download](https://drive.google.com/file/d/1DLoMJt8TWlNnGGbHDWjwNGsD7qzlLHfu/view?usp=drive_link) (38MB)|
+| Dependency Parser  | [Download](https://drive.google.com/file/d/1Y2XjS04qpLSl7zq-349IJc5A7BRB3keC/view?usp=sharing) (36MB)|
 | Sentiment Classifier       | [Download](https://drive.google.com/file/d/17gTip7RwipEkA7Rf3-Cv1W8XNHTdaS4c/view?usp=drive_link) (38MB)|
 | Offensive Language Classifier       | [Download](https://drive.google.com/file/d/1ZLiFI6nzpQ2rYjJTKxOYKTfD9IqHZ5tc/view?usp=drive_link) (8MB)|
 | AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
@@ -555,5 +604,3 @@ year = {2025}
 ```
 
 <p align="center"><em>With ❤️ for <strong>IRAN</strong></em></p>
-
-

@@ -44,12 +44,12 @@ The story became a cornerstone of Iran's literary renaissance, advocating for ac
 - [Lemmatization](#lemmatization)
 - [Part-of-Speech Tagging](#part-of-speech-tagging)
 - [Named Entity Recognition (NER)](#named-entity-recognition-ner)
+- [Dependency Parsing](#dependency-parsing)
 - [Sentiment Analysis](#sentiment-analysis)
 - [Keyword Extraction](#keyword-extraction)
 - [Spell Checking](#spell-checking)
 - [WordCloud](#wordcloud)
-- [Command-Line Interface (CLI)](#command-line-interface-cli)
-  - [Commands](#commands)
+- [Web Interface](#web-interface)
 - [Download Models](#download-models)
 
 ---
@@ -459,6 +459,48 @@ for text, label in entities:
 
 This chaining enables clean and readable code, letting you build custom NLP flows with preprocessing and tagging in one pass.
 
+## Dependency Parsing
+
+The `DependencyParser` class provides syntactic dependency parsing for Persian text using a transformer-based model (default: ALBERT). It analyzes the grammatical structure of a sentence and returns, for each word, its syntactic head (1-indexed, where 0 means ROOT) and the dependency relation label following the Universal Dependencies standard.
+
+```python
+from shekar import DependencyParser
+
+parser = DependencyParser()
+text = "ما با آنچه می‌سازیم ایرانی هستیم."
+
+result = parser(text)
+for word, head, deprel in result:
+    print(f"{word} ← (head: {head}, relation: {deprel})")
+```
+
+```output
+ما ← (head: 6, relation: nsubj)
+با ← (head: 3, relation: case)
+آنچه ← (head: 6, relation: obl)
+می‌سازیم ← (head: 3, relation: acl)
+ایرانی ← (head: 6, relation: xcomp)
+هستیم ← (head: 0, relation: root)
+. ← (head: 6, relation: punct)
+```
+
+You can also visualize the parse tree using `print_tree()`:
+
+```python
+parser.print_tree(result)
+```
+
+```output
+ROOT
+└── [root] هستیم
+    ├── [nsubj] ما
+    ├── [obl] آنچه
+    │   ├── [case] با
+    │   └── [acl] می‌سازیم
+    ├── [xcomp] ایرانی
+    └── [punct] .
+```
+
 ## Sentiment Analysis
 
 The `SentimentClassifier` module enables automatic sentiment analysis of Persian text using transformer-based models. It currently supports the `AlbertBinarySentimentClassifier`, a lightweight ALBERT model fine-tuned on Snapfood dataset to classify text as **positive** or **negative**, returning both the predicted label and its confidence score.
@@ -577,80 +619,18 @@ image.show()
 
 ![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)
 
-## Command-Line Interface (CLI)
+## Web Interface
 
-Shekar includes a command-line interface (CLI) for quick text processing and visualization.  
-You can normalize Persian text or generate wordclouds directly from files or inline strings.
+Shekar includes a built-in web interface for interactively exploring its NLP capabilities — no coding required. Launch it with a single command:
 
-**Usage**
-
-```console
-shekar [COMMAND] [OPTIONS]
+<!-- termynal -->
+```bash
+shekar serve -p 8080
 ```
 
-### Commands
-
-1. `normalize`
-
-Normalize Persian text by standardizing spacing, characters, and diacritics.  
-Works with files or inline text.
-
-**Options**
-
-- `-i, --input` Path to an input text file  
-- `-o, --output` Path to save normalized text. If not provided, results are printed to stdout  
-- `-t, --text` Inline text instead of a file  
-- `--encoding` Force a specific input file encoding  
-- `--progress` Show progress bar (enabled by default)  
-
-**Examples**
-
-```console
-# Normalize a text file and save output
-shekar normalize -i ./corpus.txt -o ./normalized_corpus.txt
-
-# Normalize inline text
-shekar normalize -t "درود پرودگار بر ایران و ایرانی"
-```
-
-2. `wordcloud`
-
-Generate a wordcloud image (PNG) from Persian text, either from a file or inline.  
-Preprocessing automatically removes punctuation, diacritics, stopwords, non-Persian characters, and normalizes spacing.
+![Shekar WebUI Demo](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/webui-demo.gif)
 
 ---
-
-**Options**
-
-- `-i, --input` Input text file  
-- `-t, --text` Inline text instead of a file  
-- `-o, --output` **(required)** Path to output PNG file
-- `--bidi` Apply **bidi reshaping** for correct rendering of Persian text (default: `False`) 
-- `--mask` Shape mask (`Iran`, `Heart`, `Bulb`, `Cat`, `Cloud`, `Head`) or custom image path  
-- `--font` Font to use (`sahel`, `parastoo`, or custom TTF path)  
-- `--width` Image width in pixels (default: 1000)  
-- `--height` Image height in pixels (default: 500)  
-- `--bg-color` Background color (default: white)  
-- `--contour-color` Outline color (default: black)  
-- `--contour-width` Outline thickness (default: 3)  
-- `--color-map` Matplotlib colormap for words (default: Set2)  
-- `--min-font-size` Minimum font size (default: 5)  
-- `--max-font-size` Maximum font size (default: 220)  
-
----
-
-**Examples**
-
-```console
-# Generate a wordcloud from a text file
-shekar wordcloud -i ./corpus.txt -o ./word_cloud.png
-
-# Generate a wordcloud from inline text with a custom mask
-shekar wordcloud -t "درود پرودگار بر ایران و ایرانی" -o ./word_cloud.png --mask Heart
-```
-
-**Note:** If the letters in the generated wordcloud appear **separated**, use the `--bidi` option to enable proper Persian text shaping.
-
 
 ## Download Models
 
@@ -663,5 +643,6 @@ If Shekar Hub is unavailable, you can manually download the models and place the
 | SentenceEmbedding    | [Download](https://drive.google.com/file/d/1PftSG2QD2M9qzhAltWk_S38eQLljPUiG/view?usp=drive_link) (60MB)|
 | POS Tagger  | [Download](https://drive.google.com/file/d/1d80TJn7moO31nMXT4WEatAaTEUirx2Ju/view?usp=drive_link) (38MB)|
 | NER       | [Download](https://drive.google.com/file/d/1DLoMJt8TWlNnGGbHDWjwNGsD7qzlLHfu/view?usp=drive_link) (38MB)|
+| Dependency Parser  | [Download](https://drive.google.com/file/d/1Y2XjS04qpLSl7zq-349IJc5A7BRB3keC/view?usp=sharing) (36MB)|
 | AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
 

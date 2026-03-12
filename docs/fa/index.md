@@ -44,12 +44,12 @@
 - [ریشه‌یابی بنیادی](#ریشهیابی-بنیادی)
 - [برچسب‌گذاری نقش‌های دستوری](#برچسبگذاری-نقشهای-دستوری)
 - [شناسایی موجودیت‌های نامدار](#شناسایی-موجودیتهای-نامدار)
+- [واکاوی وابستگی دستوری](#واکاوی-وابستگی-دستوری)
 - [سنجش احساسات](#سنجش-احساسات)
 - [کلیدواژه‌یابی](#کلیدواژهیابی)
 - [غلط‌یابی املایی](#غلطیابی-املایی)
 - [ابر واژگان](#ابر-واژگان)
-- [رابط خط فرمان (CLI)](#رابط-خط-فرمان-cli)
-  - [فرمان‌ها](#فرمانها)
+- [رابط وب](#رابط-وب)
 - [بارگیری مدل‌ها](#بارگیری-مدلها)
 
 ---
@@ -460,6 +460,50 @@ for text, label in entities:
 این زنجیره‌سازی کدی تمیز و خوانا فراهم می‌کند و به شما امکان می‌دهد زنجیره‌های NLP سفارشی بسازید که در یک مرحله شامل پیش‌پردازش و برچسب‌گذاری باشند.
 
 
+## واکاوی وابستگی دستوری
+
+کلاس `DependencyParser` واکاوی وابستگی دستوری متن فارسی را با استفاده از یک مدل مبتنی بر Transformer (پیش‌فرض: ALBERT) انجام می‌دهد. این کلاس ساختار دستوری گزاره را واکاوی کرده و برای هر واژه، سرواژهٔ نحوی آن (با شماره‌گذاری از ۱، که ۰ به معنای ROOT است) و برچسب رابطهٔ وابستگی را براساس استاندارد Universal Dependencies برمی‌گرداند.
+
+**نمونه کد:**
+
+```python
+from shekar import DependencyParser
+
+parser = DependencyParser()
+text = "ما با آنچه می‌سازیم ایرانی هستیم."
+
+result = parser(text)
+for word, head, deprel in result:
+    print(f"{word} ← (head: {head}, relation: {deprel})")
+```
+
+```output
+ما ← (head: 6, relation: nsubj)
+با ← (head: 3, relation: case)
+آنچه ← (head: 6, relation: obl)
+می‌سازیم ← (head: 3, relation: acl)
+ایرانی ← (head: 6, relation: xcomp)
+هستیم ← (head: 0, relation: root)
+. ← (head: 6, relation: punct)
+```
+
+می‌توانید نتیجهٔ تحلیل را به صورت درخت با متد `print_tree()` نمایش دهید:
+
+```python
+parser.print_tree(result)
+```
+
+```output
+ROOT
+└── [root] هستیم
+    ├── [nsubj] ما
+    ├── [obl] آنچه
+    │   ├── [case] با
+    │   └── [acl] می‌سازیم
+    ├── [xcomp] ایرانی
+    └── [punct] .
+```
+
 ## سنجش احساسات
 
 ماژول `SentimentClassifier` امکان واکاوی خودکار احساسات در متون فارسی را با استفاده از مدل‌های مبتنی بر مدل‌‌های زبانی فراهم می‌کند. در حال حاضر از مدل `AlbertBinarySentimentClassifier` پشتیبانی می‌کند، مدلی سبک بر پایهٔ ALBERT که بر روی دادگان Snapfood آموزش دیده و نوشته را به دو دستهٔ مثبت یا منفی طبقه‌بندی می‌کند و علاوه بر برچسب پیش‌بینی‌شده، امتیاز اطمینان آن را نیز برمی‌گرداند.
@@ -578,72 +622,18 @@ image.show()
 
 ![](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/wordcloud_example.png)
 
-## رابط خط فرمان (CLI)
+## رابط وب
 
-کتابخانهٔ **شکر** یک رابط خط فرمان (CLI) برای پردازش و بصری‌سازی سریع متن فراهم می‌کند. با استفاده از آن می‌توانید متون فارسی را نرمال‌سازی کنید یا مستقیماً از روی فایل‌ها یا رشته‌های متنی درون‌خطی، ابر واژگان (WordCloud) بسازید.
+کتابخانهٔ **شکر** یک رابط وب داخلی دارد که به شما امکان می‌دهد قابلیت‌های پردازش زبان فارسی را به‌صورت تعاملی کاوش کنید؛ بدون نیاز به نوشتن حتی یک خط کد. کافی است با یک دستور ساده آن را راه‌اندازی کنید:
 
-**شیوۀ استفاده**
-
-```console
-shekar [COMMAND] [OPTIONS]
+<!-- termynal -->
+```bash
+shekar serve -p 8080
 ```
 
-### فرمان‌ها
+![نمایش رابط وب شکر](https://raw.githubusercontent.com/amirivojdan/shekar/main/assets/webui-demo.gif)
 
-1. `normalize`
-
-با استانداردسازی فاصله‌گذاری، کاراکترها و نشانه‌های اعراب، متن فارسی را یکنواخت می‌کند. این قابلیت هم بر روی فایل‌ها و هم بر روی رشته‌های متنی درون‌خطی قابل استفاده است.
-
-**گزینه‌ها**
-
-- `-i, --input` مسیر فایل ورودی متن  
-- `-o, --output` مسیر ذخیرهٔ متن نرمال‌شده. اگر مشخص نشود، نتیجه در خروجی استاندارد (stdout) چاپ می‌شود.  
-- `-t, --text` متن درون‌خطی به‌جای فایل 
-- `--encoding` اجبار به استفاده از یک کدگذاری خاص برای فایل ورودی  
-- `--progress` نمایش نوار پیشرفت (به‌صورت پیش‌فرض فعال است) 
-
-**نمونه‌ها**
-
-```console
-# Normalize a text file and save output
-shekar normalize -i ./corpus.txt -o ./normalized_corpus.txt
-
-# Normalize inline text
-shekar normalize -t "درود پرودگار بر ایران و ایرانی"
-```
-
-2. `wordcloud`
-
-یک تصویر ابر واژگان (PNG) از متن فارسی تولید می‌کند؛ از روی فایل یا متن درون‌خطی. فرایندِ پیش‌پردازش به‌طور خودکار علائم نگارشی و اعراب را حذف می‌کند، ایست‌واژه‌ها و نویسه‌های غیرفارسی را می‌زداید و فاصله‌گذاری را یکنواخت‌سازی می‌کند.
-
-**گزینه‌ها**
-
-- `-i, --input` فایل متنی ورودی  
-- `-t, --text` متن درون‌خطی به‌جای فایل 
-- `-o, --output`  **(ضروری)** مسیر فایل خروجی (PNG)
-- `--bidi` اعمال شکل‌دهی دوجهته (bidi reshaping) برای نمایش درست متن فارسی (پیش‌فرض: `False`)
-- `--mask` ماسک شکل (`Iran`, `Heart`, `Bulb`, `Cat`, `Cloud`, `Head`) یا مسیر تصویر سفارشی 
-- `--font` فونت مورد استفاده (`sahel`، `parastoo` یا مسیر یک فایل TTF سفارشی)
-- `--width` عرض تصویر بر حسب پیکسل (پیش‌فرض: 1000)  
-- `--height` ارتفاع تصویر بر حسب پیکسل (پیش‌فرض: 500)  
-- `--bg-color` رنگ پس‌زمینه (پیش‌فرض: سفید)
-- `--contour-color` رنگ حاشیه (پیش‌فرض: سیاه) 
-- `--contour-width` ضخامت حاشیه (پیش‌فرض: 3) 
-- `--color-map` نقشهٔ رنگی (colormap) از Matplotlib برای واژه‌ها (پیش‌فرض: Set2) 
-- `--min-font-size` کوچک‌ترین اندازهٔ فونت (پیش‌فرض: 5) 
-- `--max-font-size` بزرگ‌ترین اندازهٔ فونت (پیش‌فرض: 220)
-
-**نمونه‌ها**
-
-```console
-# Generate a wordcloud from a text file
-shekar wordcloud -i ./corpus.txt -o ./word_cloud.png
-
-# Generate a wordcloud from inline text with a custom mask
-shekar wordcloud -t "درود پرودگار بر ایران و ایرانی" -o ./word_cloud.png --mask Heart
-```
-
-**نکته**: اگر حروف در ابر واژگان تولیدشده **به‌صورت جدا** از هم نمایش داده شدند، از گزینهٔ `--bidi` استفاده کنید تا شکل‌دهی صحیح متن فارسی فعال شود.
+---
 
 ## بارگیری مدل‌ها
 
@@ -656,5 +646,6 @@ shekar wordcloud -t "درود پرودگار بر ایران و ایرانی" -o
 | SentenceEmbedding    | [Download](https://drive.google.com/file/d/1PftSG2QD2M9qzhAltWk_S38eQLljPUiG/view?usp=drive_link) (60MB)|
 | POS Tagger  | [Download](https://drive.google.com/file/d/1d80TJn7moO31nMXT4WEatAaTEUirx2Ju/view?usp=drive_link) (38MB)|
 | NER       | [Download](https://drive.google.com/file/d/1DLoMJt8TWlNnGGbHDWjwNGsD7qzlLHfu/view?usp=drive_link) (38MB)|
+| Dependency Parser  | [Download](https://drive.google.com/file/d/1Y2XjS04qpLSl7zq-349IJc5A7BRB3keC/view?usp=sharing) (36MB)|
 | AlbertTokenizer   | [Download](https://drive.google.com/file/d/1w-oe53F0nPePMcoor5FgXRwRMwkYqDqM/view?usp=drive_link) (2MB)|
 
