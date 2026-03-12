@@ -53,7 +53,7 @@ Shekar includes a built-in web interface for interactively exploring its NLP cap
 $ shekar serve -p 8080
 ```
 
-![Shekar WebUI Demo](assets/webui-demo.gif)
+![Shekar WebUI Demo](https://github.com/amirivojdan/shekar/blob/d5d34f6fdfce6075224d70818eb508268fa6ed49/assets/webui-demo.gif)
 
 ## Preprocessing
 
