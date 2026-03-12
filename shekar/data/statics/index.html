@@ -78,12 +78,13 @@
 
           <ul class="nav-tools" id="nav-tools">
             <li><button class="nav-tab active" data-tab="normalizer">یکنواخت‌سازی</button></li>
-            <li><button class="nav-tab" data-tab="tokenizer">توکن‌ساز</button></li>
-            <li><button class="nav-tab" data-tab="stemmer">ریشه‌یاب</button></li>
+            <li><button class="nav-tab" data-tab="tokenizer">تکه‌سازی</button></li>
+            <li><button class="nav-tab" data-tab="stemmer">ریشه‌یابی</button></li>
             <li><button class="nav-tab" data-tab="ner">شناسایی موجودیت</button></li>
-            <li><button class="nav-tab" data-tab="pos">برچسب‌گذاری نحوی</button></li>
+            <li><button class="nav-tab" data-tab="pos">برچسب‌گذاری دستوری</button></li>
             <li><button class="nav-tab" data-tab="spellchecker">بررسی‌کنندهٔ املا</button></li>
-            <li><button class="nav-tab" data-tab="keywords">استخراج کلیدواژه</button></li>
+            <li><button class="nav-tab" data-tab="keywords">یافتن کلیدواژه</button></li>
+            <li><button class="nav-tab" data-tab="dep_parsing">واکاوی وابستگی دستوری</button></li>
           </ul>
         </div>
       </div>
@@ -101,14 +102,28 @@
         </div>
         <div class="error-msg" id="error-normalizer"></div>
         <div class="result-box" id="result-normalizer">
-          <div class="result-label">نتیجه</div>
+          <button id="copy-normalizer" onclick="copyNormalizerResult()" title="کپی نتیجه" style="background:none; border:none; cursor:pointer; padding:0; color:#aaa; display:flex; align-items:center; align-self:flex-end; margin-bottom:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
           <div class="result-text" id="output-normalizer"></div>
         </div>
       </div>
 
       <div id="panel-tokenizer" class="panel card" style="display:none">
-        <div class="card-title">توکن‌سازی کلمات</div>
-        <div class="card-desc">جداسازی نوشته به واژه‌های جداگانه</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="card-title" style="margin:0;">تکه‌سازی (Tokenization)</div>
+          <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="model-tokenizer">روش:</label>
+            <select id="model-tokenizer" class="model-select" style="width:150px; padding:2px 6px; font-size:0.85rem;">
+              <option value="word">واژه (Word)</option>
+              <option value="sentence">گزاره (Sentence)</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-desc">جداسازی نوشته به واژه‌ها یا گزاره‌ها</div>
         <textarea id="input-tokenizer" dir="rtl"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">زبان فارسی میهن من است!</textarea>
         <div class="actions">
@@ -119,16 +134,25 @@
         </div>
         <div class="error-msg" id="error-tokenizer"></div>
         <div class="result-box" id="result-tokenizer">
-          <div class="result-label">توکن‌ها</div>
+          <div class="result-label" id="label-tokenizer">توکن‌ها</div>
           <div class="token-list" id="output-tokenizer"></div>
         </div>
       </div>
 
       <div id="panel-stemmer" class="panel card" style="display:none">
-        <div class="card-title">ریشه‌یابی</div>
-        <div class="card-desc">استخراج ریشه هر واژه با حذف وندهای اشتقاقی</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="card-title" style="margin:0;">ریشه‌یابی (Stemming/Lemmatization)</div>
+          <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="model-stemmer">روش:</label>
+            <select id="model-stemmer" class="model-select" style="width:150px; padding:2px 6px; font-size:0.85rem;">
+              <option value="stemmer">Stemmer</option>
+              <option value="lemmatizer">Lemmatizer</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-desc">یافتن ریشه یا بن هر واژه با زدودن وندهای واژه‌ساز</div>
         <textarea id="input-stemmer" dir="rtl"
-          placeholder="نوشته فارسی خود را اینجا وارد کنید…">کتاب‌های دانشجویان دانشگاه‌های ایرانی بسیار ارزشمندند.</textarea>
+          placeholder="نوشته فارسی خود را اینجا وارد کنید…">دانشجویان دانشگاه‌های بزرگ درخواست‌هایشان را فرستادند.</textarea>
         <div class="actions">
           <button class="run-btn" data-tab="stemmer">اجرا</button>
           <button class="clear-btn" data-tab="stemmer">پاک کردن</button>
@@ -137,13 +161,13 @@
         </div>
         <div class="error-msg" id="error-stemmer"></div>
         <div class="result-box" id="result-stemmer">
-          <div class="result-label">واژه ← ریشه</div>
+          <div class="result-label" id="label-stemmer">واژه ← ریشه</div>
           <div class="stem-grid" id="output-stemmer"></div>
         </div>
       </div>
 
       <div id="panel-ner" class="panel card" style="display:none">
-        <div class="card-title">شناسایی موجودیت‌های نام‌دار</div>
+        <div class="card-title">شناسایی موجودیت‌های نام‌دار (NER)</div>
         <div class="card-desc">شناسایی نام‌ها، مکان‌ها، سازمان‌ها، تاریخ‌ها و رویدادها</div>
         <div class="legend">
           <div class="legend-item">
@@ -178,7 +202,7 @@
       </div>
 
       <div id="panel-pos" class="panel card" style="display:none">
-        <div class="card-title">برچسب‌گذاری نقش دستوری</div>
+        <div class="card-title">برچسب‌گذاری دستوری (POS Tagging)</div>
         <div class="card-desc">تعیین نقش دستوری هر واژه: اسم، فعل، صفت، قید و …</div>
         <textarea id="input-pos" dir="rtl"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">دانشجویان در دانشگاه درس می‌خوانند.</textarea>
@@ -196,7 +220,7 @@
       </div>
 
       <div id="panel-spellchecker" class="panel card" style="display:none">
-        <div class="card-title">بررسی املای واژگان</div>
+        <div class="card-title">بررسی املای واژگان (Spell Checking)</div>
         <div class="card-desc">بررسی‌کنندهٔ خودکار املای واژگان فارسی</div>
         <textarea id="input-spellchecker" dir="rtl"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">دییروز با پژنان به کتبخانه رفتیم.</textarea>
@@ -214,15 +238,17 @@
       </div>
 
       <div id="panel-keywords" class="panel card" style="display:none">
-        <div class="card-title">استخراج کلیدواژه</div>
-        <div class="card-desc">شناسایی کلیدواژه‌های مهم از متن با الگوریتم‌های RAKE و TextRank</div>
-        <div class="model-select-row">
-          <label for="model-keywords">الگوریتم:</label>
-          <select id="model-keywords" class="model-select">
-            <option value="rake">RAKE</option>
-            <option value="textrank">TextRank</option>
-          </select>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="card-title" style="margin:0;">یافتن کلیدواژه (Keywords Extraction)</div>
+          <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="model-keywords">روش:</label>
+            <select id="model-keywords" class="model-select" style="width:110px; padding:2px 6px; font-size:0.85rem;">
+              <option value="rake">RAKE</option>
+              <option value="textrank">TextRank</option>
+            </select>
+          </div>
         </div>
+        <div class="card-desc">شناسایی کلیدواژه‌های مهم از متن با الگوریتم‌های RAKE و TextRank</div>
         <textarea id="input-keywords" dir="rtl"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">زبان و ادبیات فارسی یکی از غنی‌ترین زبان‌های جهان است که تاریخی کهن و فرهنگی پربار دارد.</textarea>
         <div class="actions">
@@ -235,6 +261,24 @@
         <div class="result-box" id="result-keywords">
           <div class="result-label">کلیدواژه‌ها</div>
           <div class="token-list" id="output-keywords"></div>
+        </div>
+      </div>
+
+      <div id="panel-dep_parsing" class="panel card" style="display:none">
+        <div class="card-title">واکاوی وابستگی دستوری (Dependency Parsing)</div>
+        <div class="card-desc">شناسایی وابستگی میان واژه‌ها و نمایش درخت دستوری</div>
+        <textarea id="input-dep_parsing" dir="rtl"
+          placeholder="نوشته فارسی خود را اینجا وارد کنید…">ما با آنچه می‌سازیم ایرانی هستیم.</textarea>
+        <div class="actions">
+          <button class="run-btn" data-tab="dep_parsing">اجرا</button>
+          <button class="clear-btn" data-tab="dep_parsing">پاک کردن</button>
+          <div class="spinner" id="spinner-dep_parsing"></div>
+          <span class="status" id="status-dep_parsing"></span>
+        </div>
+        <div class="error-msg" id="error-dep_parsing"></div>
+        <div class="result-box" id="result-dep_parsing">
+          <div class="result-label">درخت وابستگی</div>
+          <div class="dep-tree-wrap" id="output-dep_parsing"></div>
         </div>
       </div>
 
@@ -295,8 +339,14 @@
 
       try {
         const payload = { text };
+        if (tab === 'tokenizer') {
+          payload.model = document.getElementById('model-tokenizer').value;
+        }
         if (tab === 'keywords') {
           payload.model = document.getElementById('model-keywords').value;
+        }
+        if (tab === 'stemmer') {
+          payload.model = document.getElementById('model-stemmer').value;
         }
         const res = await fetch('/api/' + tab, {
           method: 'POST',
@@ -325,15 +375,28 @@
       if (tab === 'normalizer') {
         document.getElementById('output-normalizer').textContent = data.result;
       } else if (tab === 'tokenizer') {
+        const model = document.getElementById('model-tokenizer').value;
+        document.getElementById('label-tokenizer').textContent = model === 'sentence' ? 'جمله‌ها' : 'توکن‌ها';
         const el = document.getElementById('output-tokenizer');
         el.innerHTML = '';
-        (data.tokens || []).forEach(tok => {
-          const chip = document.createElement('span');
-          chip.className = 'chip';
-          chip.textContent = tok;
-          el.appendChild(chip);
-        });
+        if (model === 'sentence') {
+          (data.tokens || []).forEach((sent, i) => {
+            const item = document.createElement('div');
+            item.className = 'stem-item';
+            item.innerHTML = `<span class="stem-word" style="min-width:1.5rem;text-align:center;">${i + 1}</span><span class="stem-arrow">↓</span><span class="stem-result" style="flex:1;">${sent}</span>`;
+            el.appendChild(item);
+          });
+        } else {
+          (data.tokens || []).forEach(tok => {
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = tok;
+            el.appendChild(chip);
+          });
+        }
       } else if (tab === 'stemmer') {
+        const model = document.getElementById('model-stemmer').value;
+        document.getElementById('label-stemmer').textContent = model === 'lemmatizer' ? 'واژه ← لِما' : 'واژه ← ریشه';
         const el = document.getElementById('output-stemmer');
         el.innerHTML = '';
         (data.stems || []).forEach(([word, stem]) => {
@@ -379,7 +442,103 @@
           chip.textContent = kw;
           el.appendChild(chip);
         });
+      } else if (tab === 'dep_parsing') {
+        const el = document.getElementById('output-dep_parsing');
+        el.innerHTML = buildDepTreeSVG(data.tokens || []);
       }
+    }
+
+    function escXml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function buildDepTreeSVG(tokens) {
+      if (!tokens.length) return '<span class="empty-msg">نتیجه‌ای یافت نشد.</span>';
+
+      const BOX_W = 86, BOX_H = 36, H_GAP = 14;
+      const LEVEL_H = 46, ARC_TOP = 26, PAD = 20, PAD_BOT = 14;
+      const PAL = ['#00A693','#6366f1','#f59e0b','#ec4899','#10b981','#3b82f6','#8b5cf6','#ef4444'];
+
+      const n = tokens.length;
+      const totalW = n * BOX_W + (n - 1) * H_GAP + 2 * PAD;
+
+      // RTL: token index 0 is rightmost
+      function cx(i) { return totalW - PAD - i * (BOX_W + H_GAP) - BOX_W / 2; }
+
+      // Build non-ROOT arcs and assign levels
+      const arcs = tokens
+        .map((t, i) => ({ from: i, to: t.head - 1, deprel: t.deprel }))
+        .filter(a => a.to >= 0)
+        .sort((a, b) => Math.abs(a.from - a.to) - Math.abs(b.from - b.to));
+
+      const levelBuckets = [];
+      const arcLevels = arcs.map(arc => {
+        const l = Math.min(arc.from, arc.to), r = Math.max(arc.from, arc.to);
+        for (let lv = 0; lv < levelBuckets.length; lv++) {
+          const ok = !levelBuckets[lv].some(a => {
+            const al = Math.min(a.from, a.to), ar = Math.max(a.from, a.to);
+            return l <= ar && r >= al;
+          });
+          if (ok) { levelBuckets[lv].push(arc); return lv + 1; }
+        }
+        levelBuckets.push([arc]);
+        return levelBuckets.length;
+      });
+
+      const maxLevel = arcLevels.length ? Math.max(...arcLevels) : 0;
+      const yBase = ARC_TOP + maxLevel * LEVEL_H;
+      const svgH = yBase + BOX_H + PAD_BOT + 4;
+
+      const parts = [];
+      const markerId = 'dep-arr-' + Date.now();
+      parts.push(`<svg width="${totalW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg">`);
+      parts.push(`<defs><marker id="${markerId}" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#00A693"/></marker></defs>`);
+
+      // Arcs
+      arcs.forEach((arc, idx) => {
+        const level = arcLevels[idx];
+        const color = PAL[(idx) % PAL.length];
+        const x1 = cx(arc.from), x2 = cx(arc.to);
+        const yPeak = yBase - level * LEVEL_H;
+        const midX = (x1 + x2) / 2;
+        // Actual bezier midpoint y at t=0.5: 0.25*yBase + 0.75*yPeak
+        const arcMidY = 0.25 * yBase + 0.75 * yPeak;
+        // Cubic bezier: tangent is vertical at endpoints → arrowhead points straight down
+        parts.push(`<path d="M ${x1} ${yBase} C ${x1} ${yPeak}, ${x2} ${yPeak}, ${x2} ${yBase}" fill="none" stroke="${color}" stroke-width="1.5" marker-end="url(#${markerId})"/>`);
+        parts.push(`<text x="${midX}" y="${arcMidY - 4}" text-anchor="middle" font-size="9.5" fill="${color}" font-family="'Courier New',monospace" font-weight="600">${escXml(arc.deprel)}</text>`);
+      });
+
+      // Word boxes
+      tokens.forEach((t, i) => {
+        const x = cx(i), yBox = yBase + 4;
+        const isRoot = t.head === 0;
+        parts.push(`<rect x="${x - BOX_W / 2}" y="${yBox}" width="${BOX_W}" height="${BOX_H}" rx="7" fill="${isRoot ? '#e6faf8' : '#f9fafb'}" stroke="${isRoot ? '#00A693' : '#d1d5db'}" stroke-width="${isRoot ? 2 : 1}"/>`);
+        parts.push(`<text x="${x}" y="${yBox + 23}" text-anchor="middle" font-size="13" fill="#111827" font-family="Vazirmatn,sans-serif">${escXml(t.word)}</text>`);
+      });
+
+      // ROOT indicators
+      tokens.forEach((t, i) => {
+        if (t.head !== 0) return;
+        const x = cx(i);
+        parts.push(`<text x="${x}" y="13" text-anchor="middle" font-size="10" fill="#00A693" font-weight="bold" font-family="'Courier New',monospace">ROOT</text>`);
+        parts.push(`<line x1="${x}" y1="17" x2="${x}" y2="${yBase + 4}" stroke="#00A693" stroke-width="1.5" stroke-dasharray="4,3"/>`);
+      });
+
+      parts.push('</svg>');
+      return parts.join('');
+    }
+
+    const COPY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+    function copyNormalizerResult() {
+      const text = document.getElementById('output-normalizer').textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-normalizer');
+        btn.innerHTML = CHECK_ICON;
+        setTimeout(() => { btn.innerHTML = COPY_ICON; }, 1500);
+      });
     }
   </script>
 

@@ -96,7 +96,7 @@ body {
 
 /* Main */
 .container {
-    width: min(100%, 860px);
+    width: min(100%, 1100px);
     margin: 48px auto;
 }
 
@@ -503,6 +503,13 @@ textarea:focus {
     min-width: 56px;
 }
 
+/* Dependency tree */
+.dep-tree-wrap {
+    overflow-x: auto;
+    direction: ltr;
+    padding: 8px 0 4px;
+}
+
 .social-links {
     margin-top: 10px;
     display: flex;
@@ -638,16 +645,13 @@ footer a:hover {
     }
 
     .nav-tools {
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scrollbar-width: thin;
-        padding-bottom: 2px;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     .nav-tab {
-        font-size: 13px;
-        padding: 8px 12px;
+        font-size: 12px;
+        padding: 7px 10px;
     }
 
     .container {

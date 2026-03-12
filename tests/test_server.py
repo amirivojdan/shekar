@@ -69,6 +69,21 @@ class TestMime:
     def test_ttf(self):
         assert ShekarHandler._mime(".ttf") == "font/ttf"
 
+    def test_json(self):
+        assert ShekarHandler._mime(".json") == "application/json; charset=utf-8"
+
+    def test_svg(self):
+        assert ShekarHandler._mime(".svg") == "image/svg+xml"
+
+    def test_ico(self):
+        assert ShekarHandler._mime(".ico") == "image/x-icon"
+
+    def test_woff(self):
+        assert ShekarHandler._mime(".woff") == "font/woff"
+
+    def test_woff2(self):
+        assert ShekarHandler._mime(".woff2") == "font/woff2"
+
     def test_unknown_falls_back_to_octet_stream(self):
         assert ShekarHandler._mime(".xyz") == "application/octet-stream"
 
@@ -148,6 +163,22 @@ class TestPostTokenizer:
         assert body["count"] == 2
         assert "elapsed_ms" in body
 
+    def test_sentence_model_uses_sentence_tokenizer(self):
+        mock_tokenizer = MagicMock()
+        mock_tokenizer.tokenize.return_value = ["جمله اول.", "جمله دوم."]
+
+        with patch.object(
+            server_module, "get_sentence_tokenizer", return_value=mock_tokenizer
+        ):
+            status, body = _post(
+                "/api/tokenizer", {"text": "جمله اول. جمله دوم.", "model": "sentence"}
+            )
+
+        assert status == 200
+        assert body["tokens"] == ["جمله اول.", "جمله دوم."]
+        assert body["count"] == 2
+        mock_tokenizer.tokenize.assert_called_once()
+
 
 class TestPostStemmer:
     def test_returns_word_stem_pairs(self):
@@ -167,6 +198,24 @@ class TestPostStemmer:
         assert "elapsed_ms" in body
         for pair in body["stems"]:
             assert len(pair) == 2
+
+    def test_lemmatizer_model_uses_lemmatizer(self):
+        mock_tokenizer = MagicMock(return_value=["رفتن", "آمدن"])
+        mock_lemmatizer = MagicMock(side_effect=lambda w: w)
+
+        with (
+            patch.object(
+                server_module, "get_word_tokenizer", return_value=mock_tokenizer
+            ),
+            patch.object(server_module, "get_lemmatizer", return_value=mock_lemmatizer),
+        ):
+            status, body = _post(
+                "/api/stemmer", {"text": "رفتن آمدن", "model": "lemmatizer"}
+            )
+
+        assert status == 200
+        assert "stems" in body
+        mock_lemmatizer.assert_called()
 
 
 class TestPostNER:
@@ -207,6 +256,60 @@ class TestPostSpellChecker:
 
         assert status == 200
         assert body["corrected"] == "کتاب خوب"
+        assert "elapsed_ms" in body
+
+
+class TestPostKeywords:
+    def test_returns_keywords_with_default_model(self):
+        mock_extractor = MagicMock()
+        mock_extractor.transform.return_value = [
+            ["یادگیری ماشین", 1.5],
+            ["هوش مصنوعی", 1.0],
+        ]
+
+        with patch.object(
+            server_module, "get_keyword_extractor", return_value=mock_extractor
+        ) as mock_get:
+            status, body = _post(
+                "/api/keywords", {"text": "یادگیری ماشین و هوش مصنوعی"}
+            )
+
+        assert status == 200
+        assert body["keywords"] == [["یادگیری ماشین", 1.5], ["هوش مصنوعی", 1.0]]
+        assert "elapsed_ms" in body
+        mock_get.assert_called_with("rake")
+
+    def test_returns_keywords_with_textrank_model(self):
+        mock_extractor = MagicMock()
+        mock_extractor.transform.return_value = [["پردازش زبان", 0.8]]
+
+        with patch.object(
+            server_module, "get_keyword_extractor", return_value=mock_extractor
+        ) as mock_get:
+            status, body = _post(
+                "/api/keywords", {"text": "پردازش زبان طبیعی", "model": "textrank"}
+            )
+
+        assert status == 200
+        mock_get.assert_called_with("textrank")
+
+
+class TestPostDepParsing:
+    def test_returns_tokens_with_head_and_deprel(self):
+        mock_parser = MagicMock()
+        mock_parser.transform.return_value = [
+            ("علی", "رفت", "nsubj"),
+            ("رفت", "رفت", "root"),
+        ]
+
+        with patch.object(server_module, "get_dep_parser", return_value=mock_parser):
+            status, body = _post("/api/dep_parsing", {"text": "علی رفت"})
+
+        assert status == 200
+        assert body["tokens"] == [
+            {"word": "علی", "head": "رفت", "deprel": "nsubj"},
+            {"word": "رفت", "head": "رفت", "deprel": "root"},
+        ]
         assert "elapsed_ms" in body
 
 
@@ -314,10 +417,14 @@ class TestLazySingletons:
     def _reset(self):
         server_module._normalizer = None
         server_module._word_tokenizer = None
+        server_module._sentence_tokenizer = None
         server_module._stemmer = None
+        server_module._lemmatizer = None
         server_module._ner = None
         server_module._pos = None
         server_module._spell_checker = None
+        server_module._keyword_extractors = {}
+        server_module._dep_parser = None
 
     def test_get_normalizer_returns_same_instance(self):
         self._reset()
@@ -335,12 +442,28 @@ class TestLazySingletons:
             b = server_module.get_word_tokenizer()
         assert a is b
 
+    def test_get_sentence_tokenizer_returns_same_instance(self):
+        self._reset()
+        mock = MagicMock()
+        with patch("shekar.SentenceTokenizer", return_value=mock):
+            a = server_module.get_sentence_tokenizer()
+            b = server_module.get_sentence_tokenizer()
+        assert a is b
+
     def test_get_stemmer_returns_same_instance(self):
         self._reset()
         mock = MagicMock()
         with patch("shekar.Stemmer", return_value=mock):
             a = server_module.get_stemmer()
             b = server_module.get_stemmer()
+        assert a is b
+
+    def test_get_lemmatizer_returns_same_instance(self):
+        self._reset()
+        mock = MagicMock()
+        with patch("shekar.Lemmatizer", return_value=mock):
+            a = server_module.get_lemmatizer()
+            b = server_module.get_lemmatizer()
         assert a is b
 
     def test_get_ner_returns_same_instance(self):
@@ -365,4 +488,29 @@ class TestLazySingletons:
         with patch("shekar.SpellChecker", return_value=mock):
             a = server_module.get_spell_checker()
             b = server_module.get_spell_checker()
+        assert a is b
+
+    def test_get_keyword_extractor_returns_same_instance_per_model(self):
+        self._reset()
+        mock = MagicMock()
+        with patch("shekar.KeywordExtractor", return_value=mock):
+            a = server_module.get_keyword_extractor("rake")
+            b = server_module.get_keyword_extractor("rake")
+        assert a is b
+
+    def test_get_keyword_extractor_different_models_are_independent(self):
+        self._reset()
+        with patch(
+            "shekar.KeywordExtractor", side_effect=lambda model: MagicMock(name=model)
+        ):
+            rake = server_module.get_keyword_extractor("rake")
+            textrank = server_module.get_keyword_extractor("textrank")
+        assert rake is not textrank
+
+    def test_get_dep_parser_returns_same_instance(self):
+        self._reset()
+        mock = MagicMock()
+        with patch("shekar.DependencyParser", return_value=mock):
+            a = server_module.get_dep_parser()
+            b = server_module.get_dep_parser()
         assert a is b

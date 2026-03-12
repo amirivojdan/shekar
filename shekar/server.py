@@ -4,12 +4,13 @@ Shekar NLP - Web UI Server
 
 Serves the static UI and exposes REST API endpoints for:
   POST /api/normalizer    — text normalization
-  POST /api/tokenizer     — word tokenization
-  POST /api/stemmer       — stemming (word → stem pairs)
+  POST /api/tokenizer     — word/sentence tokenization (model: word|sentence)
+  POST /api/stemmer       — stemming / lemmatization (model: stemmer|lemmatizer)
   POST /api/ner           — named-entity recognition
   POST /api/pos           — part-of-speech tagging
   POST /api/spellchecker  — spell checking / correction
   POST /api/keywords      — keyword extraction (model: rake|textrank)
+  POST /api/dep_parsing   — dependency parsing (word, head, deprel)
 """
 
 import json
@@ -25,11 +26,14 @@ HOST = "localhost"
 
 _normalizer = None
 _word_tokenizer = None
+_sentence_tokenizer = None
 _stemmer = None
+_lemmatizer = None
 _ner = None
 _pos = None
 _spell_checker = None
 _keyword_extractors = {}
+_dep_parser = None
 
 
 def get_normalizer():
@@ -50,6 +54,15 @@ def get_word_tokenizer():
     return _word_tokenizer
 
 
+def get_sentence_tokenizer():
+    global _sentence_tokenizer
+    if _sentence_tokenizer is None:
+        from shekar import SentenceTokenizer
+
+        _sentence_tokenizer = SentenceTokenizer()
+    return _sentence_tokenizer
+
+
 def get_stemmer():
     global _stemmer
     if _stemmer is None:
@@ -57,6 +70,15 @@ def get_stemmer():
 
         _stemmer = Stemmer()
     return _stemmer
+
+
+def get_lemmatizer():
+    global _lemmatizer
+    if _lemmatizer is None:
+        from shekar import Lemmatizer
+
+        _lemmatizer = Lemmatizer(return_infinitive=True)
+    return _lemmatizer
 
 
 def get_ner():
@@ -95,6 +117,15 @@ def get_keyword_extractor(model: str):
     return _keyword_extractors[model]
 
 
+def get_dep_parser():
+    global _dep_parser
+    if _dep_parser is None:
+        from shekar import DependencyParser
+
+        _dep_parser = DependencyParser()
+    return _dep_parser
+
+
 class ShekarHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split("?")[0]
@@ -120,6 +151,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
             "/api/pos": self._handle_pos,
             "/api/spellchecker": self._handle_spellcheck,
             "/api/keywords": self._handle_keywords,
+            "/api/dep_parsing": self._handle_dep_parsing,
         }
         handler = routes.get(self.path)
         if handler is None:
@@ -146,8 +178,12 @@ class ShekarHandler(BaseHTTPRequestHandler):
         self._send_json({"result": result, "elapsed_ms": round(elapsed * 1000, 1)})
 
     def _handle_tokenize(self, text: str, body=None):
+        model = (body or {}).get("model", "word").lower()
         t0 = time.perf_counter()
-        tokens = list(get_word_tokenizer()(text))
+        if model == "sentence":
+            tokens = list(get_sentence_tokenizer().tokenize(text))
+        else:
+            tokens = list(get_word_tokenizer()(text))
         elapsed = time.perf_counter() - t0
         self._send_json(
             {
@@ -158,10 +194,11 @@ class ShekarHandler(BaseHTTPRequestHandler):
         )
 
     def _handle_stem(self, text: str, body=None):
+        model = (body or {}).get("model", "stemmer").lower()
         t0 = time.perf_counter()
-        stemmer = get_stemmer()
+        transform = get_lemmatizer() if model == "lemmatizer" else get_stemmer()
         words = list(get_word_tokenizer()(text))
-        stems = [[w, stemmer(w)] for w in words]
+        stems = [[w, transform(w)] for w in words]
         elapsed = time.perf_counter() - t0
         self._send_json({"stems": stems, "elapsed_ms": round(elapsed * 1000, 1)})
 
@@ -199,6 +236,13 @@ class ShekarHandler(BaseHTTPRequestHandler):
         keywords = get_keyword_extractor(model).transform(text)
         elapsed = time.perf_counter() - t0
         self._send_json({"keywords": keywords, "elapsed_ms": round(elapsed * 1000, 1)})
+
+    def _handle_dep_parsing(self, text: str, body=None):
+        t0 = time.perf_counter()
+        results = get_dep_parser().transform(text)
+        elapsed = time.perf_counter() - t0
+        tokens = [{"word": w, "head": h, "deprel": r} for w, h, r in results]
+        self._send_json({"tokens": tokens, "elapsed_ms": round(elapsed * 1000, 1)})
 
     def _read_json(self):
         length = int(self.headers.get("Content-Length", 0))
