@@ -102,13 +102,17 @@
         </div>
         <div class="error-msg" id="error-normalizer"></div>
         <div class="result-box" id="result-normalizer">
-          <button id="copy-normalizer" onclick="copyNormalizerResult()" title="کپی نتیجه" style="background:none; border:none; cursor:pointer; padding:0; color:#aaa; display:flex; align-items:center; align-self:flex-end; margin-bottom:8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </button>
-          <div class="result-text" id="output-normalizer"></div>
+          <div style="display:flex; flex-direction:row; direction:ltr; background:var(--light-gray); border-radius:8px; overflow:hidden;">
+            <div style="width:44px; flex-shrink:0; display:flex; justify-content:center; align-items:flex-start; padding-top:10px;">
+              <button id="copy-normalizer" onclick="copyNormalizerResult()" title="کپی نتیجه" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="result-text" id="output-normalizer" style="flex:1; background:transparent; border-radius:0;"></div>
+          </div>
         </div>
       </div>
 
@@ -233,7 +237,17 @@
         <div class="error-msg" id="error-spellchecker"></div>
         <div class="result-box" id="result-spellchecker">
           <div class="result-label">نوشتهٔ ویراش‌شده</div>
-          <div class="result-text" id="output-spellchecker"></div>
+          <div style="display:flex; flex-direction:row; direction:ltr; background:var(--light-gray); border-radius:8px; overflow:hidden;">
+            <div style="width:44px; flex-shrink:0; display:flex; justify-content:center; align-items:flex-start; padding-top:10px;">
+              <button id="copy-spellchecker" onclick="copySpellcheckerResult()" title="کپی نتیجه" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="result-text" id="output-spellchecker" style="flex:1; background:transparent; border-radius:0;"></div>
+          </div>
         </div>
       </div>
 
@@ -277,7 +291,7 @@
         </div>
         <div class="error-msg" id="error-dep_parsing"></div>
         <div class="result-box" id="result-dep_parsing">
-          <div class="result-label">درخت وابستگی</div>
+          
           <div class="dep-tree-wrap" id="output-dep_parsing"></div>
         </div>
       </div>
@@ -530,6 +544,16 @@
 
     const COPY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+    function copySpellcheckerResult() {
+      const text = document.getElementById('output-spellchecker').textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-spellchecker');
+        btn.innerHTML = CHECK_ICON;
+        setTimeout(() => { btn.innerHTML = COPY_ICON; }, 1500);
+      });
+    }
 
     function copyNormalizerResult() {
       const text = document.getElementById('output-normalizer').textContent;

@@ -267,6 +267,7 @@ textarea:focus {
 /* Result box */
 .result-box {
     display: none;
+    position: relative;
     margin-top: 20px;
     border-top: 2px solid var(--light-gray);
     padding-top: 20px;
