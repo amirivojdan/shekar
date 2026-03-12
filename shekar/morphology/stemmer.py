@@ -80,12 +80,14 @@ class Stemmer(BaseTextTransform):
             return text
 
         for patterns in self._all_patterns:
-            stem = self._map_patterns(text, patterns)
-
-            if stem != text and len(stem) > 2 and stem in data.vocab:
-                if stem in data.informal_words:
-                    stem = data.informal_words[stem]
-                return stem
+            for pattern, replacement in patterns:
+                stem = pattern.sub(replacement, text)
+                if stem != text:
+                    if len(stem) > 2 and stem in data.vocab:
+                        if stem in data.informal_words:
+                            stem = data.informal_words[stem]
+                        return stem
+                    break
 
         if text in data.informal_words:
             return data.informal_words[text]
