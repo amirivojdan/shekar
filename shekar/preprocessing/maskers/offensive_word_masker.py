@@ -44,9 +44,14 @@ class OffensiveWordMasker(BaseTextTransform):
             words = data.offensive_words
         self._mask_token = mask_token
         self._word_mappings = []
-        self._word_mappings.append(
-            (rf"\b({'|'.join(map(re.escape, words))})\b", mask_token)
-        )
+        for word in words:
+            escaped_word = re.escape(word)
+            self._word_mappings.append(
+                (
+                    rf"(?<![{data.persian_letters}]){escaped_word}(?![{data.persian_letters}])",
+                    mask_token,
+                )
+            )
 
         self._patterns = self._compile_patterns(self._word_mappings)
 
