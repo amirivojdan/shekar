@@ -417,6 +417,10 @@ ROOT
     └── [punct] .
 ```
 
+An interactive visualization of the dependency parse tree is also available via the built-in web interface (`shekar serve -p 8080`):
+
+![Dependency Parser Visualization](assets/dependency_parser_viz.png)
+
 ## Classification
 
 The `classification` module provides high-level text classification utilities for Persian, covering both sentiment analysis and offensive language detection through a unified and consistent interface. Each classifier returns a predicted label along with a confidence score.
