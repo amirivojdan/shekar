@@ -10,22 +10,24 @@ class PunctuationSpacingNormalizer(BaseTextTransform):
         self._punctuation_spacing_mappings = [
             # Remove space after leading punctuation like ". این" -> ".این"
             (
-                r"^([{sg}])\s+".format(sg=re.escape(data.single_punctuations)),
+                r"^([{sg}])[^\S\r\n]+".format(sg=re.escape(data.single_punctuations)),
                 r"\1",
             ),
             # Remove space after opener punctuation: "( سلام" -> "(سلام"
             (
-                r"([{op}])\s+".format(op=re.escape(data.opener_punctuations)),
+                r"([{op}])[^\S\r\n]+".format(op=re.escape(data.opener_punctuations)),
                 r"\1",
             ),
             # Remove space before closer punctuation: "سلام )" -> "سلام)"
             (
-                r"\s+([{cl}])".format(cl=re.escape(data.closer_punctuations)),
+                r"[^\S\r\n]+([{cl}])".format(cl=re.escape(data.closer_punctuations)),
                 r"\1",
             ),
             # Ensure space before opener punctuation if attached: "سلام(دنیا" -> "سلام (دنیا"
             (
-                r"(?<=\S)\s*([{op}])".format(op=re.escape(data.opener_punctuations)),
+                r"(?<=\S)[^\S\r\n]*([{op}])".format(
+                    op=re.escape(data.opener_punctuations)
+                ),
                 r" \1",
             ),
             # Ensure one space after closer punctuation when needed
@@ -38,7 +40,7 @@ class PunctuationSpacingNormalizer(BaseTextTransform):
             ),
             # Remove space before single punctuations: "سلام ،" -> "سلام،"
             (
-                r"\s+([{sg}])".format(sg=re.escape(data.single_punctuations)),
+                r"[^\S\r\n]+([{sg}])".format(sg=re.escape(data.single_punctuations)),
                 r"\1",
             ),
             # Ensure one space after single punctuations (except at start)
@@ -49,8 +51,8 @@ class PunctuationSpacingNormalizer(BaseTextTransform):
                 ),
                 r"\1 ",
             ),
-            # Trim leading and trailing spaces
-            (r"^\s+|\s+$", ""),
+            # Trim leading and trailing horizontal spaces (preserve newlines)
+            (r"^[^\S\r\n]+|[^\S\r\n]+$", ""),
         ]
 
         self._patterns = self._compile_patterns(self._punctuation_spacing_mappings)
