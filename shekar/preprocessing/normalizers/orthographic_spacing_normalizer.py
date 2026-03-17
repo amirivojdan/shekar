@@ -32,6 +32,8 @@ class OrthographicSpacingNormalizer(BaseTextTransform):
         self._spacing_mappings = [
             # Collapse horizontal whitespace (keep newlines)
             (r"[^\S\r\n]+", " "),
+            # Strip trailing spaces before newlines
+            (r"[^\S\r\n]+\n", "\n"),
             # Reduce excessive newlines
             (r"\n{3,}", "\n\n"),
             # Remove ZWNJ around spaces
