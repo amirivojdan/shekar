@@ -41,7 +41,7 @@ non_left_joiner_letters = "دۀذاأآورژز"
 past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ند"]
 informal_past_personal_suffixes = ["م", "ی", "", "یم", "ید", "ین", "ن"]
 present_personal_suffixes = ["م", "ی", "د", "یم", "ید", "ند"]
-perfect_personal_suffixes = ["‌ام", "‌ای", "‌است", "‌ایم", "‌اید", "‌اند"]
+perfect_personal_suffixes = ["‌ام", "‌ای", " است", "‌ایم", "‌اید", "‌اند"]
 verbal_prefixes = [
     "بر",
     "باز",
@@ -71,6 +71,9 @@ morph_suffixes = [
     "تان",
     "شان",
     "ای",
+    "مون",
+    "تون",
+    "شون",
 ]
 
 comparative_superlative_suffixes = [

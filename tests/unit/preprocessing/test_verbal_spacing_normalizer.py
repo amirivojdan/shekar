@@ -38,7 +38,7 @@ def test_verbal_suffix_am(normalizer):
 def test_verbal_suffix_ast(normalizer):
     text = "او آمده است"
     out = normalizer.transform(text)
-    assert out == f"او آمده{data.ZWNJ}است"
+    assert out == "او آمده است"
 
 
 def test_prefixed_verb_with_space(normalizer):

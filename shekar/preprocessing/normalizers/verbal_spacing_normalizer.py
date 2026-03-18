@@ -23,6 +23,10 @@ class VerbalSpacingNormalizer(BaseTextTransform):
             rf"(?=$|[\s{_punc_class}])"
         )
 
+        self._ast_zwnj_pattern = re.compile(
+            rf"(?<=ه){data.ZWNJ}(است)(?=$|[\s{_punc_class}])"
+        )
+
         self._mi_space_pattern = re.compile(
             rf"(?<!\S)(?P<prefix>ن?می)\s+(?P<stem>[{data.persian_letters}]+)"
         )
@@ -149,5 +153,7 @@ class VerbalSpacingNormalizer(BaseTextTransform):
         # mi / nemi spacing (می روم / میروم -> می‌روم)
         text = self._mi_space_pattern.sub(self._verbal_prefix_corrector, text)
         text = self._mi_joined_pattern.sub(self._verbal_prefix_corrector, text)
+
+        text = self._ast_zwnj_pattern.sub(r" \1", text)
 
         return text
