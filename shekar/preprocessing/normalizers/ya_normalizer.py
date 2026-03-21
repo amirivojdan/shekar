@@ -24,12 +24,12 @@ class YaNormalizer(BaseTextTransform):
         if style == "standard":
             self._ya_mappings = [
                 (r"ه‌ی", "ۀ"),
-                (r"ه ی", "ۀ"),
+                (r"ه ی(?=\s|$)", "ۀ"),
             ]
         elif style == "joda":
             self._ya_mappings = [
                 (r"ۀ", "ه‌ی"),
-                (r"ه ی", "ه‌ی"),
+                (r"ه ی(?=\s|$)", "ه‌ی"),
             ]
 
         self._patterns = self._compile_patterns(self._ya_mappings)
