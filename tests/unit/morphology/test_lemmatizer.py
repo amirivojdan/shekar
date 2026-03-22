@@ -59,3 +59,27 @@ def test_prefixed_verbs(lemmatizer):
     assert lemmatizer("پس‌نمی‌انداخت") == "پس\u200cانداخت/پس\u200cانداز"
     assert lemmatizer("ورنیامد") == "ورآمد/ورآ"
     assert lemmatizer("باز نخواهم گشت") == "بازگشت/بازگرد"
+
+
+def test_return_infinitive_normal_verb_appends_noon(monkeypatch):
+    lemmatizer = Lemmatizer(return_infinitive=True)
+    conjugated_verbs = get_conjugated_verbs()
+    monkeypatch.setitem(conjugated_verbs, "آزمودند", ("آزمود", "آزما"))
+    assert lemmatizer("آزمودند") == "آزمودن"
+
+
+def test_return_infinitive_real_verb():
+    lemmatizer = Lemmatizer(return_infinitive=True)
+    assert lemmatizer("رفتند") == "رفتن"
+
+
+def test_return_infinitive_informal_verb():
+    lemmatizer = Lemmatizer(return_infinitive=True)
+    assert lemmatizer("می‌خونم") == "خواندن"
+
+
+def test_return_infinitive_past_stem_none(monkeypatch):
+    lemmatizer = Lemmatizer(return_infinitive=True)
+    conjugated_verbs = get_conjugated_verbs()
+    monkeypatch.setitem(conjugated_verbs, "هستید", (None, "هست"))
+    assert lemmatizer("هستید") == "هست"
