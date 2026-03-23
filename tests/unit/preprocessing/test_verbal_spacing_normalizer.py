@@ -159,3 +159,22 @@ def test_prefixed_verbs_packed():
     input_text = "کتاب‌هایم را پسبده!"
     expected_output = "کتاب‌هایم را پس‌بده!"
     assert spacing_normalizer(input_text) == expected_output
+
+
+def test_preverb_stopword_not_merged(normalizer):
+    assert normalizer("روحی تازه در آن دمیده می‌شود.") == "روحی تازه در آن دمیده می‌شود."
+
+
+def test_preverb_stopword_variants(normalizer):
+    assert normalizer("در این خانه") == "در این خانه"
+    assert normalizer("بر او") == "بر او"
+    assert normalizer("بر آن تأکید کرد") == "بر آن تأکید کرد"
+
+
+def test_preverb_stopword_zwnj_still_checked(normalizer):
+    assert normalizer(f"در{data.ZWNJ}آن") == "درآن"
+
+
+def test_preverb_verb_with_mi_and_stopword_verb(normalizer):
+    result = normalizer("بر می گردد")
+    assert result == f"برمی{data.ZWNJ}گردد"

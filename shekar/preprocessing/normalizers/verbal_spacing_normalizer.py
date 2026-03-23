@@ -39,7 +39,7 @@ class VerbalSpacingNormalizer(BaseTextTransform):
         self._preverb_mi_stem_pattern = re.compile(
             rf"(?<!\S)"
             rf"(?P<preverb>(?:{_verbal_prefixes_alt}))"
-            rf"(?:{data.ZWNJ}|\s+|)"
+            rf"(?P<sep>{data.ZWNJ}|\s+|)"
             rf"(?:(?P<mi>ن?می)(?:{data.ZWNJ}|\s+|))?"
             rf"(?P<verb>[{data.persian_letters}]+)"
             rf"(?=$|[\s{_punc_class}])"
@@ -115,8 +115,12 @@ class VerbalSpacingNormalizer(BaseTextTransform):
 
     def _preverb_mi_stem_replacer(self, m: re.Match) -> str:
         preverb = m.group("preverb")
+        sep = m.group("sep")
         mi = m.group("mi")
         verb = m.group("verb")
+
+        if " " in (sep or "") and verb in data.stopwords:
+            return m.group(0)
 
         if preverb[-1] not in data.non_left_joiner_letters:
             preverb = preverb + data.ZWNJ
