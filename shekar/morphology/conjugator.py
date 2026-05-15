@@ -995,56 +995,57 @@ class Conjugator:
         Returns:
             dict: A list containing all conjugated forms of the verb in different tenses.
         """
-        conjugations = []
+        formal_conjugations = []
+        informal_conjugations = []
         if past_stem:
             infinitive = past_stem + "ن"
             past_participle = past_stem + "ه"
-            conjugations.append(infinitive)
-            conjugations.append(past_participle)
+            formal_conjugations.append(infinitive)
+            formal_conjugations.append(past_participle)
 
-            conjugations.extend(self.simple_past(past_stem, prefix=prefix))
-            conjugations.extend(
+            formal_conjugations.extend(self.simple_past(past_stem, prefix=prefix))
+            formal_conjugations.extend(
                 self.simple_past(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_past(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_past(past_stem, prefix=prefix, negative=True, passive=True)
             )
 
             # Weird cases of formal informal mixing
 
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_past(past_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_past(past_stem, prefix=prefix, negative=True, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_past(past_stem, prefix=prefix, passive=True, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_past(
                     past_stem, prefix=prefix, negative=True, passive=True, informal=True
                 )
             )
 
             if informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_past(informal_past_stem, prefix=prefix, informal=True)
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_past(
                         informal_past_stem, prefix=prefix, negative=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_past(
                         informal_past_stem, prefix=prefix, passive=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_past(
                         informal_past_stem,
                         prefix=prefix,
@@ -1054,61 +1055,61 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_continuous(
                     past_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_continuous(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_continuous(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_continuous(
                     past_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
             # Weird mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_continuous(past_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_continuous(
                     past_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_continuous(
                     past_stem, prefix=prefix, passive=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_continuous(
                     past_stem, prefix=prefix, negative=True, passive=True, informal=True
                 )
             )
 
             if informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_continuous(
                         informal_past_stem, prefix=prefix, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_continuous(
                         informal_past_stem, prefix=prefix, negative=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_continuous(
                         informal_past_stem, prefix=prefix, passive=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_continuous(
                         informal_past_stem,
                         prefix=prefix,
@@ -1118,61 +1119,61 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect(
                     past_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect(
                     past_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
             # Weird mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_perfect(past_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_perfect(
                     past_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_perfect(
                     past_stem, prefix=prefix, passive=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_perfect(
                     past_stem, prefix=prefix, negative=True, passive=True, informal=True
                 )
             )
 
             if informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_perfect(
                         informal_past_stem, prefix=prefix, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_perfect(
                         informal_past_stem, prefix=prefix, negative=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_perfect(
                         informal_past_stem, prefix=prefix, passive=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_perfect(
                         informal_past_stem,
                         prefix=prefix,
@@ -1182,70 +1183,70 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect_continuous(past_stem, prefix=prefix)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect_continuous(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect_continuous(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_perfect_continuous(
                     past_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect(
                     past_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect(past_stem, prefix=prefix, negative=True, passive=True)
             )
 
             # Weird mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_perfect(past_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_perfect(
                     past_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_perfect(past_stem, prefix=prefix, passive=True, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_perfect(
                     past_stem, prefix=prefix, negative=True, passive=True, informal=True
                 )
             )
 
             if informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_perfect(informal_past_stem, prefix=prefix, informal=True)
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_perfect(
                         informal_past_stem, prefix=prefix, negative=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_perfect(
                         informal_past_stem, prefix=prefix, passive=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_perfect(
                         informal_past_stem,
                         prefix=prefix,
@@ -1255,80 +1256,80 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect_of_past_perfect(past_stem, prefix=prefix)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect_of_past_perfect(
                     past_stem, prefix=prefix, negative=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect_of_past_perfect(
                     past_stem, prefix=prefix, passive=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect_of_past_perfect(
                     past_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_subjunctive(
                     past_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_subjunctive(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_subjunctive(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_subjunctive(
                     past_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
             # Weird mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_subjunctive(past_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_subjunctive(
                     past_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_subjunctive(
                     past_stem, prefix=prefix, passive=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_subjunctive(
                     past_stem, prefix=prefix, negative=True, passive=True, informal=True
                 )
             )
 
             if informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_subjunctive(
                         informal_past_stem, prefix=prefix, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_subjunctive(
                         informal_past_stem, prefix=prefix, negative=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_subjunctive(
                         informal_past_stem, prefix=prefix, passive=True, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_subjunctive(
                         informal_past_stem,
                         prefix=prefix,
@@ -1338,85 +1339,85 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_progressive(
                     past_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_progressive(past_stem, prefix=prefix, passive=True)
             )
 
             # mixed formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_progressive(past_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.past_progressive(
                     past_stem, prefix=prefix, passive=True, informal=True
                 )
             )
             if informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_progressive(
                         informal_past_stem, prefix=prefix, informal=True
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.past_progressive(
                         informal_past_stem, prefix=prefix, passive=True, informal=True
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect_progressive(
                     past_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.past_perfect_progressive(past_stem, prefix=prefix, passive=True)
             )
 
         # Present and future tenses (require present stem)
         if present_stem:
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_present(past_stem, present_stem, prefix=prefix)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_present(
                     past_stem, present_stem, prefix=prefix, negative=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_present(
                     past_stem, present_stem, prefix=prefix, passive=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_present(
                     past_stem, present_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
             # mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_present(
                     past_stem, present_stem, prefix=prefix, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_present(
                     past_stem, present_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_present(
                     past_stem, present_stem, prefix=prefix, passive=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.simple_present(
                     past_stem,
                     present_stem,
@@ -1427,7 +1428,7 @@ class Conjugator:
                 )
             )
             if informal_present_stem and informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_present(
                         informal_past_stem,
                         informal_present_stem,
@@ -1435,7 +1436,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_present(
                         informal_past_stem,
                         informal_present_stem,
@@ -1444,7 +1445,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_present(
                         informal_past_stem,
                         informal_present_stem,
@@ -1453,7 +1454,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.simple_present(
                         informal_past_stem,
                         informal_present_stem,
@@ -1464,42 +1465,42 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_indicative(past_stem, present_stem, prefix=prefix)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_indicative(
                     past_stem, present_stem, prefix=prefix, negative=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_indicative(
                     past_stem, present_stem, prefix=prefix, passive=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_indicative(
                     past_stem, present_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
             # mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_indicative(
                     past_stem, present_stem, prefix=prefix, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_indicative(
                     past_stem, present_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_indicative(
                     past_stem, present_stem, prefix=prefix, passive=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_indicative(
                     past_stem,
                     present_stem,
@@ -1511,7 +1512,7 @@ class Conjugator:
             )
 
             if informal_present_stem and informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_indicative(
                         informal_past_stem,
                         informal_present_stem,
@@ -1519,7 +1520,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_indicative(
                         informal_past_stem,
                         informal_present_stem,
@@ -1528,7 +1529,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_indicative(
                         informal_past_stem,
                         informal_present_stem,
@@ -1537,7 +1538,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_indicative(
                         informal_past_stem,
                         informal_present_stem,
@@ -1548,42 +1549,42 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_subjunctive(past_stem, present_stem, prefix=prefix)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem, present_stem, prefix=prefix, negative=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem, present_stem, prefix=prefix, passive=True
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem, present_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
             # mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem, present_stem, prefix=prefix, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem, present_stem, prefix=prefix, negative=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem, present_stem, prefix=prefix, passive=True, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_subjunctive(
                     past_stem,
                     present_stem,
@@ -1595,7 +1596,7 @@ class Conjugator:
             )
 
             if informal_present_stem and informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_subjunctive(
                         informal_past_stem,
                         informal_present_stem,
@@ -1603,7 +1604,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_subjunctive(
                         informal_past_stem,
                         informal_present_stem,
@@ -1612,7 +1613,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_subjunctive(
                         informal_past_stem,
                         informal_present_stem,
@@ -1621,7 +1622,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_subjunctive(
                         informal_past_stem,
                         informal_present_stem,
@@ -1632,28 +1633,28 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_progressive(past_stem, present_stem, prefix=prefix)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.present_progressive(
                     past_stem, present_stem, prefix=prefix, passive=True
                 )
             )
 
             # mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_progressive(
                     past_stem, present_stem, prefix=prefix, informal=True
                 )
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.present_progressive(
                     past_stem, present_stem, prefix=prefix, passive=True, informal=True
                 )
             )
             if informal_present_stem and informal_past_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_progressive(
                         informal_past_stem,
                         informal_present_stem,
@@ -1661,7 +1662,7 @@ class Conjugator:
                         informal=True,
                     )
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.present_progressive(
                         informal_past_stem,
                         informal_present_stem,
@@ -1671,44 +1672,44 @@ class Conjugator:
                     )
                 )
 
-            conjugations.extend(self.simple_future(past_stem, prefix=prefix))
-            conjugations.extend(
+            formal_conjugations.extend(self.simple_future(past_stem, prefix=prefix))
+            formal_conjugations.extend(
                 self.simple_future(past_stem, prefix=prefix, negative=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_future(past_stem, prefix=prefix, passive=True)
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.simple_future(
                     past_stem, prefix=prefix, negative=True, passive=True
                 )
             )
 
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.imperative(
                     present_stem,
                     prefix=prefix,
                 )
             )
-            conjugations.extend(
+            formal_conjugations.extend(
                 self.imperative(present_stem, prefix=prefix, negative=True)
             )
 
             # mix of formal informal
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.imperative(present_stem, prefix=prefix, informal=True)
             )
-            conjugations.extend(
+            informal_conjugations.extend(
                 self.imperative(
                     present_stem, prefix=prefix, negative=True, informal=True
                 )
             )
 
             if informal_present_stem:
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.imperative(informal_present_stem, prefix=prefix, informal=True)
                 )
-                conjugations.extend(
+                informal_conjugations.extend(
                     self.imperative(
                         informal_present_stem,
                         prefix=prefix,
@@ -1717,13 +1718,16 @@ class Conjugator:
                     )
                 )
 
-        return conjugations
+        return formal_conjugations, informal_conjugations
 
 
-@lru_cache(maxsize=1)
-def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
+def _build_conjugated_verbs() -> tuple[
+    dict[str, tuple[str | None, str]],
+    dict[str, tuple[str | None, str]],
+]:
     conjugator = Conjugator()
-    conjugated_verbs: dict[str, tuple[str | None, str]] = {}
+    all_forms: dict[str, tuple[str | None, str]] = {}
+    informal_only: dict[str, tuple[str | None, str]] = {}
 
     for (
         past_stem,
@@ -1733,13 +1737,12 @@ def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
     ) in data.verbs:
         base_past_stem, prefix = conjugator.get_verb_prefix(past_stem)
         base_present_stem, _ = conjugator.get_verb_prefix(present_stem)
-
         informal_base_past_stem, _ = conjugator.get_verb_prefix(informal_past_stem)
         informal_base_present_stem, _ = conjugator.get_verb_prefix(
             informal_present_stem
         )
 
-        conjugations = conjugator.conjugate(
+        formal_conjugations, informal_conjugations = conjugator.conjugate(
             base_past_stem,
             base_present_stem,
             informal_base_past_stem,
@@ -1747,13 +1750,26 @@ def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
             prefix=prefix,
         )
 
-        for form in conjugations:
-            conjugated_verbs[form] = (past_stem, present_stem)
+        key = (past_stem, present_stem)
+        formal_set = set(formal_conjugations)
+        for form in set(formal_conjugations + informal_conjugations):
+            all_forms[form] = key
+        for form in informal_conjugations:
+            if form not in formal_set:
+                informal_only[form] = key
 
-    for form in conjugator.simple_present(past_stem=None, present_stem="هست"):
-        conjugated_verbs[form] = (None, "هست")
+    for stem in ("هست", "نیست"):
+        for form in conjugator.simple_present(past_stem=None, present_stem=stem):
+            all_forms[form] = (None, stem)
 
-    for form in conjugator.simple_present(past_stem=None, present_stem="نیست"):
-        conjugated_verbs[form] = (None, "نیست")
+    return all_forms, informal_only
 
-    return conjugated_verbs
+
+@lru_cache(maxsize=1)
+def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
+    return _build_conjugated_verbs()[0]
+
+
+@lru_cache(maxsize=1)
+def get_informal_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
+    return _build_conjugated_verbs()[1]

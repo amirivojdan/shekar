@@ -2187,7 +2187,8 @@ class TestConjugator:
         assert result == expected
 
     def test_conjugate(self, conjugator):
-        result = conjugator.conjugate("شناخت", "شناس")
+        formal, informal = conjugator.conjugate("شناخت", "شناس")
+        result = formal + informal
 
         assert len(result) == 574
 
@@ -2213,7 +2214,8 @@ class TestConjugator:
         assert "شناخته خواهم شد" in result  # passive future simple
 
     def test_conjugate_past_only(self, conjugator):
-        result = conjugator.conjugate("شناخت")
+        formal, informal = conjugator.conjugate("شناخت")
+        result = formal + informal
 
         assert len(result) == 348
 
@@ -2225,27 +2227,30 @@ class TestConjugator:
         assert "خواهم شناخت" not in result  # future simple should not be present
 
     def test_conjugate_empty_strings(self, conjugator):
-        result = conjugator.conjugate("", "")
-        assert len(result) == 0
+        formal, informal = conjugator.conjugate("", "")
+        assert len(formal + informal) == 0
 
-        result = conjugator.conjugate("", "شناس")
-        assert len(result) == 226
+        formal, informal = conjugator.conjugate("", "شناس")
+        assert len(formal + informal) == 226
 
-        result = conjugator.conjugate("شناخت", "")
-        assert len(result) == 348
+        formal, informal = conjugator.conjugate("شناخت", "")
+        assert len(formal + informal) == 348
 
     def test_conjugate_different_verbs(self, conjugator):
-        result_go = conjugator.conjugate("رفت", "رو")
+        formal, informal = conjugator.conjugate("رفت", "رو")
+        result_go = formal + informal
         assert "رفتم" in result_go
         assert "می‌روم" in result_go
         assert "نخواهم رفت" in result_go
 
-        result_eat = conjugator.conjugate("خورد", "خور")
+        formal, informal = conjugator.conjugate("خورد", "خور")
+        result_eat = formal + informal
         assert "خوردم" in result_eat
         assert "می‌خورم" in result_eat
         assert "خواهم خورد" in result_eat
 
-        result_see = conjugator.conjugate("دید", "بین")
+        formal, informal = conjugator.conjugate("دید", "بین")
+        result_see = formal + informal
         assert "دیدم" in result_see
         assert "می‌بینم" in result_see
         assert "دیده خواهم شد" in result_see
@@ -2254,7 +2259,8 @@ class TestConjugator:
         past_stem = "شناخت"
         present_stem = "شناس"
 
-        full_result = conjugator.conjugate(past_stem, present_stem)
+        formal, informal = conjugator.conjugate(past_stem, present_stem)
+        full_result = formal + informal
 
         simple_past = conjugator.simple_past(past_stem)
         present_indicative = conjugator.present_indicative(past_stem, present_stem)
