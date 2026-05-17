@@ -14,6 +14,7 @@ verbs_csv_path = resources_root.joinpath("verbs.csv")
 stopwords_csv_path = resources_root.joinpath("stopwords.csv")
 offensive_words_csv_path = resources_root.joinpath("offensive_words.csv")
 informal_words_csv_path = resources_root.joinpath("informal_words.csv")
+loanword_mappings_csv_path = resources_root.joinpath("loanword_mappings.csv")
 
 ZWNJ = "\u200c"
 newline = "\n"
@@ -284,6 +285,7 @@ verbs = load_verbs()
 stopwords = read_words(stopwords_csv_path)
 offensive_words = read_words(offensive_words_csv_path)
 informal_words = read_word_mappings(informal_words_csv_path)
+loanwords = read_word_mappings(loanword_mappings_csv_path)
 vocab = read_vocab(vocab_csv_path)
 compound_words = read_words(compound_words_csv_path)
 

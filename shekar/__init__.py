@@ -10,6 +10,7 @@ from .classification import SentimentClassifier, OffensiveLanguageClassifier
 from .embeddings import WordEmbedder, ContextualEmbedder
 from .spelling import SpellChecker
 from .morphology import Conjugator, Inflector, Stemmer, Lemmatizer
+from .diction import Persianizer
 from .hub import Hub
 
 __all__ = [
@@ -34,4 +35,5 @@ __all__ = [
     "Inflector",
     "Stemmer",
     "Lemmatizer",
+    "Persianizer",
 ]
