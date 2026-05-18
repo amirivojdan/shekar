@@ -1,6 +1,6 @@
 import pytest
 
-from shekar.diction.persianizer import Persianizer
+from shekar.transforms import Persianizer
 
 
 @pytest.fixture(scope="module")
