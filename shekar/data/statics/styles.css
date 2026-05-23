@@ -25,7 +25,6 @@
 
 html,
 body {
-    direction: rtl;
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.8;
@@ -54,7 +53,7 @@ body {
     color: #5c6677;
     letter-spacing: 0.03em;
     margin-bottom: 10px;
-    text-align: right;
+    text-align: start;
 }
 
 .nav-tools {
@@ -127,7 +126,7 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 28px;
-    text-align: right;
+    text-align: start;
 }
 
 .card-title {
@@ -171,7 +170,6 @@ textarea:focus {
 .actions {
     margin-top: 12px;
     display: flex;
-    direction: rtl;
     flex-direction: row;
     gap: 10px;
     align-items: center;
@@ -257,7 +255,7 @@ textarea:focus {
     border-radius: 8px;
     color: #b91c1c;
     font-size: 14px;
-    text-align: right;
+    text-align: start;
 }
 
 .error-msg.visible {
@@ -284,7 +282,7 @@ textarea:focus {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 12px;
-    text-align: right;
+    text-align: start;
 }
 
 .result-text {
@@ -403,7 +401,7 @@ textarea:focus {
     padding: 12px 16px;
     background: var(--light-gray);
     border-radius: 8px;
-    border-right: 4px solid var(--border);
+    border-inline-start: 4px solid var(--border);
     gap: 12px;
 }
 
@@ -454,29 +452,29 @@ textarea:focus {
 }
 
 .ner-item.border-PER {
-    border-right-color: #8b5cf6;
+    border-inline-start-color: #8b5cf6;
 }
 
 .ner-item.border-LOC {
-    border-right-color: #10b981;
+    border-inline-start-color: #10b981;
 }
 
 .ner-item.border-ORG {
-    border-right-color: #f59e0b;
+    border-inline-start-color: #f59e0b;
 }
 
 .ner-item.border-DAT {
-    border-right-color: #ec4899;
+    border-inline-start-color: #ec4899;
 }
 
 .ner-item.border-EVE {
-    border-right-color: #3b82f6;
+    border-inline-start-color: #3b82f6;
 }
 
 .empty-msg {
     font-size: 14px;
     color: #9ca3af;
-    text-align: right;
+    text-align: start;
 }
 
 /* POS */
@@ -539,7 +537,8 @@ textarea:focus {
     display: block;
 }
 
-.social-links a[aria-label="Telegram"] svg {
+.social-links a[aria-label="Telegram"] svg,
+.social-links a[aria-label="Documentation"] svg {
     width: 24px;
     height: 24px;
 }
@@ -587,6 +586,24 @@ textarea:focus {
     font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
+}
+
+.lang-select {
+    font-family: var(--font);
+    font-size: 13px;
+    padding: 5px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-color);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    direction: ltr;
+}
+
+.lang-select:focus {
+    border-color: var(--main-color);
 }
 
 .docs-link:hover {
@@ -695,4 +712,55 @@ footer a:hover {
 
 .model-select:focus {
     border-color: #00A693;
+}
+
+/* ─── LTR layout overrides (English / Tajik) ─────────────────────────────── */
+
+html[dir="ltr"] .legend {
+    flex-direction: row;
+    direction: ltr;
+}
+
+html[dir="ltr"] .legend-item {
+    direction: ltr;
+}
+
+html[dir="ltr"] .ner-item {
+    flex-direction: row;
+}
+
+html[dir="ltr"] .ner-text {
+    text-align: left;
+}
+
+html[dir="ltr"] .pos-list {
+    direction: ltr;
+    justify-content: flex-start;
+}
+
+html[dir="ltr"] .pos-item {
+    direction: ltr;
+    align-items: flex-start;
+    text-align: left;
+}
+
+html[dir="ltr"] .pos-tag {
+    direction: ltr;
+    text-align: left;
+}
+
+html[dir="ltr"] .stem-item {
+    align-items: flex-start;
+}
+
+html[dir="ltr"] .token-list {
+    direction: ltr;
+}
+
+html[dir="ltr"] .result-label {
+    text-align: left;
+}
+
+html[dir="ltr"] .actions {
+    flex-direction: row;
 }

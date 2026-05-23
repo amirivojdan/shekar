@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 
 <head>
   <meta charset="UTF-8" />
@@ -63,8 +63,33 @@
               fill="black" />
           </svg>
         </a>
+        <a href="https://lib.shekar.io" target="_blank" rel="noopener noreferrer" aria-label="Documentation">
+          <svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+               width="32" height="32" viewBox="0 0 64 64" xml:space="preserve">
+            <g>
+              <path fill="#F9EBB2" d="M56,62H10c-2.209,0-4-1.791-4-4s1.791-4,4-4h46V62z"/>
+              <g>
+                <path fill="#45AAB8" d="M6,4v49.537C7.062,52.584,8.461,52,10,52h2V2H8C6.896,2,6,2.896,6,4z"/>
+                <path fill="#45AAB8" d="M56,2H14v50h42h2v-2V4C58,2.896,57.104,2,56,2z"/>
+              </g>
+              <g>
+                <path fill="#394240" d="M60,52V4c0-2.211-1.789-4-4-4H8C5.789,0,4,1.789,4,4v54c0,3.313,2.687,6,6,6h49c0.553,0,1-0.447,1-1
+                  s-0.447-1-1-1h-1v-8C59.104,54,60,53.104,60,52z M6,4c0-1.104,0.896-2,2-2h4v50h-2c-1.539,0-2.938,0.584-4,1.537V4z M56,62H10
+                  c-2.209,0-4-1.791-4-4s1.791-4,4-4h46V62z M56,52H14V2h42c1.104,0,2,0.896,2,2v46v2H56z"/>
+                <path fill="#394240" d="M43,26H23c-0.553,0-1,0.447-1,1s0.447,1,1,1h20c0.553,0,1-0.447,1-1S43.553,26,43,26z"/>
+                <path fill="#394240" d="M49,20H23c-0.553,0-1,0.447-1,1s0.447,1,1,1h26c0.553,0,1-0.447,1-1S49.553,20,49,20z"/>
+                <path fill="#394240" d="M23,16h12c0.553,0,1-0.447,1-1s-0.447-1-1-1H23c-0.553,0-1,0.447-1,1S22.447,16,23,16z"/>
+              </g>
+              <path opacity="0.2" fill="#231F20" d="M6,4v49.537C7.062,52.584,8.461,52,10,52h2V2H8C6.896,2,6,2.896,6,4z"/>
+            </g>
+          </svg>
+        </a>
       </div>
-      <a class="docs-link" href="https://lib.shekar.io" target="_blank" rel="noopener noreferrer">Docs</a>
+      <select id="lang-select" class="lang-select">
+        <option value="fa">🇮🇷 فارسی</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="tg">🇹🇯 Тоҷикӣ</option>
+      </select>
     </div>
 
     <main class="container">
@@ -72,33 +97,34 @@
       <div class="section-header">
         <img src="assets/shekar_logo.png" alt="Shekar Logo" class="hero-logo" />
 
-        <h1>فارسی شکر است!</h1>
+        <h1 data-i18n="pageTitle">فارسی شکر است!</h1>
 
         <div class="toolkit-menu">
 
           <ul class="nav-tools" id="nav-tools">
-            <li><button class="nav-tab active" data-tab="normalizer">یکنواخت‌سازی</button></li>
-            <li><button class="nav-tab" data-tab="tokenizer">تکه‌سازی</button></li>
-            <li><button class="nav-tab" data-tab="stemmer">ریشه‌یابی</button></li>
-            <li><button class="nav-tab" data-tab="ner">شناسایی موجودیت</button></li>
-            <li><button class="nav-tab" data-tab="pos">برچسب‌گذاری دستوری</button></li>
-            <li><button class="nav-tab" data-tab="spellchecker">بررسی‌کنندهٔ املا</button></li>
-            <li><button class="nav-tab" data-tab="keywords">یافتن کلیدواژه</button></li>
-            <li><button class="nav-tab" data-tab="dep_parsing">واکاوی وابستگی دستوری</button></li>
+            <li><button class="nav-tab active" data-tab="normalizer" data-i18n="tab_normalizer">یکنواخت‌سازی</button></li>
+            <li><button class="nav-tab" data-tab="tokenizer" data-i18n="tab_tokenizer">تکه‌سازی</button></li>
+            <li><button class="nav-tab" data-tab="stemmer" data-i18n="tab_stemmer">ریشه‌یابی</button></li>
+            <li><button class="nav-tab" data-tab="ner" data-i18n="tab_ner">شناسایی موجودیت</button></li>
+            <li><button class="nav-tab" data-tab="pos" data-i18n="tab_pos">برچسب‌گذاری دستوری</button></li>
+            <li><button class="nav-tab" data-tab="spellchecker" data-i18n="tab_spellchecker">بررسی‌کنندهٔ املا</button></li>
+            <li><button class="nav-tab" data-tab="keywords" data-i18n="tab_keywords">یافتن کلیدواژه</button></li>
+            <li><button class="nav-tab" data-tab="dep_parsing" data-i18n="tab_dep_parsing">واکاوی وابستگی دستوری</button></li>
           </ul>
         </div>
       </div>
 
       <div id="panel-normalizer" class="panel card">
-        <div class="card-title">یکنواخت‌سازی نوشته</div>
-        <div class="card-desc">یکسان‌سازی الفبا، اعداد، نیم‌فاصله، نشانه‌گذاری و فاصله‌گذاری</div>
+        <div class="card-title" data-i18n="normalizer_title">یکنواخت‌سازی نوشته</div>
+        <div class="card-desc" data-i18n="normalizer_desc">یکسان‌سازی الفبا، اعداد، نیم‌فاصله، نشانه‌گذاری و فاصله‌گذاری</div>
         <textarea id="input-normalizer" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">«فارسی شِکَر است » نام داستان ڪوتاه طنز    آمێزی از محمد علی جمالــــــــزاده ی گرامی می   باشد که در سال 1921 منتشر  شده‌است و آغاز   ڱر تحول بزرگی در ادَبێات معاصر ایران بۃ شمار میرود.
 تا آخر هفته بر میگردم ولی نمیرم خونه بابا اینا. اونم اگه خواست میتونه بیاد خونه مون بمونه .
 یک کار آفرین نمونه و سخت کوش ، پیروز مندانه از پس دشواری ها برخواهدآمد.</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="normalizer">اجرا</button>
-          <button class="clear-btn" data-tab="normalizer">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="normalizer">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="normalizer">پاک کردن</button>
           <div class="spinner" id="spinner-normalizer"></div>
           <span class="status" id="status-normalizer"></span>
         </div>
@@ -106,7 +132,7 @@
         <div class="result-box" id="result-normalizer">
           <div style="display:flex; flex-direction:row; direction:ltr; background:var(--light-gray); border-radius:8px; overflow:hidden;">
             <div style="width:44px; flex-shrink:0; display:flex; justify-content:center; align-items:flex-start; padding-top:10px;">
-              <button id="copy-normalizer" onclick="copyNormalizerResult()" title="کپی نتیجه" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
+              <button id="copy-normalizer" onclick="copyNormalizerResult()" title="کپی نتیجه" data-i18n-title="copy_tooltip" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -120,128 +146,133 @@
 
       <div id="panel-tokenizer" class="panel card" style="display:none">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div class="card-title" style="margin:0;">تکه‌سازی (Tokenization)</div>
+          <div class="card-title" style="margin:0;" data-i18n="tokenizer_title">تکه‌سازی (Tokenization)</div>
           <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
-            <label for="model-tokenizer">روش:</label>
+            <label for="model-tokenizer" data-i18n="tokenizer_method">روش:</label>
             <select id="model-tokenizer" class="model-select" style="width:150px; padding:2px 6px; font-size:0.85rem;">
-              <option value="word">واژه (Word)</option>
-              <option value="sentence">گزاره (Sentence)</option>
+              <option value="word" data-i18n="tokenizer_word">واژه (Word)</option>
+              <option value="sentence" data-i18n="tokenizer_sentence">گزاره (Sentence)</option>
             </select>
           </div>
         </div>
-        <div class="card-desc">جداسازی نوشته به واژه‌ها یا گزاره‌ها</div>
+        <div class="card-desc" data-i18n="tokenizer_desc">جداسازی نوشته به واژه‌ها یا گزاره‌ها</div>
         <textarea id="input-tokenizer" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">زبان فارسی میهن من است!</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="tokenizer">اجرا</button>
-          <button class="clear-btn" data-tab="tokenizer">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="tokenizer">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="tokenizer">پاک کردن</button>
           <div class="spinner" id="spinner-tokenizer"></div>
           <span class="status" id="status-tokenizer"></span>
         </div>
         <div class="error-msg" id="error-tokenizer"></div>
         <div class="result-box" id="result-tokenizer">
-          <div class="result-label" id="label-tokenizer">توکن‌ها</div>
+          <div class="result-label" id="label-tokenizer" data-i18n="tokens_label">توکن‌ها</div>
           <div class="token-list" id="output-tokenizer"></div>
         </div>
       </div>
 
       <div id="panel-stemmer" class="panel card" style="display:none">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div class="card-title" style="margin:0;">ریشه‌یابی (Stemming/Lemmatization)</div>
+          <div class="card-title" style="margin:0;" data-i18n="stemmer_title">ریشه‌یابی (Stemming/Lemmatization)</div>
           <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
-            <label for="model-stemmer">روش:</label>
+            <label for="model-stemmer" data-i18n="stemmer_method">روش:</label>
             <select id="model-stemmer" class="model-select" style="width:150px; padding:2px 6px; font-size:0.85rem;">
               <option value="stemmer">Stemmer</option>
               <option value="lemmatizer">Lemmatizer</option>
             </select>
           </div>
         </div>
-        <div class="card-desc">یافتن ریشه یا بن هر واژه با زدودن وندهای واژه‌ساز</div>
+        <div class="card-desc" data-i18n="stemmer_desc">یافتن ریشه یا بن هر واژه با زدودن وندهای واژه‌ساز</div>
         <textarea id="input-stemmer" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">دانشجویان دانشگاه‌های بزرگ درخواست‌هایشان را فرستادند.</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="stemmer">اجرا</button>
-          <button class="clear-btn" data-tab="stemmer">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="stemmer">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="stemmer">پاک کردن</button>
           <div class="spinner" id="spinner-stemmer"></div>
           <span class="status" id="status-stemmer"></span>
         </div>
         <div class="error-msg" id="error-stemmer"></div>
         <div class="result-box" id="result-stemmer">
-          <div class="result-label" id="label-stemmer">واژه ← ریشه</div>
+          <div class="result-label" id="label-stemmer" data-i18n="stem_label">واژه ← ریشه</div>
           <div class="stem-grid" id="output-stemmer"></div>
         </div>
       </div>
 
       <div id="panel-ner" class="panel card" style="display:none">
-        <div class="card-title">شناسایی موجودیت‌های نام‌دار (NER)</div>
-        <div class="card-desc">شناسایی نام‌ها، مکان‌ها، سازمان‌ها، تاریخ‌ها و رویدادها</div>
+        <div class="card-title" data-i18n="ner_title">شناسایی موجودیت‌های نام‌دار (NER)</div>
+        <div class="card-desc" data-i18n="ner_desc">شناسایی نام‌ها، مکان‌ها، سازمان‌ها، تاریخ‌ها و رویدادها</div>
         <div class="legend">
           <div class="legend-item">
-            <div class="legend-dot" style="background:#8b5cf6"></div>شخص
+            <div class="legend-dot" style="background:#8b5cf6"></div><span data-i18n="ner_PER">شخص</span>
           </div>
           <div class="legend-item">
-            <div class="legend-dot" style="background:#10b981"></div>مکان
+            <div class="legend-dot" style="background:#10b981"></div><span data-i18n="ner_LOC">مکان</span>
           </div>
           <div class="legend-item">
-            <div class="legend-dot" style="background:#f59e0b"></div>سازمان
+            <div class="legend-dot" style="background:#f59e0b"></div><span data-i18n="ner_ORG">سازمان</span>
           </div>
           <div class="legend-item">
-            <div class="legend-dot" style="background:#ec4899"></div>تاریخ
+            <div class="legend-dot" style="background:#ec4899"></div><span data-i18n="ner_DAT">تاریخ</span>
           </div>
           <div class="legend-item">
-            <div class="legend-dot" style="background:#3b82f6"></div>رویداد
+            <div class="legend-dot" style="background:#3b82f6"></div><span data-i18n="ner_EVE">رویداد</span>
           </div>
         </div>
         <textarea id="input-ner" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">جلال خالقی‌مطلق، ایران‌شناس و ویراستکار نامدار شاهنامهٔ فردوسی، زادهٔ ۲۰ شهریور ۱۳۱۶ در تهران، در ۱۰ اسفند ۱۴۰۴ در آلمان درگذشت.</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="ner">اجرا</button>
-          <button class="clear-btn" data-tab="ner">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="ner">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="ner">پاک کردن</button>
           <div class="spinner" id="spinner-ner"></div>
           <span class="status" id="status-ner"></span>
         </div>
         <div class="error-msg" id="error-ner"></div>
         <div class="result-box" id="result-ner">
-          <div class="result-label">موجودیت‌های شناسایی‌شده</div>
+          <div class="result-label" data-i18n="ner_result_label">موجودیت‌های شناسایی‌شده</div>
           <div class="ner-list" id="output-ner"></div>
         </div>
       </div>
 
       <div id="panel-pos" class="panel card" style="display:none">
-        <div class="card-title">برچسب‌گذاری دستوری (POS Tagging)</div>
-        <div class="card-desc">تعیین نقش دستوری هر واژه: اسم، فعل، صفت، قید و …</div>
+        <div class="card-title" data-i18n="pos_title">برچسب‌گذاری دستوری (POS Tagging)</div>
+        <div class="card-desc" data-i18n="pos_desc">تعیین نقش دستوری هر واژه: اسم، فعل، صفت، قید و …</div>
         <textarea id="input-pos" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">دانشجویان در دانشگاه درس می‌خوانند.</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="pos">اجرا</button>
-          <button class="clear-btn" data-tab="pos">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="pos">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="pos">پاک کردن</button>
           <div class="spinner" id="spinner-pos"></div>
           <span class="status" id="status-pos"></span>
         </div>
         <div class="error-msg" id="error-pos"></div>
         <div class="result-box" id="result-pos">
-          <div class="result-label">برچسب‌های دستوری</div>
+          <div class="result-label" data-i18n="pos_result_label">برچسب‌های دستوری</div>
           <div class="pos-list" id="output-pos"></div>
         </div>
       </div>
 
       <div id="panel-spellchecker" class="panel card" style="display:none">
-        <div class="card-title">بررسی املای واژگان (Spell Checking)</div>
-        <div class="card-desc">بررسی‌کنندهٔ خودکار املای واژگان فارسی</div>
+        <div class="card-title" data-i18n="spellchecker_title">بررسی املای واژگان (Spell Checking)</div>
+        <div class="card-desc" data-i18n="spellchecker_desc">بررسی‌کنندهٔ خودکار املای واژگان فارسی</div>
         <textarea id="input-spellchecker" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">دییروز با پژنان به کتبخانه رفتیم.</textarea>
         <div class="btn-row">
-          <button class="run-btn" data-tab="spellchecker">اجرا</button>
-          <button class="clear-btn" data-tab="spellchecker">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="spellchecker">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="spellchecker">پاک کردن</button>
           <div class="spinner" id="spinner-spellchecker"></div>
           <span class="status" id="status-spellchecker"></span>
         </div>
         <div class="error-msg" id="error-spellchecker"></div>
         <div class="result-box" id="result-spellchecker">
-          <div class="result-label">نوشتهٔ ویراش‌شده</div>
+          <div class="result-label" data-i18n="spellchecker_result_label">نوشتهٔ ویراش‌شده</div>
           <div style="display:flex; flex-direction:row; direction:ltr; background:var(--light-gray); border-radius:8px; overflow:hidden;">
             <div style="width:44px; flex-shrink:0; display:flex; justify-content:center; align-items:flex-start; padding-top:10px;">
-              <button id="copy-spellchecker" onclick="copySpellcheckerResult()" title="کپی نتیجه" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
+              <button id="copy-spellchecker" onclick="copySpellcheckerResult()" title="کپی نتیجه" data-i18n-title="copy_tooltip" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -255,39 +286,41 @@
 
       <div id="panel-keywords" class="panel card" style="display:none">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div class="card-title" style="margin:0;">یافتن کلیدواژه (Keywords Extraction)</div>
+          <div class="card-title" style="margin:0;" data-i18n="keywords_title">یافتن کلیدواژه (Keywords Extraction)</div>
           <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
-            <label for="model-keywords">روش:</label>
+            <label for="model-keywords" data-i18n="keywords_method">روش:</label>
             <select id="model-keywords" class="model-select" style="width:110px; padding:2px 6px; font-size:0.85rem;">
               <option value="rake">RAKE</option>
               <option value="textrank">TextRank</option>
             </select>
           </div>
         </div>
-        <div class="card-desc">شناسایی کلیدواژه‌های مهم از متن با الگوریتم‌های RAKE و TextRank</div>
+        <div class="card-desc" data-i18n="keywords_desc">شناسایی کلیدواژه‌های مهم از متن با الگوریتم‌های RAKE و TextRank</div>
         <textarea id="input-keywords" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">زبان و ادبیات فارسی یکی از غنی‌ترین زبان‌های جهان است که تاریخی کهن و فرهنگی پربار دارد.</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="keywords">اجرا</button>
-          <button class="clear-btn" data-tab="keywords">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="keywords">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="keywords">پاک کردن</button>
           <div class="spinner" id="spinner-keywords"></div>
           <span class="status" id="status-keywords"></span>
         </div>
         <div class="error-msg" id="error-keywords"></div>
         <div class="result-box" id="result-keywords">
-          <div class="result-label">کلیدواژه‌ها</div>
+          <div class="result-label" data-i18n="keywords_result_label">کلیدواژه‌ها</div>
           <div class="token-list" id="output-keywords"></div>
         </div>
       </div>
 
       <div id="panel-dep_parsing" class="panel card" style="display:none">
-        <div class="card-title">واکاوی وابستگی دستوری (Dependency Parsing)</div>
-        <div class="card-desc">شناسایی وابستگی میان واژه‌ها و نمایش درخت دستوری</div>
+        <div class="card-title" data-i18n="dep_parsing_title">واکاوی وابستگی دستوری (Dependency Parsing)</div>
+        <div class="card-desc" data-i18n="dep_parsing_desc">شناسایی وابستگی میان واژه‌ها و نمایش درخت دستوری</div>
         <textarea id="input-dep_parsing" dir="rtl"
+          data-i18n-placeholder="input_placeholder"
           placeholder="نوشته فارسی خود را اینجا وارد کنید…">ما با آنچه می‌سازیم ایرانی هستیم.</textarea>
         <div class="actions">
-          <button class="run-btn" data-tab="dep_parsing">اجرا</button>
-          <button class="clear-btn" data-tab="dep_parsing">پاک کردن</button>
+          <button class="run-btn" data-i18n="run" data-tab="dep_parsing">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="dep_parsing">پاک کردن</button>
           <div class="spinner" id="spinner-dep_parsing"></div>
           <span class="status" id="status-dep_parsing"></span>
         </div>
@@ -307,13 +340,183 @@
   </div>
 
   <script>
-    const NER_FA = { PER: 'شخص', LOC: 'مکان', ORG: 'سازمان', DAT: 'تاریخ', EVE: 'رویداد' };
-    const POS_FA = {
-      NOUN: 'اسم', VERB: 'فعل', ADJ: 'صفت', ADV: 'قید', PRON: 'ضمیر',
-      ADP: 'حرف اضافه', DET: 'حرف تعریف', CCONJ: '接続詞', SCONJ: 'حرف ربط',
-      NUM: 'عدد', AUX: 'فعل کمکی', PART: 'ادات', INTJ: 'ندا',
-      PROPN: 'اسم خاص', PUNCT: 'نگارش', X: 'سایر', '_': '—'
+    // ─── Translations ──────────────────────────────────────────────────────────
+    const LANGS = {
+      fa: {
+        dir: 'rtl', htmlLang: 'fa',
+        pageTitle: 'فارسی شکر است!',
+        docs: 'مستندات',
+        tab_normalizer: 'یکنواخت‌سازی',
+        tab_tokenizer: 'تکه‌سازی',
+        tab_stemmer: 'ریشه‌یابی',
+        tab_ner: 'شناسایی موجودیت',
+        tab_pos: 'برچسب‌گذاری دستوری',
+        tab_spellchecker: 'بررسی‌کنندهٔ املا',
+        tab_keywords: 'یافتن کلیدواژه',
+        tab_dep_parsing: 'واکاوی وابستگی دستوری',
+        normalizer_title: 'یکنواخت‌سازی نوشته',
+        normalizer_desc: 'یکسان‌سازی الفبا، اعداد، نیم‌فاصله، نشانه‌گذاری و فاصله‌گذاری',
+        tokenizer_title: 'تکه‌سازی (Tokenization)',
+        tokenizer_desc: 'جداسازی نوشته به واژه‌ها یا گزاره‌ها',
+        tokenizer_method: 'روش:', tokenizer_word: 'واژه (Word)', tokenizer_sentence: 'گزاره (Sentence)',
+        stemmer_title: 'ریشه‌یابی (Stemming/Lemmatization)',
+        stemmer_desc: 'یافتن ریشه یا بن هر واژه با زدودن وندهای واژه‌ساز',
+        stemmer_method: 'روش:',
+        ner_title: 'شناسایی موجودیت‌های نام‌دار (NER)',
+        ner_desc: 'شناسایی نام‌ها، مکان‌ها، سازمان‌ها، تاریخ‌ها و رویدادها',
+        ner_result_label: 'موجودیت‌های شناسایی‌شده',
+        ner_PER: 'شخص', ner_LOC: 'مکان', ner_ORG: 'سازمان', ner_DAT: 'تاریخ', ner_EVE: 'رویداد',
+        pos_title: 'برچسب‌گذاری دستوری (POS Tagging)',
+        pos_desc: 'تعیین نقش دستوری هر واژه: اسم، فعل، صفت، قید و …',
+        pos_result_label: 'برچسب‌های دستوری',
+        spellchecker_title: 'بررسی املای واژگان (Spell Checking)',
+        spellchecker_desc: 'بررسی‌کنندهٔ خودکار املای واژگان فارسی',
+        spellchecker_result_label: 'نوشتهٔ ویراش‌شده',
+        keywords_title: 'یافتن کلیدواژه (Keywords Extraction)',
+        keywords_desc: 'شناسایی کلیدواژه‌های مهم از متن با الگوریتم‌های RAKE و TextRank',
+        keywords_method: 'روش:', keywords_result_label: 'کلیدواژه‌ها',
+        dep_parsing_title: 'واکاوی وابستگی دستوری (Dependency Parsing)',
+        dep_parsing_desc: 'شناسایی وابستگی میان واژه‌ها و نمایش درخت دستوری',
+        run: 'اجرا', clear: 'پاک کردن', copy_tooltip: 'کپی نتیجه',
+        input_placeholder: 'نوشته فارسی خود را اینجا وارد کنید…',
+        processing: 'در حال پردازش…', done: 'انجام شد',
+        done_ms: ms => `انجام شد (${ms} ms)`,
+        error_prefix: 'خطا: ', server_error: 'خطای سرور',
+        tokens_label: 'توکن‌ها', sentences_label: 'جمله‌ها',
+        stem_label: 'واژه ← ریشه', lemma_label: 'واژه ← لِما',
+        ner_empty: 'موجودیتی شناسایی نشد.', keywords_empty: 'کلیدواژه‌ای یافت نشد.', dep_empty: 'نتیجه‌ای یافت نشد.',
+        NER: { PER: 'شخص', LOC: 'مکان', ORG: 'سازمان', DAT: 'تاریخ', EVE: 'رویداد' },
+        POS: { NOUN: 'اسم', VERB: 'فعل', ADJ: 'صفت', ADV: 'قید', PRON: 'ضمیر',
+               ADP: 'حرف اضافه', DET: 'حرف تعریف', CCONJ: 'پیوند همپایه', SCONJ: 'حرف ربط',
+               NUM: 'عدد', AUX: 'فعل کمکی', PART: 'ادات', INTJ: 'ندا',
+               PROPN: 'اسم خاص', PUNCT: 'نگارش', X: 'سایر', '_': '—' },
+      },
+      en: {
+        dir: 'ltr', htmlLang: 'en',
+        pageTitle: 'Persian is Sugar!',
+        docs: 'Docs',
+        tab_normalizer: 'Normalizer',
+        tab_tokenizer: 'Tokenizer',
+        tab_stemmer: 'Lemmatization',
+        tab_ner: 'Named Entity Recognition',
+        tab_pos: 'POS Tagging',
+        tab_spellchecker: 'Spell Checker',
+        tab_keywords: 'Keywords',
+        tab_dep_parsing: 'Dependency Parsing',
+        normalizer_title: 'Text Normalization',
+        normalizer_desc: 'Unify alphabet, numbers, half-space, punctuation, and spacing',
+        tokenizer_title: 'Tokenization',
+        tokenizer_desc: 'Split text into words or sentences',
+        tokenizer_method: 'Method:', tokenizer_word: 'Word', tokenizer_sentence: 'Sentence',
+        stemmer_title: 'Stemming / Lemmatization',
+        stemmer_desc: 'Find the root or base form of each word by removing affixes',
+        stemmer_method: 'Method:',
+        ner_title: 'Named Entity Recognition (NER)',
+        ner_desc: 'Identify names, locations, organizations, dates, and events',
+        ner_result_label: 'Recognized Entities',
+        ner_PER: 'Person', ner_LOC: 'Location', ner_ORG: 'Organization', ner_DAT: 'Date', ner_EVE: 'Event',
+        pos_title: 'Part-of-Speech Tagging (POS)',
+        pos_desc: 'Determine the grammatical role of each word: noun, verb, adjective, adverb…',
+        pos_result_label: 'POS Tags',
+        spellchecker_title: 'Spell Checking',
+        spellchecker_desc: 'Automatic spell checker for Persian words',
+        spellchecker_result_label: 'Corrected Text',
+        keywords_title: 'Keyword Extraction',
+        keywords_desc: 'Extract important keywords using RAKE and TextRank algorithms',
+        keywords_method: 'Method:', keywords_result_label: 'Keywords',
+        dep_parsing_title: 'Dependency Parsing',
+        dep_parsing_desc: 'Identify dependencies between words and display the dependency tree',
+        run: 'Run', clear: 'Clear', copy_tooltip: 'Copy result',
+        input_placeholder: 'Enter your Persian text here…',
+        processing: 'Processing…', done: 'Done',
+        done_ms: ms => `Done (${ms} ms)`,
+        error_prefix: 'Error: ', server_error: 'Server error',
+        tokens_label: 'Tokens', sentences_label: 'Sentences',
+        stem_label: 'Word → Stem', lemma_label: 'Word → Lemma',
+        ner_empty: 'No entities found.', keywords_empty: 'No keywords found.', dep_empty: 'No result found.',
+        NER: { PER: 'Person', LOC: 'Location', ORG: 'Organization', DAT: 'Date', EVE: 'Event' },
+        POS: { NOUN: 'Noun', VERB: 'Verb', ADJ: 'Adj', ADV: 'Adv', PRON: 'Pronoun',
+               ADP: 'Adposition', DET: 'Determiner', CCONJ: 'Coord. Conj.', SCONJ: 'Sub. Conj.',
+               NUM: 'Number', AUX: 'Auxiliary', PART: 'Particle', INTJ: 'Interjection',
+               PROPN: 'Proper Noun', PUNCT: 'Punctuation', X: 'Other', '_': '—' },
+      },
+      tg: {
+        dir: 'ltr', htmlLang: 'tg',
+        pageTitle: 'Форсӣ шакар аст!',
+        docs: 'Ҳуҷҷатҳо',
+        tab_normalizer: 'Меъёрсозӣ',
+        tab_tokenizer: 'Аломатсозӣ',
+        tab_stemmer: 'Решаёбӣ',
+        tab_ner: 'Шиносоии мавҷудият',
+        tab_pos: 'Нишонагузории дастурӣ',
+        tab_spellchecker: 'Санҷиши имло',
+        tab_keywords: 'Калидвожаёбӣ',
+        tab_dep_parsing: 'Таҳлили вобастагии дастурӣ',
+        normalizer_title: 'Меъёрсозии матн',
+        normalizer_desc: 'Якхелсозии алифбо, рақамҳо, нимфосила, нишонагузорӣ ва фосилагузорӣ',
+        tokenizer_title: 'Аломатсозӣ (Tokenization)',
+        tokenizer_desc: 'Тақсими матн ба калимаҳо ё ҷумлаҳо',
+        tokenizer_method: 'Усул:', tokenizer_word: 'Калима (Word)', tokenizer_sentence: 'Ҷумла (Sentence)',
+        stemmer_title: 'Решаёбӣ (Stemming/Lemmatization)',
+        stemmer_desc: 'Ёфтани реша ё бунёди ҳар калима бо бартараф кардани пасвандҳо',
+        stemmer_method: 'Усул:',
+        ner_title: 'Шиносоии мавҷудиятҳои номдор (NER)',
+        ner_desc: 'Шиносоии номҳо, макон‌ҳо, созмон‌ҳо, таърих‌ҳо ва рӯйдодҳо',
+        ner_result_label: 'Мавҷудиятҳои шиносоишуда',
+        ner_PER: 'Шахс', ner_LOC: 'Макон', ner_ORG: 'Созмон', ner_DAT: 'Таърих', ner_EVE: 'Рӯйдод',
+        pos_title: 'Нишонагузории дастурӣ (POS Tagging)',
+        pos_desc: 'Муайян кардани нақши дастурии ҳар калима: исм, феъл, сифат, қайд…',
+        pos_result_label: 'Нишонаҳои дастурӣ',
+        spellchecker_title: 'Санҷиши имлои калимаҳо (Spell Checking)',
+        spellchecker_desc: 'Санҷандаи автоматии имлои калимаҳои форсӣ',
+        spellchecker_result_label: 'Матни ислоҳшуда',
+        keywords_title: 'Калидвожаёбӣ (Keywords Extraction)',
+        keywords_desc: 'Шиносоии калидвожаҳои муҳим аз матн бо алгоритмҳои RAKE ва TextRank',
+        keywords_method: 'Усул:', keywords_result_label: 'Калидвожаҳо',
+        dep_parsing_title: 'Таҳлили вобастагии дастурӣ (Dependency Parsing)',
+        dep_parsing_desc: 'Шиносоии вобастагӣ миёни калимаҳо ва намоиши дарахти дастурӣ',
+        run: 'Иҷро', clear: 'Тоза кардан', copy_tooltip: 'Нусхабардорӣ',
+        input_placeholder: 'Матни форсии худро дар ин ҷо ворид кунед…',
+        processing: 'Коркунон…', done: 'Анҷом ёфт',
+        done_ms: ms => `Анҷом ёфт (${ms} ms)`,
+        error_prefix: 'Хато: ', server_error: 'Хатои сервер',
+        tokens_label: 'Аломатҳо', sentences_label: 'Ҷумлаҳо',
+        stem_label: 'Калима → Реша', lemma_label: 'Калима → Лема',
+        ner_empty: 'Мавҷудияте ёфт нашуд.', keywords_empty: 'Калидвожае ёфт нашуд.', dep_empty: 'Натиҷае ёфт нашуд.',
+        NER: { PER: 'Шахс', LOC: 'Макон', ORG: 'Созмон', DAT: 'Таърих', EVE: 'Рӯйдод' },
+        POS: { NOUN: 'Исм', VERB: 'Феъл', ADJ: 'Сифат', ADV: 'Қайд', PRON: 'Замир',
+               ADP: 'Пешоянд', DET: 'Артикл', CCONJ: 'Пайвандаки ҳамоҳанг', SCONJ: 'Пайвандак',
+               NUM: 'Рақам', AUX: 'Феъли ёрдамӣ', PART: 'Адот', INTJ: 'Нидо',
+               PROPN: 'Исми хос', PUNCT: 'Нишонаи нақтагузорӣ', X: 'Дигар', '_': '—' },
+      },
     };
+
+    let currentLang = 'fa';
+
+    function applyLang(lang) {
+      const t = LANGS[lang];
+      if (!t) return;
+      currentLang = lang;
+      document.documentElement.lang = t.htmlLang;
+      document.documentElement.dir = t.dir;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] != null && typeof t[key] !== 'function' && typeof t[key] !== 'object')
+          el.textContent = t[key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (t[key] != null) el.placeholder = t[key];
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (t[key] != null) el.title = t[key];
+      });
+      document.getElementById('lang-select').value = lang;
+      try { localStorage.setItem('shekar-lang', lang); } catch(e) {}
+    }
+
+    document.getElementById('lang-select').addEventListener('change', e => applyLang(e.target.value));
 
     document.getElementById('nav-tools').addEventListener('click', e => {
       const btn = e.target.closest('.nav-tab');
@@ -341,6 +544,7 @@
       const text = document.getElementById('input-' + tab).value.trim();
       if (!text) return;
 
+      const L = LANGS[currentLang];
       const btn = document.querySelector(`.run-btn[data-tab="${tab}"]`);
       const spinner = document.getElementById('spinner-' + tab);
       const statusEl = document.getElementById('status-' + tab);
@@ -349,36 +553,30 @@
 
       btn.disabled = true;
       spinner.classList.add('visible');
-      statusEl.textContent = 'در حال پردازش…';
+      statusEl.textContent = L.processing;
       errorEl.classList.remove('visible');
       resultBox.classList.remove('visible');
 
       try {
         const payload = { text };
-        if (tab === 'tokenizer') {
-          payload.model = document.getElementById('model-tokenizer').value;
-        }
-        if (tab === 'keywords') {
-          payload.model = document.getElementById('model-keywords').value;
-        }
-        if (tab === 'stemmer') {
-          payload.model = document.getElementById('model-stemmer').value;
-        }
+        if (tab === 'tokenizer') payload.model = document.getElementById('model-tokenizer').value;
+        if (tab === 'keywords') payload.model = document.getElementById('model-keywords').value;
+        if (tab === 'stemmer') payload.model = document.getElementById('model-stemmer').value;
         const res = await fetch('/api/' + tab, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: 'خطای سرور' }));
-          throw new Error(err.error || 'خطای سرور');
+          const err = await res.json().catch(() => ({ error: L.server_error }));
+          throw new Error(err.error || L.server_error);
         }
         const data = await res.json();
         renderResult(tab, data);
         resultBox.classList.add('visible');
-        statusEl.textContent = data.elapsed_ms != null ? `انجام شد (${data.elapsed_ms} ms)` : 'انجام شد';
+        statusEl.textContent = data.elapsed_ms != null ? L.done_ms(data.elapsed_ms) : L.done;
       } catch (err) {
-        errorEl.textContent = 'خطا: ' + err.message;
+        errorEl.textContent = L.error_prefix + err.message;
         errorEl.classList.add('visible');
         statusEl.textContent = '';
       } finally {
@@ -388,11 +586,12 @@
     }
 
     function renderResult(tab, data) {
+      const L = LANGS[currentLang];
       if (tab === 'normalizer') {
         document.getElementById('output-normalizer').textContent = data.result;
       } else if (tab === 'tokenizer') {
         const model = document.getElementById('model-tokenizer').value;
-        document.getElementById('label-tokenizer').textContent = model === 'sentence' ? 'جمله‌ها' : 'توکن‌ها';
+        document.getElementById('label-tokenizer').textContent = model === 'sentence' ? L.sentences_label : L.tokens_label;
         const el = document.getElementById('output-tokenizer');
         el.innerHTML = '';
         if (model === 'sentence') {
@@ -412,7 +611,7 @@
         }
       } else if (tab === 'stemmer') {
         const model = document.getElementById('model-stemmer').value;
-        document.getElementById('label-stemmer').textContent = model === 'lemmatizer' ? 'واژه ← لِما' : 'واژه ← ریشه';
+        document.getElementById('label-stemmer').textContent = model === 'lemmatizer' ? L.lemma_label : L.stem_label;
         const el = document.getElementById('output-stemmer');
         el.innerHTML = '';
         (data.stems || []).forEach(([word, stem]) => {
@@ -425,13 +624,13 @@
         const el = document.getElementById('output-ner');
         el.innerHTML = '';
         if (!data.entities || data.entities.length === 0) {
-          el.innerHTML = '<span class="empty-msg">موجودیتی شناسایی نشد.</span>';
+          el.innerHTML = `<span class="empty-msg">${L.ner_empty}</span>`;
           return;
         }
         data.entities.forEach(([text, label]) => {
           const item = document.createElement('div');
           item.className = `ner-item border-${label}`;
-          item.innerHTML = `<span class="ner-text">${text}</span><span class="ner-tag tag-${label}">${NER_FA[label] || label}</span>`;
+          item.innerHTML = `<span class="ner-text">${text}</span><span class="ner-tag tag-${label}">${L.NER[label] || label}</span>`;
           el.appendChild(item);
         });
       } else if (tab === 'pos') {
@@ -440,7 +639,7 @@
         (data.tags || []).forEach(([word, tag]) => {
           const item = document.createElement('div');
           item.className = 'pos-item';
-          item.innerHTML = `<span class="pos-word">${word}</span><span class="pos-tag">${POS_FA[tag] || tag}</span>`;
+          item.innerHTML = `<span class="pos-word">${word}</span><span class="pos-tag">${L.POS[tag] || tag}</span>`;
           el.appendChild(item);
         });
       } else if (tab === 'spellchecker') {
@@ -449,7 +648,7 @@
         const el = document.getElementById('output-keywords');
         el.innerHTML = '';
         if (!data.keywords || data.keywords.length === 0) {
-          el.innerHTML = '<span class="empty-msg">کلیدواژه‌ای یافت نشد.</span>';
+          el.innerHTML = `<span class="empty-msg">${L.keywords_empty}</span>`;
           return;
         }
         data.keywords.forEach(kw => {
@@ -469,7 +668,7 @@
     }
 
     function buildDepTreeSVG(tokens) {
-      if (!tokens.length) return '<span class="empty-msg">نتیجه‌ای یافت نشد.</span>';
+      if (!tokens.length) return `<span class="empty-msg">${LANGS[currentLang].dep_empty}</span>`;
 
       const BOX_W = 86, BOX_H = 36, H_GAP = 14;
       const LEVEL_H = 46, ARC_TOP = 26, PAD = 20, PAD_BOT = 14;
@@ -566,6 +765,14 @@
         setTimeout(() => { btn.innerHTML = COPY_ICON; }, 1500);
       });
     }
+
+    // Initialize language from saved preference or default to Persian
+    (function () {
+      let saved = 'fa';
+      try { saved = localStorage.getItem('shekar-lang') || 'fa'; } catch(e) {}
+      if (!LANGS[saved]) saved = 'fa';
+      applyLang(saved);
+    })();
   </script>
 
 </body>
