@@ -66,7 +66,7 @@ class ByT5Decoder:
     @staticmethod
     def _make_session(path: Path) -> ort.InferenceSession:
         so = ort.SessionOptions()
-        so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_BASIC
         so.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         return ort.InferenceSession(
             str(path), sess_options=so, providers=get_onnx_providers()
