@@ -463,6 +463,60 @@ print(offensive_classifier("تو خیلی احمق و بی‌شرفی!"))
 ('offensive', 0.7607775330543518)
 ```
 
+### Informal Language Classification
+
+The `InformalLanguageClassifier` detects whether Persian text is written in an informal (colloquial) or formal style. This is useful for preprocessing pipelines, style-aware normalization, and sociolinguistic analysis.
+
+```python
+from shekar.classification import InformalLanguageClassifier
+
+informal_classifer = InformalLanguageClassifier()
+informal_classifer("میرم خونه یکم استراحت کنم.")
+```
+
+## Transliteration
+
+The transliteration module provides bidirectional script conversion between Persian (Farsi) and Tajik scripts. `FarsiToTajik` converts Persian Arabic-script text to Tajik Cyrillic, and `TajikToFarsi` performs the reverse conversion.
+
+```python
+from shekar import FarsiToTajik, TajikToFarsi
+
+fa = FarsiToTajik()
+print(fa("ایران مادر است!"))
+
+tj = TajikToFarsi()
+print(tj("Эрон модар аст!"))
+```
+
+## Text Augmentation
+
+The `transforms.noise` module provides noise-based data augmentation operators for Persian text. These are useful for training robust NLP models by simulating real-world text corruption such as OCR errors, keyboard typos, and irregular whitespace.
+
+- **`KeyboardNoise`**: Randomly replaces characters with visually or positionally adjacent keys on a Persian keyboard layout.
+- **`OCRNoise`**: Simulates OCR scanning errors by substituting characters with visually similar ones.
+- **`WhitespaceNoise`**: Randomly inserts, removes, or alters whitespace between words and subwords.
+
+```python
+from shekar import WhitespaceNoise, OCRNoise, KeyboardNoise
+
+text = "عمری دگر بباید بعد از وفات ما را"
+
+keyboard_noise = KeyboardNoise()
+print(keyboard_noise(text))
+
+ocr_noise = OCRNoise()
+print(ocr_noise(text))
+
+white_noise = WhitespaceNoise()
+print(white_noise(text))
+```
+
+```output
+عمریی دگر بباید بعد از وفات ما را
+عمری ذگر بباید بعد از وفات ما را
+عمری‌دگر بباید‌بعد‌از وفاتما را
+```
+
 ## Keyword Extraction
 
 [![Notebook](https://img.shields.io/badge/Notebook-Jupyter-00A693.svg)](examples/keyword_extraction.ipynb)  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirivojdan/shekar/blob/main/examples/keyword_extraction.ipynb)

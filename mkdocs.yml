@@ -33,6 +33,9 @@ nav:
     - Part-of-Speech Tagging: tutorials/pos.md
     - Named Entity Recognition: tutorials/ner.md
     - Dependency Parsing: tutorials/dependency_parsing.md
+    - Classification: tutorials/classification.md
+    - Transliteration: tutorials/transliteration.md
+    - Text Augmentation: tutorials/augmentation.md
     - Keyword Extraction: tutorials/keyword_extraction.md
     - Spell Checking: tutorials/spell_checking.md
     - Visualization: tutorials/visualization.md
@@ -67,7 +70,10 @@ plugins:
             Part-of-Speech Tagging: برچسب‌گذاری دستوری
             Named Entity Recognition: شناسایی موجودیت‌های نامدار
             Dependency Parsing: واکاوی وابستگی دستوری
-            Keyword Extraction: یافتن کلیدواژه 
+            Classification: دسته‌بندی متن
+            Transliteration: نویسه‌گردانی
+            Text Augmentation: افزایش داده متنی
+            Keyword Extraction: یافتن کلیدواژه
             Spell Checking: بررسی‌کنندهٔ املا
             Visualization: نمایش
 
