@@ -111,6 +111,6 @@ def test_normalize_method_alias(normalizer):
 
 
 def test_ya_normalizer_joda(normalizer):
-    assert normalizer("خانۀ ما") == "خانه‌ی ما"
-    assert normalizer("خانه‌ی ما") == "خانه‌ی ما"
-    assert normalizer("خانه ی ما") == "خانه‌ی ما"
+    assert normalizer("خانه‌ی ما") == "خانۀ ما"
+    assert normalizer("خانۀ ما") == "خانۀ ما"
+    assert normalizer("خانه ی ما") == "خانۀ ما"

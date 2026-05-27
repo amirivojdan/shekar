@@ -10,7 +10,14 @@ from .classification import SentimentClassifier, OffensiveLanguageClassifier
 from .embeddings import WordEmbedder, ContextualEmbedder
 from .spelling import SpellChecker
 from .morphology import Conjugator, Inflector, Stemmer, Lemmatizer
-from .transforms import Persianizer
+from .transforms import (
+    Persianizer,
+    KeyboardNoise,
+    OCRNoise,
+    WhitespaceNoise,
+    NumberToWords,
+)
+from .transliteration import FarsiToTajik, TajikToFarsi
 from .hub import Hub
 
 __all__ = [
@@ -36,4 +43,10 @@ __all__ = [
     "Stemmer",
     "Lemmatizer",
     "Persianizer",
+    "KeyboardNoise",
+    "OCRNoise",
+    "WhitespaceNoise",
+    "NumberToWords",
+    "FarsiToTajik",
+    "TajikToFarsi",
 ]

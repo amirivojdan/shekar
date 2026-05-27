@@ -11,6 +11,7 @@ Serves the static UI and exposes REST API endpoints for:
   POST /api/spellchecker  — spell checking / correction
   POST /api/keywords      — keyword extraction (model: rake|textrank)
   POST /api/dep_parsing   — dependency parsing (word, head, deprel)
+  POST /api/transliteration — transliteration (direction: fa2tg|tg2fa)
 """
 
 import json
@@ -34,6 +35,8 @@ _pos = None
 _spell_checker = None
 _keyword_extractors = {}
 _dep_parser = None
+_farsi_to_tajik = None
+_tajik_to_farsi = None
 
 
 def get_normalizer():
@@ -126,6 +129,24 @@ def get_dep_parser():
     return _dep_parser
 
 
+def get_farsi_to_tajik():
+    global _farsi_to_tajik
+    if _farsi_to_tajik is None:
+        from shekar import FarsiToTajik
+
+        _farsi_to_tajik = FarsiToTajik()
+    return _farsi_to_tajik
+
+
+def get_tajik_to_farsi():
+    global _tajik_to_farsi
+    if _tajik_to_farsi is None:
+        from shekar import TajikToFarsi
+
+        _tajik_to_farsi = TajikToFarsi()
+    return _tajik_to_farsi
+
+
 class ShekarHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split("?")[0]
@@ -152,6 +173,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
             "/api/spellchecker": self._handle_spellcheck,
             "/api/keywords": self._handle_keywords,
             "/api/dep_parsing": self._handle_dep_parsing,
+            "/api/transliteration": self._handle_transliteration,
         }
         handler = routes.get(self.path)
         if handler is None:
@@ -243,6 +265,16 @@ class ShekarHandler(BaseHTTPRequestHandler):
         elapsed = time.perf_counter() - t0
         tokens = [{"word": w, "head": h, "deprel": r} for w, h, r in results]
         self._send_json({"tokens": tokens, "elapsed_ms": round(elapsed * 1000, 1)})
+
+    def _handle_transliteration(self, text: str, body=None):
+        direction = (body or {}).get("direction", "fa2tg").lower()
+        t0 = time.perf_counter()
+        if direction == "tg2fa":
+            result = get_tajik_to_farsi().transform(text)
+        else:
+            result = get_farsi_to_tajik().transform(text)
+        elapsed = time.perf_counter() - t0
+        self._send_json({"result": result, "elapsed_ms": round(elapsed * 1000, 1)})
 
     def _read_json(self):
         length = int(self.headers.get("Content-Length", 0))

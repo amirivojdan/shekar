@@ -19,7 +19,7 @@ class YaNormalizer(BaseTextTransform):
         "خانه‌ی ما"
     """
 
-    def __init__(self, style="joda"):
+    def __init__(self, style="standard"):
         super().__init__()
         if style == "standard":
             self._ya_mappings = [

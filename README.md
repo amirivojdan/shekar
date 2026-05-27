@@ -120,7 +120,7 @@ normalizer = (
             | RemoveDiacritics()
             | RepeatedLetterNormalizer()
             | SpacingNormalizer()
-            | YaNormalizer(style="joda")
+            | YaNormalizer()
         )
 ```
 

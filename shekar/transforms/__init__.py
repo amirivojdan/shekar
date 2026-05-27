@@ -1,7 +1,7 @@
 from .ngram_extractor import NGramExtractor
 from .flatten import Flatten
 from .persianizer import Persianizer
-from .noise import KeyboardNoise, OCRNoise
+from .noise import KeyboardNoise, OCRNoise, WhitespaceNoise
 from .number_to_words import NumberToWords
 
 __all__ = [
@@ -10,5 +10,6 @@ __all__ = [
     "Persianizer",
     "KeyboardNoise",
     "OCRNoise",
+    "WhitespaceNoise",
     "NumberToWords",
 ]

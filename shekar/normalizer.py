@@ -23,7 +23,7 @@ class Normalizer(Pipeline):
                 ("DiacriticRemover", RemoveDiacritics()),
                 ("RepeatedLetterNormalizer", RepeatedLetterNormalizer()),
                 ("SpacingNormalizer", SpacingNormalizer()),
-                ("YaNormalizer", YaNormalizer(style="joda")),
+                ("YaNormalizer", YaNormalizer()),
             ]
         super().__init__(steps=steps)
 
