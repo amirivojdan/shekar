@@ -11,7 +11,7 @@ class ByT5Transliterator(BaseTextTransform):
         self,
         encoder_path: str | Path | None = None,
         decoder_path: str | Path | None = None,
-        num_beams: int = 4,
+        num_beams: int = 1,
         max_new_tokens: int = 256,
     ):
         self._direction = None  # to be set by subclasses
