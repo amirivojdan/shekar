@@ -5,6 +5,12 @@ from shekar import data
 
 
 class RuleBasedInformalClassifier(BaseTransform):
+    """A simple rule-based classifier for informal language based on keyword matching.
+    It uses a predefined list of informal words and conjugated verbs to determine if a sentence is informal.
+    The occurrence_threshold parameter allows tuning the sensitivity of the classifier.
+    Inspired by https://github.com/MahtaFetrat/Persian-Informal-Text-Detector
+    """
+
     def __init__(self, model_path=None, occurrence_threshold=1):
         super().__init__()
         self._kp = KeywordProcessor()
