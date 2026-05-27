@@ -6,7 +6,11 @@ from .keyword_extraction import KeywordExtractor
 from .ner import NER
 from .pos import POSTagger
 from .dep_parsing import DependencyParser
-from .classification import SentimentClassifier, OffensiveLanguageClassifier
+from .classification import (
+    SentimentClassifier,
+    OffensiveLanguageClassifier,
+    InformalLanguageClassifier,
+)
 from .embeddings import WordEmbedder, ContextualEmbedder
 from .spelling import SpellChecker
 from .morphology import Conjugator, Inflector, Stemmer, Lemmatizer
@@ -32,6 +36,7 @@ __all__ = [
     "DependencyParser",
     "SentimentClassifier",
     "OffensiveLanguageClassifier",
+    "InformalLanguageClassifier",
     "SpellChecker",
     "Tokenizer",
     "WordEmbedder",
