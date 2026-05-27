@@ -110,6 +110,7 @@
             <li><button class="nav-tab" data-tab="spellchecker" data-i18n="tab_spellchecker">بررسی‌کنندهٔ املا</button></li>
             <li><button class="nav-tab" data-tab="keywords" data-i18n="tab_keywords">یافتن کلیدواژه</button></li>
             <li><button class="nav-tab" data-tab="dep_parsing" data-i18n="tab_dep_parsing">واکاوی وابستگی دستوری</button></li>
+            <li><button class="nav-tab" data-tab="transliteration" data-i18n="tab_transliteration">نویسه‌گردانی</button></li>
           </ul>
         </div>
       </div>
@@ -326,8 +327,45 @@
         </div>
         <div class="error-msg" id="error-dep_parsing"></div>
         <div class="result-box" id="result-dep_parsing">
-          
+
           <div class="dep-tree-wrap" id="output-dep_parsing"></div>
+        </div>
+      </div>
+
+      <div id="panel-transliteration" class="panel card" style="display:none">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="card-title" style="margin:0;" data-i18n="transliteration_title">نویسه‌گردانی</div>
+          <div class="model-select-row" style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="dir-transliteration" data-i18n="transliteration_direction">جهت:</label>
+            <select id="dir-transliteration" class="model-select" style="width:190px; padding:2px 6px; font-size:0.85rem;">
+              <option value="fa2tg" data-i18n="transliteration_fa2tg">فارسی به تاجیکی</option>
+              <option value="tg2fa" data-i18n="transliteration_tg2fa">تاجیکی به فارسی</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-desc" data-i18n="transliteration_desc">تبدیل متن فارسی به تاجیکی و برعکس</div>
+        <textarea id="input-transliteration" dir="rtl"
+          placeholder="نوشته فارسی خود را اینجا وارد کنید…">زبان فارسی میهن ماست.</textarea>
+        <div class="actions">
+          <button class="run-btn" data-i18n="run" data-tab="transliteration">اجرا</button>
+          <button class="clear-btn" data-i18n="clear" data-tab="transliteration">پاک کردن</button>
+          <div class="spinner" id="spinner-transliteration"></div>
+          <span class="status" id="status-transliteration"></span>
+        </div>
+        <div class="error-msg" id="error-transliteration"></div>
+        <div class="result-box" id="result-transliteration">
+          <div class="result-label" data-i18n="transliteration_result_label">نتیجهٔ برگردان</div>
+          <div style="display:flex; flex-direction:row; direction:ltr; background:var(--light-gray); border-radius:8px; overflow:hidden;">
+            <div style="width:44px; flex-shrink:0; display:flex; justify-content:center; align-items:flex-start; padding-top:10px;">
+              <button id="copy-transliteration" onclick="copyTransliterationResult()" title="کپی نتیجه" data-i18n-title="copy_tooltip" style="background:none; border:none; cursor:pointer; padding:4px; color:#aaa; display:flex; align-items:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="result-text" id="output-transliteration" style="flex:1; background:transparent; border-radius:0;"></div>
+          </div>
         </div>
       </div>
 
@@ -377,6 +415,15 @@
         keywords_method: 'روش:', keywords_result_label: 'کلیدواژه‌ها',
         dep_parsing_title: 'واکاوی وابستگی دستوری (Dependency Parsing)',
         dep_parsing_desc: 'شناسایی وابستگی میان واژه‌ها و نمایش درخت دستوری',
+        tab_transliteration: 'نویسه‌گردانی',
+        transliteration_title: 'نویسه‌گردانی (Transliteration)',
+        transliteration_desc: 'تبدیل متن فارسی به تاجیکی و برعکس با استفاده از مدل ByT5',
+        transliteration_direction: 'جهت:',
+        transliteration_fa2tg: 'فارسی به تاجیکی',
+        transliteration_tg2fa: 'تاجیکی به فارسی',
+        transliteration_result_label: 'نتیجهٔ برگردان',
+        transliteration_fa_placeholder: 'نوشته فارسی خود را اینجا وارد کنید…',
+        transliteration_tg_placeholder: 'Матни тоҷикии худро дар ин ҷо ворид кунед…',
         run: 'اجرا', clear: 'پاک کردن', copy_tooltip: 'کپی نتیجه',
         input_placeholder: 'نوشته فارسی خود را اینجا وارد کنید…',
         processing: 'در حال پردازش…', done: 'انجام شد',
@@ -426,6 +473,15 @@
         keywords_method: 'Method:', keywords_result_label: 'Keywords',
         dep_parsing_title: 'Dependency Parsing',
         dep_parsing_desc: 'Identify dependencies between words and display the dependency tree',
+        tab_transliteration: 'Transliteration',
+        transliteration_title: 'Transliteration',
+        transliteration_desc: 'Convert Persian script to Tajik Cyrillic and vice versa using the ByT5 model',
+        transliteration_direction: 'Direction:',
+        transliteration_fa2tg: 'Persian → Tajik',
+        transliteration_tg2fa: 'Tajik → Persian',
+        transliteration_result_label: 'Transliteration Result',
+        transliteration_fa_placeholder: 'Enter your Persian text here…',
+        transliteration_tg_placeholder: 'Enter your Tajik text here…',
         run: 'Run', clear: 'Clear', copy_tooltip: 'Copy result',
         input_placeholder: 'Enter your Persian text here…',
         processing: 'Processing…', done: 'Done',
@@ -475,6 +531,15 @@
         keywords_method: 'Усул:', keywords_result_label: 'Калидвожаҳо',
         dep_parsing_title: 'Таҳлили вобастагии дастурӣ (Dependency Parsing)',
         dep_parsing_desc: 'Шиносоии вобастагӣ миёни калимаҳо ва намоиши дарахти дастурӣ',
+        tab_transliteration: 'Транслитератсия',
+        transliteration_title: 'Транслитератсия',
+        transliteration_desc: 'Табдили хати форсӣ ба тоҷикии кириллӣ ва баракс бо истифода аз модели ByT5',
+        transliteration_direction: 'Самт:',
+        transliteration_fa2tg: 'Форсӣ → Тоҷикӣ',
+        transliteration_tg2fa: 'Тоҷикӣ → Форсӣ',
+        transliteration_result_label: 'Натиҷаи транслитератсия',
+        transliteration_fa_placeholder: 'نوشته فارسی خود را اینجا وارد کنید…',
+        transliteration_tg_placeholder: 'Матни тоҷикии худро дар ин ҷо ворид кунед…',
         run: 'Иҷро', clear: 'Тоза кардан', copy_tooltip: 'Нусхабардорӣ',
         input_placeholder: 'Матни форсии худро дар ин ҷо ворид кунед…',
         processing: 'Коркунон…', done: 'Анҷом ёфт',
@@ -514,6 +579,7 @@
       });
       document.getElementById('lang-select').value = lang;
       try { localStorage.setItem('shekar-lang', lang); } catch(e) {}
+      updateTransliterationDir();
     }
 
     document.getElementById('lang-select').addEventListener('change', e => applyLang(e.target.value));
@@ -562,6 +628,7 @@
         if (tab === 'tokenizer') payload.model = document.getElementById('model-tokenizer').value;
         if (tab === 'keywords') payload.model = document.getElementById('model-keywords').value;
         if (tab === 'stemmer') payload.model = document.getElementById('model-stemmer').value;
+        if (tab === 'transliteration') payload.direction = document.getElementById('dir-transliteration').value;
         const res = await fetch('/api/' + tab, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -660,6 +727,8 @@
       } else if (tab === 'dep_parsing') {
         const el = document.getElementById('output-dep_parsing');
         el.innerHTML = buildDepTreeSVG(data.tokens || []);
+      } else if (tab === 'transliteration') {
+        document.getElementById('output-transliteration').textContent = data.result;
       }
     }
 
@@ -765,6 +834,47 @@
         setTimeout(() => { btn.innerHTML = COPY_ICON; }, 1500);
       });
     }
+
+    function copyTransliterationResult() {
+      const text = document.getElementById('output-transliteration').textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-transliteration');
+        btn.innerHTML = CHECK_ICON;
+        setTimeout(() => { btn.innerHTML = COPY_ICON; }, 1500);
+      });
+    }
+
+    const TRANSLITERATION_EXAMPLES = {
+      fa2tg: 'زبان فارسی مهن ماست.',
+      tg2fa: 'Забони форсӣ меҳани мост.',
+    };
+
+    function updateTransliterationDir(resetExample = false) {
+      const dir = document.getElementById('dir-transliteration').value;
+      const ta = document.getElementById('input-transliteration');
+      const out = document.getElementById('output-transliteration');
+      const L = LANGS[currentLang];
+      if (dir === 'fa2tg') {
+        ta.dir = 'rtl';
+        ta.placeholder = L.transliteration_fa_placeholder || L.input_placeholder;
+        out.style.direction = 'ltr';
+        out.style.textAlign = 'left';
+      } else {
+        ta.dir = 'ltr';
+        ta.placeholder = L.transliteration_tg_placeholder || L.input_placeholder;
+        out.style.direction = 'rtl';
+        out.style.textAlign = 'right';
+      }
+      if (resetExample) {
+        ta.value = TRANSLITERATION_EXAMPLES[dir];
+        document.getElementById('result-transliteration').classList.remove('visible');
+        document.getElementById('error-transliteration').classList.remove('visible');
+        document.getElementById('status-transliteration').textContent = '';
+      }
+    }
+
+    document.getElementById('dir-transliteration').addEventListener('change', () => updateTransliterationDir(true));
 
     // Initialize language from saved preference or default to Persian
     (function () {
