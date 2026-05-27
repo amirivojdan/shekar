@@ -16,7 +16,7 @@ MODEL_HASHES = {
     "tfidf_logistic_offensive.onnx": "1ac778114c9e2ec1f94fe463df03008032ce75306c5ed494bb06c4542430df44",
     "albert_persian_tokenizer.model": "5f7e2e33114b079febc60e221a2c2400527b3bef10a8d838720f7810c6984964",
     "albert_persian_dep_parser_q8.onnx": "d14840365ed70a393a6b91457f742733434f63b47476670798562386c8c8ab04",
-    "byt5_tg2fa_encoder_q8.onnx": "6c06ee1e4f6c47f27c009d524a62cc8222e7ba1325c7c108f83e24f96d23fdd2",
+    "byt5_tg2fa_encoder_q8.onnx": "8ab09bdf12d1d4dc8da9ecaf333078453db31bacbaec95f58bd3984a33b0297c",
     "byt5_tg2fa_decoder_q8.onnx": "ed7f952e2906bc31ffa92e43c8a3999299f21a00c4b47f74c2ac08025d267335",
 }
 
