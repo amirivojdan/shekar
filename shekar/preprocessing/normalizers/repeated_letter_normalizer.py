@@ -36,7 +36,7 @@ class RepeatedLetterNormalizer(BaseTextTransform):
         super().__init__()
         self._redundant_mappings = [
             (r"[ـ]", ""),  # remove keshida
-            (r"([^\s])\1{2,}", r"\1\1"),  # remove more than two repeated letters
+            (r"([^\s\d])\1{2,}", r"\1\1"),  # remove more than two repeated letters
         ]
 
         self._patterns = self._compile_patterns(self._redundant_mappings)
