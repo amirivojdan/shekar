@@ -1,3 +1,10 @@
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("shekar")
+except PackageNotFoundError:
+    __version__ = "unknown"
+
 from .pipeline import Pipeline
 from .base import BaseTransform, BaseTextTransform
 from .normalizer import Normalizer
@@ -54,4 +61,5 @@ __all__ = [
     "NumberToWords",
     "FarsiToTajik",
     "TajikToFarsi",
+    "__version__",
 ]
