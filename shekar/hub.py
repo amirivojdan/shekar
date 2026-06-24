@@ -1,8 +1,9 @@
-import urllib.request
-from pathlib import Path
-from tqdm import tqdm
 import hashlib
 import time
+import urllib.request
+from pathlib import Path
+
+from tqdm import tqdm
 
 
 MODEL_HASHES = {
@@ -25,6 +26,9 @@ MIRRORS = [
     "https://ir.shekar.ai/",
 ]
 
+_DOWNLOAD_TIMEOUT = 10
+_BLOCK_SIZE = 65536
+
 
 class TqdmUpTo(tqdm):
     """Provides update_to(n) which uses tqdm.update(delta_n)."""
@@ -42,7 +46,7 @@ class Hub:
     @staticmethod
     def compute_sha256_hash(
         path: str | Path,
-        block_size: int = 65536,
+        block_size: int = _BLOCK_SIZE,
     ) -> str:
         """Compute SHA-256 hash of a file."""
 
@@ -69,9 +73,7 @@ class Hub:
                 req = urllib.request.Request(
                     url,
                     method="HEAD",
-                    headers={
-                        "User-Agent": Hub.USER_AGENT,
-                    },
+                    headers={"User-Agent": Hub.USER_AGENT},
                 )
 
                 with urllib.request.urlopen(req, timeout=3):
@@ -96,10 +98,7 @@ class Hub:
         return timings[0][1]
 
     @staticmethod
-    def validate_file(
-        file_path: Path,
-        expected_hash: str,
-    ) -> bool:
+    def validate_file(file_path: Path, expected_hash: str) -> bool:
         """Validate file integrity using SHA-256."""
 
         if not file_path.exists():
@@ -111,121 +110,106 @@ class Hub:
 
     @staticmethod
     def download_file(url: str, dest_path: Path) -> bool:
-        """Download file with progress bar."""
+        """Download url into dest_path using a local opener (no global state mutation)."""
 
         try:
             opener = urllib.request.build_opener()
+            opener.addheaders = [("User-Agent", Hub.USER_AGENT)]
 
-            opener.addheaders = [
-                ("User-Agent", Hub.USER_AGENT),
-            ]
+            with opener.open(url, timeout=_DOWNLOAD_TIMEOUT) as response:
+                total_size = int(response.headers.get("Content-Length", 0) or 0)
 
-            urllib.request.install_opener(opener)
-
-            with TqdmUpTo(
-                unit="B",
-                unit_scale=True,
-                unit_divisor=1024,
-                miniters=1,
-                desc="Downloading model",
-                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
-            ) as t:
-                urllib.request.urlretrieve(
-                    url,
-                    filename=dest_path,
-                    reporthook=t.update_to,
-                    data=None,
-                )
-
-                t.total = t.n
+                with TqdmUpTo(
+                    unit="B",
+                    unit_scale=True,
+                    unit_divisor=1024,
+                    miniters=1,
+                    desc="Downloading model",
+                    bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
+                    total=total_size or None,
+                ) as t:
+                    with open(dest_path, "wb") as f:
+                        while True:
+                            block = response.read(_BLOCK_SIZE)
+                            if not block:
+                                break
+                            f.write(block)
+                            t.update(len(block))
 
             return True
 
         except Exception as e:
             print(f"Error downloading file from {url}: {e}")
-
+            dest_path.unlink(missing_ok=True)
             return False
 
     @staticmethod
     def download_from_mirrors(
         file_name: str,
         dest_path: Path,
+        expected_hash: str,
     ) -> bool:
-        """Try downloading from mirrors ordered by latency."""
+        """Try mirrors in latency order; validate hash before committing the file."""
 
         timings = Hub.get_mirror_latencies(file_name)
 
         if not timings:
             return False
 
+        tmp_path = dest_path.with_suffix(dest_path.suffix + ".tmp")
+
         for _, base_url in timings:
             url = base_url + file_name
 
             print(f"Trying mirror: {base_url}")
-            dest_path.unlink(missing_ok=True)
-            if Hub.download_file(url, dest_path):
-                return True
 
+            tmp_path.unlink(missing_ok=True)
+
+            if not Hub.download_file(url, tmp_path):
+                continue
+
+            if not Hub.validate_file(tmp_path, expected_hash):
+                print(f"Hash mismatch from {base_url}, trying next mirror...")
+                tmp_path.unlink(missing_ok=True)
+                continue
+
+            tmp_path.rename(dest_path)
+            return True
+
+        tmp_path.unlink(missing_ok=True)
         return False
 
     @staticmethod
     def get_resource(file_name: str) -> Path:
-        """Download and validate resource file."""
+        """Download and validate resource file, safe for parallel processes."""
 
         if file_name not in MODEL_HASHES:
             raise ValueError(f"File {file_name} is not recognized.")
 
         cache_dir = Path.home() / ".shekar"
-
-        cache_dir.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
+        cache_dir.mkdir(parents=True, exist_ok=True)
 
         model_path = cache_dir / file_name
-
         expected_hash = MODEL_HASHES[file_name]
 
-        # File missing -> download
-        if not model_path.exists():
-            success = Hub.download_from_mirrors(
-                file_name,
-                model_path,
-            )
+        if Hub.validate_file(model_path, expected_hash):
+            return model_path
 
-            if not success:
-                model_path.unlink(missing_ok=True)
-
-                raise FileNotFoundError(
-                    f"Failed to download {file_name} from available mirrors.\n"
-                    f"Please try again later.\n\n"
-                    f"You can also manually download the model files from:\n"
-                    f"https://github.com/amirivojdan/shekar\n\n"
-                    f"Then place them in the cache directory:\n"
-                    f"{cache_dir}"
-                )
-
-        # Validate downloaded/cached file
-        if not Hub.validate_file(model_path, expected_hash):
+        if model_path.exists():
             print(f"Hash mismatch detected for {file_name}. Re-downloading...")
-
             model_path.unlink(missing_ok=True)
 
-            success = Hub.download_from_mirrors(
-                file_name,
-                model_path,
+        success = Hub.download_from_mirrors(file_name, model_path, expected_hash)
+
+        if not success:
+            raise FileNotFoundError(
+                f"Failed to download {file_name} from available mirrors.\n"
+                f"Please try again later.\n\n"
+                f"You can also manually download the model files from:\n"
+                f"https://github.com/amirivojdan/shekar\n\n"
+                f"Then place them in the cache directory:\n"
+                f"{cache_dir}"
             )
-
-            if not success:
-                raise RuntimeError(f"Failed to re-download corrupted file: {file_name}")
-
-            # Validate again after re-download
-            if not Hub.validate_file(model_path, expected_hash):
-                model_path.unlink(missing_ok=True)
-
-                raise ValueError(
-                    f"Hash mismatch for {file_name} even after re-download."
-                )
 
         return model_path
 
