@@ -16,7 +16,11 @@ class AlbertEmbedder(BaseEmbedder):
         self.session = onnxruntime.InferenceSession(
             model_path, providers=get_onnx_providers()
         )
-        self.tokenizer = AlbertTokenizer(enable_padding=True, enable_truncation=True)
+        self.tokenizer = AlbertTokenizer(
+            enable_padding=True,
+            enable_truncation=True,
+            return_overflowing_tokens=True,
+        )
         self.vector_size = 768
 
     def embed(self, phrase: str) -> np.ndarray:

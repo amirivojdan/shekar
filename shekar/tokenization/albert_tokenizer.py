@@ -17,10 +17,15 @@ class AlbertTokenizer(BaseTransform):
     """
     ALBERT-compatible tokenizer backed by SentencePiece (.model).
 
-    - Splits long inputs into fixed-length chunks
+    - Optionally truncates long inputs to ``model_max_length``
+    - Optionally returns truncated content as overlapping windows
     - Adds [CLS] and [SEP]
     - Pads to model_max_length if enabled
-    - Returns NumPy arrays identical to the HF tokenizer output
+    - Returns dense NumPy arrays
+
+    When multiple overflow windows are returned, the final shorter window is
+    padded even if ``enable_padding`` is false. This keeps the returned batch
+    rectangular and representable as a NumPy array.
     """
 
     def __init__(
@@ -30,8 +35,35 @@ class AlbertTokenizer(BaseTransform):
         enable_truncation: bool = False,
         stride: int = 0,
         model_max_length: int = 512,
+        return_overflowing_tokens: bool = False,
     ):
         super().__init__()
+
+        if (
+            not isinstance(model_max_length, int)
+            or isinstance(model_max_length, bool)
+            or model_max_length <= 2
+        ):
+            raise ValueError("model_max_length must be an integer greater than 2.")
+
+        max_body_len = model_max_length - 2
+        if (
+            not isinstance(stride, int)
+            or isinstance(stride, bool)
+            or not 0 <= stride < max_body_len
+        ):
+            raise ValueError(
+                "stride must be an integer in the range "
+                f"[0, {max_body_len - 1}] for model_max_length={model_max_length}."
+            )
+
+        if return_overflowing_tokens and not enable_truncation:
+            raise ValueError(
+                "return_overflowing_tokens=True requires enable_truncation=True."
+            )
+
+        if stride and not return_overflowing_tokens:
+            raise ValueError("stride is only used when return_overflowing_tokens=True.")
 
         resource_name = "albert_persian_tokenizer.model"
 
@@ -45,6 +77,7 @@ class AlbertTokenizer(BaseTransform):
         self.stride = stride
         self.enable_padding = enable_padding
         self.enable_truncation = enable_truncation
+        self.return_overflowing_tokens = return_overflowing_tokens
 
         # Special tokens
         self.pad_token = "<pad>"
@@ -78,35 +111,39 @@ class AlbertTokenizer(BaseTransform):
 
     def _chunk_ids(self, ids: List[int]) -> List[List[int]]:
         """
-        Chunk token ids into model_max_length windows with optional stride.
-        Accounts for [CLS] and [SEP].
+        Add special tokens and apply the configured long-input policy.
+
+        With truncation disabled, a single sequence of any length is returned.
+        With truncation enabled, the sequence is capped at model_max_length.
+        Additional overlapping windows are only returned when requested.
         """
         max_body_len = self.model_max_length - 2
+
+        if not self.enable_truncation or len(ids) <= max_body_len:
+            return [[self.cls_token_id, *ids, self.sep_token_id]]
+
+        first_chunk = [
+            self.cls_token_id,
+            *ids[:max_body_len],
+            self.sep_token_id,
+        ]
+        if not self.return_overflowing_tokens:
+            return [first_chunk]
+
         chunks = []
+        step = max_body_len - self.stride
 
-        start = 0
-        while start < len(ids):
-            end = start + max_body_len
-            body = ids[start:end]
+        for start in range(0, len(ids), step):
+            body = ids[start : start + max_body_len]
+            chunks.append([self.cls_token_id, *body, self.sep_token_id])
 
-            chunk = [self.cls_token_id] + body + [self.sep_token_id]
-            chunks.append(chunk)
-
-            if not self.enable_truncation:
+            if start + max_body_len >= len(ids):
                 break
-
-            if end >= len(ids):
-                break
-
-            start = end - self.stride if self.stride > 0 else end
 
         return chunks
 
-    def _pad(self, ids: List[int]) -> List[int]:
-        if len(ids) >= self.model_max_length:
-            return ids[: self.model_max_length]
-
-        pad_len = self.model_max_length - len(ids)
+    def _pad(self, ids: List[int], target_length: int) -> List[int]:
+        pad_len = target_length - len(ids)
         return ids + [self.pad_token_id] * pad_len
 
     def token_to_id(self, token: str) -> int | None:
@@ -121,31 +158,23 @@ class AlbertTokenizer(BaseTransform):
         return self
 
     def transform(self, X: str) -> Dict[str, Any]:
-        if X == "" or X.strip() == "":
-            ids = [self.cls_token_id, self.sep_token_id]
-
-            padded = ids + [self.pad_token_id] * (self.model_max_length - len(ids))
-            mask = [1, 1] + [0] * (self.model_max_length - 2)
-
-            return {
-                "input_ids": np.asarray([padded], dtype=np.int64),
-                "attention_mask": np.asarray([mask], dtype=np.int64),
-                "token_type_ids": np.zeros((1, self.model_max_length), dtype=np.int64),
-            }
-
         # Encode without special tokens
         ids = self.sp.encode(X, out_type=int)
 
         chunks = self._chunk_ids(ids)
+        pad_batch = self.enable_padding or len(chunks) > 1
+        target_length = max(len(chunk) for chunk in chunks)
+        if self.enable_padding:
+            target_length = max(target_length, self.model_max_length)
 
         input_ids = []
         attention_mask = []
         token_type_ids = []
 
         for chunk in chunks:
-            if self.enable_padding:
-                padded = self._pad(chunk)
-                mask = [1] * len(chunk) + [0] * (self.model_max_length - len(chunk))
+            if pad_batch:
+                padded = self._pad(chunk, target_length)
+                mask = [1] * len(chunk) + [0] * (target_length - len(chunk))
             else:
                 padded = chunk
                 mask = [1] * len(chunk)

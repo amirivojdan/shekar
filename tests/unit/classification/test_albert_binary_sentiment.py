@@ -1,7 +1,11 @@
+from types import SimpleNamespace
+
+import numpy as np
+
+from shekar.base import BaseTransform
 from shekar.classification.albert_sentiment_binary import (
     AlbertBinarySentimentClassifier,
 )
-from shekar.base import BaseTransform
 
 
 class TestAlbertBinarySentimentClassifier:
@@ -91,3 +95,18 @@ class TestAlbertBinarySentimentClassifier:
             assert 0 <= score <= 1, (
                 f"Score {score} for text '{text}' is out of range [0, 1]"
             )
+
+    def test_transform_softmax_is_stable_for_large_logits(self):
+        self.classifier.tokenizer = lambda _: {
+            "input_ids": np.zeros((1, 2), dtype=np.int64),
+            "attention_mask": np.ones((1, 2), dtype=np.int64),
+        }
+        self.classifier.session = SimpleNamespace(
+            run=lambda *_: [np.array([[1000.0, 999.0]], dtype=np.float32)]
+        )
+
+        with np.errstate(over="raise", invalid="raise"):
+            label, score = self.classifier.transform("test")
+
+        assert label == "negative"
+        assert np.isclose(score, 1 / (1 + np.exp(-1)), atol=1e-6)

@@ -1,6 +1,8 @@
+from numbers import Integral
+from pathlib import Path
+
 import numpy as np
 import onnxruntime as ort
-from pathlib import Path
 
 from shekar.utils import get_onnx_providers
 from shekar.transliteration.byt5_tokenizer import ByT5Tokenizer
@@ -104,6 +106,29 @@ class ByT5Decoder:
             feed[v] = zero
         return feed
 
+    @staticmethod
+    def validate_generation_parameters(
+        num_beams: int,
+        max_new_tokens: int,
+    ) -> None:
+        if (
+            isinstance(num_beams, bool)
+            or not isinstance(num_beams, Integral)
+            or num_beams < 1
+        ):
+            raise ValueError("num_beams must be a positive integer.")
+        if (
+            isinstance(max_new_tokens, bool)
+            or not isinstance(max_new_tokens, Integral)
+            or max_new_tokens < 1
+        ):
+            raise ValueError("max_new_tokens must be a positive integer.")
+
+    @staticmethod
+    def _normalized_score(score: float, sequence: list[int]) -> float:
+        generated_length = max(len(sequence) - 1, 1)
+        return float(score) / generated_length
+
     def decode(
         self,
         enc_out: np.ndarray,
@@ -115,6 +140,8 @@ class ByT5Decoder:
 
         Returns token ids with the leading decoder-start and trailing EOS already stripped.
         """
+        self.validate_generation_parameters(num_beams, max_new_tokens)
+
         src_len = attention_mask.shape[1]
 
         first_feed = {
@@ -130,11 +157,27 @@ class ByT5Decoder:
         out0 = self._session.run(None, first_feed)
         n2o = dict(zip(self._output_names, out0))
         logp = self._log_softmax(n2o["logits"][0, -1])
-        top_ids = np.argpartition(-logp, num_beams)[:num_beams]
-        top_ids = top_ids[np.argsort(-logp[top_ids])]
+        vocab_size = logp.shape[0]
+        if num_beams >= vocab_size:
+            raise ValueError(
+                f"num_beams must be smaller than the vocabulary size ({vocab_size})."
+            )
 
-        seqs = [[self._tokenizer._pad_id, int(t)] for t in top_ids]
-        scores = logp[top_ids].astype(np.float32)
+        eos_id = self._tokenizer._eos_id
+        start_id = self._tokenizer._pad_id
+        finished: list[tuple[float, list[int]]] = [
+            (
+                float(logp[eos_id]),
+                [start_id, eos_id],
+            )
+        ]
+
+        active_logp = logp.copy()
+        active_logp[eos_id] = -np.inf
+        top_ids = np.argsort(-active_logp, kind="stable")[:num_beams]
+
+        seqs = [[start_id, int(token_id)] for token_id in top_ids]
+        scores = active_logp[top_ids].astype(np.float32)
 
         self_k = [np.repeat(n2o[n], num_beams, axis=0) for n in self._present_self_k]
         self_v = [np.repeat(n2o[n], num_beams, axis=0) for n in self._present_self_v]
@@ -144,9 +187,12 @@ class ByT5Decoder:
         enc_out_b = np.repeat(enc_out, num_beams, axis=0)
         enc_mask_b = np.repeat(attention_mask, num_beams, axis=0)
 
-        finished: list[tuple[float, list[int]]] = []
-
         for _ in range(max_new_tokens - 1):
+            best_finished_score = max(score for score, _ in finished)
+            best_active_upper_bound = float(scores.max()) / max_new_tokens
+            if best_finished_score >= best_active_upper_bound:
+                break
+
             last_tokens = np.array([[s[-1]] for s in seqs], dtype=np.int64)
             feed = {
                 "input_ids": last_tokens,
@@ -167,20 +213,31 @@ class ByT5Decoder:
             logp = self._log_softmax_2d(logits)
 
             cand_scores = scores[:, None] + logp
-            flat = cand_scores.reshape(-1)
-            top_idx = np.argpartition(-flat, num_beams)[:num_beams]
-            top_idx = top_idx[np.argsort(-flat[top_idx])]
+
+            for beam_index, sequence in enumerate(seqs):
+                eos_sequence = sequence + [eos_id]
+                finished.append(
+                    (
+                        self._normalized_score(
+                            cand_scores[beam_index, eos_id],
+                            eos_sequence,
+                        ),
+                        eos_sequence,
+                    )
+                )
+
+            active_scores = cand_scores.copy()
+            active_scores[:, eos_id] = -np.inf
+            flat = active_scores.reshape(-1)
+            top_idx = np.argsort(-flat, kind="stable")[:num_beams]
             beam_idx = top_idx // logp.shape[1]
             tok_idx = top_idx % logp.shape[1]
             new_scores = flat[top_idx]
 
-            new_seqs = []
-            for b, t, s in zip(beam_idx, tok_idx, new_scores):
-                seq = seqs[b] + [int(t)]
-                new_seqs.append(seq)
-                if int(t) == self._tokenizer._eos_id:
-                    lp = len(seq) - 1
-                    finished.append((float(s) / max(lp, 1), seq))
+            new_seqs = [
+                seqs[beam_index] + [int(token_id)]
+                for beam_index, token_id in zip(beam_idx, tok_idx)
+            ]
 
             # Self-attn KV grows every step; take the full updated cache from model output.
             self_k = [n2o[n][beam_idx] for n in self._present_self_k]
@@ -192,17 +249,15 @@ class ByT5Decoder:
             seqs = new_seqs
             scores = new_scores
 
-            if finished and max(s for s, _ in finished) >= float(scores.max()):
-                break
+        candidates = finished + [
+            (self._normalized_score(score, sequence), sequence)
+            for score, sequence in zip(scores, seqs)
+        ]
+        best_seq = max(candidates, key=lambda candidate: candidate[0])[1]
 
-        if not finished:
-            best_seq = seqs[int(np.argmax(scores))]
-        else:
-            best_seq = max(finished, key=lambda x: x[0])[1]
-
-        if best_seq and best_seq[0] == self._tokenizer._pad_id:
+        if best_seq and best_seq[0] == start_id:
             best_seq = best_seq[1:]
-        if best_seq and best_seq[-1] == self._tokenizer._eos_id:
+        if best_seq and best_seq[-1] == eos_id:
             best_seq = best_seq[:-1]
 
         return best_seq

@@ -1,8 +1,11 @@
 import hashlib
+import os
+import tempfile
 import time
 import urllib.request
 from pathlib import Path
 
+from filelock import FileLock
 from tqdm import tqdm
 
 
@@ -149,34 +152,41 @@ class Hub:
         dest_path: Path,
         expected_hash: str,
     ) -> bool:
-        """Try mirrors in latency order; validate hash before committing the file."""
+        """Try mirrors in latency order and atomically commit a validated download."""
 
         timings = Hub.get_mirror_latencies(file_name)
 
         if not timings:
             return False
 
-        tmp_path = dest_path.with_suffix(dest_path.suffix + ".tmp")
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
 
         for _, base_url in timings:
             url = base_url + file_name
 
             print(f"Trying mirror: {base_url}")
 
-            tmp_path.unlink(missing_ok=True)
+            file_descriptor, tmp_name = tempfile.mkstemp(
+                dir=dest_path.parent,
+                prefix=f".{dest_path.name}.",
+                suffix=".tmp",
+            )
+            os.close(file_descriptor)
+            tmp_path = Path(tmp_name)
 
-            if not Hub.download_file(url, tmp_path):
-                continue
+            try:
+                if not Hub.download_file(url, tmp_path):
+                    continue
 
-            if not Hub.validate_file(tmp_path, expected_hash):
-                print(f"Hash mismatch from {base_url}, trying next mirror...")
+                if not Hub.validate_file(tmp_path, expected_hash):
+                    print(f"Hash mismatch from {base_url}, trying next mirror...")
+                    continue
+
+                os.replace(tmp_path, dest_path)
+                return True
+            finally:
                 tmp_path.unlink(missing_ok=True)
-                continue
 
-            tmp_path.rename(dest_path)
-            return True
-
-        tmp_path.unlink(missing_ok=True)
         return False
 
     @staticmethod
@@ -195,21 +205,31 @@ class Hub:
         if Hub.validate_file(model_path, expected_hash):
             return model_path
 
-        if model_path.exists():
-            print(f"Hash mismatch detected for {file_name}. Re-downloading...")
-            model_path.unlink(missing_ok=True)
+        lock_path = model_path.with_name(f".{model_path.name}.lock")
+        with FileLock(lock_path):
+            # Another process may have completed the download while this one
+            # waited for the per-resource lock.
+            if Hub.validate_file(model_path, expected_hash):
+                return model_path
 
-        success = Hub.download_from_mirrors(file_name, model_path, expected_hash)
+            if model_path.exists():
+                print(f"Hash mismatch detected for {file_name}. Re-downloading...")
 
-        if not success:
-            raise FileNotFoundError(
-                f"Failed to download {file_name} from available mirrors.\n"
-                f"Please try again later.\n\n"
-                f"You can also manually download the model files from:\n"
-                f"https://github.com/amirivojdan/shekar\n\n"
-                f"Then place them in the cache directory:\n"
-                f"{cache_dir}"
+            success = Hub.download_from_mirrors(
+                file_name,
+                model_path,
+                expected_hash,
             )
+
+            if not success:
+                raise FileNotFoundError(
+                    f"Failed to download {file_name} from available mirrors.\n"
+                    f"Please try again later.\n\n"
+                    f"You can also manually download the model files from:\n"
+                    f"https://github.com/amirivojdan/shekar\n\n"
+                    f"Then place them in the cache directory:\n"
+                    f"{cache_dir}"
+                )
 
         return model_path
 

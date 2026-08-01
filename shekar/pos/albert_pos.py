@@ -41,13 +41,13 @@ class AlbertPOS(BaseTransform):
         }
 
     def transform(self, text: str) -> list:
-        words = self.word_tokenizer(text)
+        words = list(self.word_tokenizer(text))
         tokens = []
         word_ids = []
-        for word in words:
+        for word_index, word in enumerate(words):
             encoded = self.tokenizer.tokenizer.encode(word, add_special_tokens=False)
             tokens.extend(encoded.tokens)
-            word_ids.extend([word] * len(encoded.tokens))
+            word_ids.extend([word_index] * len(encoded.tokens))
 
         # Convert to IDs
         input_ids = []
@@ -78,11 +78,11 @@ class AlbertPOS(BaseTransform):
 
         final_preds = []
         match_words = []
-        prev_word = None
-        for token, word, pred_tag in zip(tokens, word_ids, tags):
-            if word != prev_word:
+        previous_word_id = None
+        for word_id, pred_tag in zip(word_ids, tags):
+            if word_id != previous_word_id:
                 final_preds.append(pred_tag)
-                match_words.append(word)
-                prev_word = word
+                match_words.append(words[word_id])
+                previous_word_id = word_id
 
         return list(zip(match_words, final_preds))

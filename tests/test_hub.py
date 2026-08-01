@@ -1,5 +1,11 @@
 import os
 import hashlib
+import subprocess
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest import mock
 
@@ -153,6 +159,7 @@ def test_download_from_mirrors_no_mirrors_reachable(monkeypatch, tmp_path: Path)
 
 def test_download_from_mirrors_success_on_first(monkeypatch, tmp_path: Path):
     dest = tmp_path / "model.bin"
+    temporary_paths = []
     monkeypatch.setattr(
         Hub,
         "get_mirror_latencies",
@@ -161,12 +168,18 @@ def test_download_from_mirrors_success_on_first(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(Hub, "validate_file", mock.Mock(return_value=True))
 
     def fake_download(url, dest_path):
+        temporary_paths.append(dest_path)
         dest_path.write_bytes(b"data")
         return True
 
     monkeypatch.setattr(Hub, "download_file", fake_download)
     assert Hub.download_from_mirrors("model.bin", dest, "anyhash") is True
-    assert dest.exists()
+    assert dest.read_bytes() == b"data"
+    assert len(temporary_paths) == 1
+    assert temporary_paths[0] != dest
+    assert temporary_paths[0].parent == dest.parent
+    assert temporary_paths[0].name.startswith(f".{dest.name}.")
+    assert not temporary_paths[0].exists()
 
 
 def test_download_from_mirrors_falls_back_to_second(monkeypatch, tmp_path: Path):
@@ -202,6 +215,32 @@ def test_download_from_mirrors_all_fail(monkeypatch, tmp_path: Path):
         Hub.download_from_mirrors("model.bin", tmp_path / "model.bin", "anyhash")
         is False
     )
+    assert not list(tmp_path.glob("*.tmp"))
+
+
+def test_download_from_mirrors_removes_invalid_temporary_file(
+    monkeypatch, tmp_path: Path
+):
+    dest = tmp_path / "model.bin"
+    temporary_paths = []
+    monkeypatch.setattr(
+        Hub,
+        "get_mirror_latencies",
+        mock.Mock(return_value=[(0.05, "https://m1/")]),
+    )
+    monkeypatch.setattr(Hub, "validate_file", mock.Mock(return_value=False))
+
+    def fake_download(_, dest_path):
+        temporary_paths.append(dest_path)
+        dest_path.write_bytes(b"invalid")
+        return True
+
+    monkeypatch.setattr(Hub, "download_file", fake_download)
+
+    assert Hub.download_from_mirrors("model.bin", dest, "anyhash") is False
+    assert not dest.exists()
+    assert len(temporary_paths) == 1
+    assert not temporary_paths[0].exists()
 
 
 def test_get_resource_unrecognized_file_raises():
@@ -296,6 +335,124 @@ def test_get_resource_hash_mismatch_triggers_redownload_success(
     result = Hub.get_resource(fname)
     assert result == target
     assert target.exists()
+
+
+def test_get_resource_serializes_concurrent_downloads(monkeypatch, tmp_path: Path):
+    fname = "albert_persian_tokenizer.json"
+    monkeypatch.setattr(Path, "home", _fake_home(tmp_path))
+
+    initial_validation = threading.Barrier(2)
+    thread_state = threading.local()
+    download_count = 0
+    count_lock = threading.Lock()
+
+    def fake_validate(path, _):
+        if not getattr(thread_state, "initial_validation_done", False):
+            thread_state.initial_validation_done = True
+            initial_validation.wait(timeout=2)
+        return path.exists()
+
+    def fake_download(_, dest_path, __):
+        nonlocal download_count
+        with count_lock:
+            download_count += 1
+        dest_path.write_bytes(b"model")
+        return True
+
+    monkeypatch.setattr(Hub, "validate_file", fake_validate)
+    monkeypatch.setattr(Hub, "download_from_mirrors", fake_download)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(Hub.get_resource, [fname, fname]))
+
+    expected = tmp_path / ".shekar" / fname
+    assert results == [expected, expected]
+    assert expected.read_bytes() == b"model"
+    assert download_count == 1
+
+
+def test_get_resource_is_safe_across_processes(tmp_path: Path):
+    content = b"shared model content"
+    expected_hash = hashlib.sha256(content).hexdigest()
+    get_started = threading.Event()
+    request_count = 0
+    request_count_lock = threading.Lock()
+
+    class ModelHandler(BaseHTTPRequestHandler):
+        def do_HEAD(self):
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+
+        def do_GET(self):
+            nonlocal request_count
+            with request_count_lock:
+                request_count += 1
+            get_started.set()
+            time.sleep(0.2)
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+
+        def log_message(self, *_):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), ModelHandler)
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    server_thread.start()
+
+    file_name = "parallel-test.onnx"
+    test_home = tmp_path / "process-home"
+    script = """
+import sys
+from pathlib import Path
+import shekar.hub as hub
+
+file_name, expected_hash, mirror, test_home = sys.argv[1:]
+hub.MODEL_HASHES[file_name] = expected_hash
+hub.MIRRORS[:] = [mirror]
+Path.home = staticmethod(lambda: Path(test_home))
+print(hub.Hub.get_resource(file_name))
+"""
+    command = [
+        sys.executable,
+        "-c",
+        script,
+        file_name,
+        expected_hash,
+        f"http://127.0.0.1:{server.server_port}/",
+        str(test_home),
+    ]
+
+    first = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        assert get_started.wait(timeout=5)
+        second = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        first_stdout, first_stderr = first.communicate(timeout=10)
+        second_stdout, second_stderr = second.communicate(timeout=10)
+    finally:
+        if first.poll() is None:
+            first.kill()
+            first.wait()
+        if "second" in locals() and second.poll() is None:
+            second.kill()
+            second.wait()
+        server.shutdown()
+        server.server_close()
+        server_thread.join(timeout=2)
+
+    assert first.returncode == 0, first_stderr.decode()
+    assert second.returncode == 0, second_stderr.decode()
+    assert str(test_home / ".shekar" / file_name).encode() in first_stdout
+    assert str(test_home / ".shekar" / file_name).encode() in second_stdout
+    assert (test_home / ".shekar" / file_name).read_bytes() == content
+    assert request_count == 1
+    assert not list((test_home / ".shekar").glob("*.tmp"))
 
 
 def test_tqdm_up_to_updates_and_sets_total():

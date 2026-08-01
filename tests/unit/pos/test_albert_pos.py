@@ -68,3 +68,18 @@ class TestAlbertPOS:
         result2 = pos_tagger.transform(text)
 
         assert result1 == result2
+
+    @pytest.mark.parametrize(
+        "text, expected_words",
+        [
+            ("سلام سلام", ["سلام", "سلام"]),
+            ("کتاب کتاب کتاب", ["کتاب", "کتاب", "کتاب"]),
+            ("من من رفتم", ["من", "من", "رفتم"]),
+        ],
+    )
+    def test_transform_preserves_adjacent_duplicate_words(
+        self, pos_tagger, text, expected_words
+    ):
+        result = pos_tagger.transform(text)
+
+        assert [word for word, _ in result] == expected_words

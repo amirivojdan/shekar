@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shekar"
-version = "1.6.1"
+version = "1.6.2"
 description = "Simplifying Persian NLP for Modern Applications"
 readme = "README.md"
 license = "MIT"
@@ -43,9 +43,10 @@ classifiers = [
 dependencies = [
     "numpy>=2.0.0",
     "tqdm>=4.67.1",
-    "onnxruntime>=1.26.0",
+    "onnxruntime>=1.28.0",
+    "filelock>=3.20.0",
     "flashtext>=2.7",
-    "sentencepiece>=0.2.1",
+    "sentencepiece>=0.2.2",
 ]
 
 [project.optional-dependencies]

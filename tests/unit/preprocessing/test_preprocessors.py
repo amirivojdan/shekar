@@ -240,6 +240,17 @@ def test_remove_non_persian():
     assert non_persian_Filter(input_text) == expected_output
 
 
+def test_non_persian_masker_reuses_compact_patterns():
+    first = NonPersianLetterMasker()
+    second = NonPersianLetterMasker()
+    keep_english = NonPersianLetterMasker(keep_english=True)
+
+    assert first._disallowed_pattern is second._disallowed_pattern
+    assert first._disallowed_pattern is not keep_english._disallowed_pattern
+    assert not hasattr(first, "_translation_table")
+    assert first("سلام🙂𐍈 دنیا") == "سلام دنیا"
+
+
 def test_remove_html_tags():
     html_tag_Filter = HTMLTagMasker(mask_token="")
     input_text = "<p>گل صدبرگ به پیش تو فرو ریخت ز خجلت!</p>"

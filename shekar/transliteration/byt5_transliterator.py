@@ -15,6 +15,7 @@ class ByT5Transliterator(BaseTextTransform):
         max_new_tokens: int = 256,
     ):
         self._direction = None  # to be set by subclasses
+        ByT5Decoder.validate_generation_parameters(num_beams, max_new_tokens)
 
         if encoder_path is None or not Path(encoder_path).exists():
             encoder_path = Hub.get_resource("byt5_tg2fa_encoder_q8.onnx")

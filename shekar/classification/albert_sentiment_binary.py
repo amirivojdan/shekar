@@ -23,7 +23,7 @@ class AlbertBinarySentimentClassifier(BaseTransform):
         self.session = onnxruntime.InferenceSession(
             model_path, providers=get_onnx_providers()
         )
-        self.tokenizer = AlbertTokenizer()
+        self.tokenizer = AlbertTokenizer(enable_truncation=True)
 
         self.id2tag = {0: "negative", 1: "positive"}
 
@@ -50,7 +50,9 @@ class AlbertBinarySentimentClassifier(BaseTransform):
         }
         outputs = self.session.run(None, inputs)
         logits = outputs[0]
-        scores = np.exp(logits) / np.exp(logits).sum(-1, keepdims=True)
+        shifted_logits = logits - np.max(logits, axis=-1, keepdims=True)
+        exponentials = np.exp(shifted_logits)
+        scores = exponentials / exponentials.sum(axis=-1, keepdims=True)
         predicted_class = int(np.argmax(logits, axis=1)[0])
         predicted_class_score = float(scores[0, predicted_class])
 

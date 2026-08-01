@@ -30,6 +30,11 @@ def test_invalid_model_name_raises():
         WordEmbedder(model="unknown-model")
 
 
+def test_invalid_oov_strategy_raises():
+    with pytest.raises(ValueError, match="Unknown OOV strategy"):
+        WordEmbedder(model="fasttext-d100", oov_strategy="invalid")
+
+
 def test_embed_known_token(dummy_model_path):
     we = WordEmbedder(model="fasttext-d100", model_path=dummy_model_path)
     vec = we.embed("سیب")
@@ -77,6 +82,76 @@ def test_most_similar_returns_sorted_list(dummy_model_path):
     assert sims == sorted(sims, reverse=True)
     # Check top_n limit
     assert len(result) == 2
+    assert result[0][0] == "هلو"
+
+
+def test_most_similar_is_vectorized(dummy_model_path, monkeypatch):
+    we = WordEmbedder(model="fasttext-d100", model_path=dummy_model_path)
+
+    def fail_if_called(*_):
+        raise AssertionError("most_similar must not call similarity per token")
+
+    monkeypatch.setattr(we, "similarity", fail_if_called)
+    result = we.most_similar("سیب", top_n=2)
+
+    assert [token for token, _ in result] == ["هلو", "موز"]
+
+
+@pytest.mark.parametrize("top_n", [-1, 1.5, True])
+def test_most_similar_validates_top_n(dummy_model_path, top_n):
+    we = WordEmbedder(model="fasttext-d100", model_path=dummy_model_path)
+    with pytest.raises(ValueError, match="top_n"):
+        we.most_similar("سیب", top_n=top_n)
+
+
+def test_loads_non_executable_npz_model(tmp_path):
+    model_path = tmp_path / "model.npz"
+    np.savez(
+        model_path,
+        words=np.array(["سیب", "موز"]),
+        embeddings=np.eye(2, dtype=np.float32),
+        vector_size=np.array(2),
+        window=np.array(5),
+        model=np.array("fasttext"),
+        epochs=np.array(10),
+        dataset=np.array("dummy"),
+    )
+
+    embedder = WordEmbedder(model="fasttext-d100", model_path=model_path)
+
+    assert np.array_equal(embedder.embed("سیب"), np.array([1.0, 0.0]))
+
+
+def test_rejects_mismatched_embedding_shape(tmp_path):
+    model_path = tmp_path / "invalid.pkl"
+    model_data = {
+        "words": ["سیب", "موز"],
+        "embeddings": np.ones((1, 3), dtype=np.float32),
+        "vector_size": 3,
+        "window": 5,
+        "model": "fasttext",
+        "epochs": 10,
+        "dataset": "dummy",
+    }
+    with open(model_path, "wb") as model_file:
+        pickle.dump(model_data, model_file)
+
+    with pytest.raises(ValueError, match="vocabulary size"):
+        WordEmbedder(model="fasttext-d100", model_path=model_path)
+
+
+def test_legacy_pickle_loader_rejects_arbitrary_globals(tmp_path):
+    model_path = tmp_path / "unsafe.pkl"
+
+    class UnsafeModel:
+        def __reduce__(self):
+            return eval, ("{'words': []}",)
+
+    with open(model_path, "wb") as model_file:
+        pickle.dump(UnsafeModel(), model_file)
+
+    with pytest.raises(pickle.UnpicklingError, match="Unsupported global"):
+        WordEmbedder(model="fasttext-d100", model_path=model_path)
 
 
 def test_most_similar_empty_for_oov(dummy_model_path):
