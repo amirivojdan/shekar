@@ -1,14 +1,17 @@
-from shekar.base import BaseTransform
-from shekar.tokenization import AlbertTokenizer, WordTokenizer
-from shekar.hub import Hub
 from pathlib import Path
-import onnxruntime
+from typing import ClassVar
+
 import numpy as np
+import onnxruntime
+
+from shekar.base import BaseTransform
+from shekar.hub import Hub
+from shekar.tokenization import AlbertTokenizer, WordTokenizer
 from shekar.utils import get_onnx_providers
 
 
 class AlbertDepParser(BaseTransform):
-    dep_relations = [
+    dep_relations: ClassVar[list[str]] = [
         "acl",
         "advcl",
         "advmod",
@@ -44,9 +47,9 @@ class AlbertDepParser(BaseTransform):
         "vocative",
         "xcomp",
     ]
-    id2deprel = {i: rel for i, rel in enumerate(dep_relations)}
+    id2deprel: ClassVar[dict[int, str]] = dict(enumerate(dep_relations))
 
-    def __init__(self, model_path: str | Path = None):
+    def __init__(self, model_path: str | Path | None = None):
         super().__init__()
         resource_name = "albert_persian_dep_parser_q8.onnx"
         if model_path is None or not Path(model_path).exists():

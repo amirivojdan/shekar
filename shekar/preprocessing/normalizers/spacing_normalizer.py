@@ -1,8 +1,9 @@
-from shekar import Pipeline
-from .word_spacing_normalizer import WordSpacingNormalizer
+from shekar.pipeline import Pipeline
+
 from .orthographic_spacing_normalizer import OrthographicSpacingNormalizer
-from .verbal_spacing_normalizer import VerbalSpacingNormalizer
 from .punctuation_spacing_normalizer import PunctuationSpacingNormalizer
+from .verbal_spacing_normalizer import VerbalSpacingNormalizer
+from .word_spacing_normalizer import WordSpacingNormalizer
 
 
 class SpacingNormalizer(Pipeline):

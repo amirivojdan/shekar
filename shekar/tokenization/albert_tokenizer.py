@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
+
 import numpy as np
 import sentencepiece as spm
 
@@ -30,7 +31,7 @@ class AlbertTokenizer(BaseTransform):
 
     def __init__(
         self,
-        model_path: Optional[str | Path] = None,
+        model_path: str | Path | None = None,
         enable_padding: bool = False,
         enable_truncation: bool = False,
         stride: int = 0,
@@ -109,7 +110,7 @@ class AlbertTokenizer(BaseTransform):
 
         return _Encoding(tokens=pieces, ids=ids)
 
-    def _chunk_ids(self, ids: List[int]) -> List[List[int]]:
+    def _chunk_ids(self, ids: list[int]) -> list[list[int]]:
         """
         Add special tokens and apply the configured long-input policy.
 
@@ -142,7 +143,7 @@ class AlbertTokenizer(BaseTransform):
 
         return chunks
 
-    def _pad(self, ids: List[int], target_length: int) -> List[int]:
+    def _pad(self, ids: list[int], target_length: int) -> list[int]:
         pad_len = target_length - len(ids)
         return ids + [self.pad_token_id] * pad_len
 
@@ -157,7 +158,7 @@ class AlbertTokenizer(BaseTransform):
     def tokenizer(self):
         return self
 
-    def transform(self, X: str) -> Dict[str, Any]:
+    def transform(self, X: str) -> dict[str, Any]:
         # Encode without special tokens
         ids = self.sp.encode(X, out_type=int)
 

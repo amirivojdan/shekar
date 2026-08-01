@@ -1,5 +1,5 @@
-import os
 import hashlib
+import os
 import subprocess
 import sys
 import threading
@@ -11,7 +11,7 @@ from unittest import mock
 
 import pytest
 
-from shekar.hub import Hub, MODEL_HASHES, MIRRORS, TqdmUpTo
+from shekar.hub import MIRRORS, MODEL_HASHES, Hub, TqdmUpTo
 
 
 def _fake_home(tmp_path: Path):
@@ -60,7 +60,7 @@ def test_validate_file_hash_mismatch(tmp_path: Path):
 
 def test_get_mirror_latencies_all_fail(monkeypatch):
     monkeypatch.setattr(
-        "urllib.request.urlopen", mock.Mock(side_effect=Exception("unreachable"))
+        "urllib.request.urlopen", mock.Mock(side_effect=OSError("unreachable"))
     )
     assert Hub.get_mirror_latencies("model.onnx") == []
 
@@ -87,7 +87,7 @@ def test_get_mirror_latencies_skips_failed_mirrors(monkeypatch):
     def fake_urlopen(req, **_):
         urls_seen.append(req.full_url)
         if MIRRORS[0] in req.full_url:
-            raise Exception("timeout")
+            raise TimeoutError("timeout")
         ctx = mock.MagicMock()
         ctx.__enter__ = lambda s: s
         ctx.__exit__ = mock.MagicMock(return_value=False)
@@ -139,7 +139,7 @@ def test_download_file_failure_returns_false_and_prints(
     monkeypatch, tmp_path: Path, capsys
 ):
     opener = mock.MagicMock()
-    opener.open.side_effect = Exception("boom")
+    opener.open.side_effect = OSError("boom")
 
     monkeypatch.setattr("urllib.request.build_opener", mock.Mock(return_value=opener))
     ok = Hub.download_file("https://example.com/f.bin", tmp_path / "f.bin")

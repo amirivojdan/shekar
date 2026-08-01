@@ -1,5 +1,7 @@
 import re
+
 import pytest
+
 from shekar.normalizer import Normalizer
 
 

@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 import onnxruntime as ort
 
-from shekar.utils import get_onnx_providers
 from shekar.transliteration.byt5_tokenizer import ByT5Tokenizer
+from shekar.utils import get_onnx_providers
 
 
 class ByT5Decoder:

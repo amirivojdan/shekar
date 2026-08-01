@@ -1,9 +1,11 @@
-import pytest
-import numpy as np
 from unittest.mock import Mock, patch
+
+import numpy as np
+import pytest
+
 from shekar.embeddings.contextual_embedder import (
-    ContextualEmbedder,
     CONTEXTUAL_EMBEDDING_REGISTRY,
+    ContextualEmbedder,
 )
 
 

@@ -1,4 +1,5 @@
 from collections import Counter
+
 from shekar.spelling.statistical_checker import StatisticalSpellChecker
 
 

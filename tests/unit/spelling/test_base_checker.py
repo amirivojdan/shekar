@@ -1,5 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from shekar.spelling import SpellChecker
 
 
@@ -8,11 +10,9 @@ def test_spellchecker_initialization_default_model():
     with patch(
         "shekar.spelling.checker.SPELL_CHECKING_REGISTRY",
         {"statistical": MagicMock()},
-    ) as fake_registry:
+    ):
         spell = SpellChecker()
         assert callable(spell.model) or hasattr(spell.model, "transform")
-
-    fake_registry.keys
 
 
 def test_spellchecker_invalid_model():

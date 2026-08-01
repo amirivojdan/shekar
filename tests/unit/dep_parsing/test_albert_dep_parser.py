@@ -1,4 +1,5 @@
 import pytest
+
 from shekar.dep_parsing.albert_dep_parser import AlbertDepParser
 from shekar.hub import Hub
 
@@ -148,7 +149,7 @@ class TestAlbertDepParser:
 
     def test_build_inputs_attention_mask(self, parser):
         words = ["من", "رفتم"]
-        input_ids, attention_mask, _ = parser._build_inputs(words)
+        _input_ids, attention_mask, _ = parser._build_inputs(words)
 
         # The mask should have 1s for real tokens followed by 0s for padding
         mask = attention_mask[0].tolist()

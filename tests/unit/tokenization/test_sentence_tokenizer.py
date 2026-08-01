@@ -1,4 +1,5 @@
 import pytest
+
 from shekar.tokenization import SentenceTokenizer
 
 

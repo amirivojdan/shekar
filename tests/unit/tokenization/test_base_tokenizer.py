@@ -1,11 +1,13 @@
+import collections.abc
+
 import pytest
+
 from shekar.tokenization import (
+    AlbertTokenizer,
+    SentenceTokenizer,
     Tokenizer,
     WordTokenizer,
-    SentenceTokenizer,
-    AlbertTokenizer,
 )
-import collections.abc
 
 
 def test_tokenizer_default_model_is_word():

@@ -1,9 +1,9 @@
 import pytest
 
+from shekar import data
 from shekar.preprocessing.normalizers.verbal_spacing_normalizer import (
     VerbalSpacingNormalizer,
 )
-from shekar import data
 
 
 @pytest.fixture

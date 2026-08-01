@@ -1,7 +1,8 @@
 import pytest
+
 from shekar.classification.base_informal import (
-    InformalLanguageClassifier,
     INFORMAL_REGISTRY,
+    InformalLanguageClassifier,
 )
 
 

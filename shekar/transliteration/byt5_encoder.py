@@ -1,8 +1,9 @@
-import onnxruntime as ort
 from pathlib import Path
 
-from shekar.utils import get_onnx_providers
+import onnxruntime as ort
+
 from shekar.transliteration.byt5_tokenizer import ByT5Tokenizer
+from shekar.utils import get_onnx_providers
 
 
 class ByT5Encoder:

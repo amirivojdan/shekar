@@ -1,4 +1,5 @@
 from shekar.base import BaseTransform
+
 from .logistic_offensive_classifier import LogisticOffensiveClassifier
 
 OFFENSIVE_REGISTRY = {

@@ -1,7 +1,8 @@
-from typing import Iterable
+import re
+from collections.abc import Iterable
+
 from shekar import data
 from shekar.base import BaseTextTransform
-import re
 
 
 class OffensiveWordMasker(BaseTextTransform):
@@ -38,7 +39,7 @@ class OffensiveWordMasker(BaseTextTransform):
         "عجب آدم [بوق]‌ای هستی!"
     """
 
-    def __init__(self, words: Iterable[str] = None, mask_token: str = ""):
+    def __init__(self, words: Iterable[str] | None = None, mask_token: str = ""):
         super().__init__()
         if words is None:
             words = data.offensive_words

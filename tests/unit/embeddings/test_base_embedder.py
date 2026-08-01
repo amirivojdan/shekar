@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
 
-
 from shekar.embeddings.base import BaseEmbedder
 
 

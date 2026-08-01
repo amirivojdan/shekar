@@ -1,17 +1,16 @@
-from shekar import BaseTransform
-from shekar.preprocessing import (
-    RemoveStopWords,
-    RemovePunctuations,
-    RemoveDigits,
-)
+from collections import defaultdict
 
+from shekar.base import BaseTransform
+from shekar.preprocessing import (
+    RemoveDigits,
+    RemovePunctuations,
+    RemoveStopWords,
+)
+from shekar.tokenization import SentenceTokenizer, WordTokenizer
 from shekar.transforms import (
     Flatten,
     NGramExtractor,
 )
-
-from collections import defaultdict
-from shekar.tokenization import SentenceTokenizer, WordTokenizer
 
 
 class RAKE(BaseTransform):

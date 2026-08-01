@@ -1,4 +1,4 @@
-from .base import POSTagger
 from .albert_pos import AlbertPOS
+from .base import POSTagger
 
-__all__ = ["POSTagger", "AlbertPOS"]
+__all__ = ["AlbertPOS", "POSTagger"]

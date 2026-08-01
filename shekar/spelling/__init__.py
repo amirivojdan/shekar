@@ -1,4 +1,4 @@
-from .statistical_checker import StatisticalSpellChecker
 from .checker import SpellChecker
+from .statistical_checker import StatisticalSpellChecker
 
-__all__ = ["StatisticalSpellChecker", "SpellChecker"]
+__all__ = ["SpellChecker", "StatisticalSpellChecker"]

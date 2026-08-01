@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Shekar NLP - Web UI Server
 
@@ -112,7 +111,6 @@ def get_spell_checker():
 
 
 def get_keyword_extractor(model: str):
-    global _keyword_extractors
     if model not in _keyword_extractors:
         from shekar import KeywordExtractor
 
@@ -190,7 +188,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
 
         try:
             handler(text, body)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - request boundary: never kill the server
             self._send_json({"error": str(exc)}, status=500)
 
     def _handle_normalize(self, text: str, body=None):
@@ -309,7 +307,7 @@ class ShekarHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
-    def log_message(self, fmt, *args):  # noqa: N802
+    def log_message(self, fmt, *args):
         print(f"  {self.address_string()} — {fmt % args}")
 
     @staticmethod

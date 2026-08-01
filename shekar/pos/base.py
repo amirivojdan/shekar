@@ -1,4 +1,5 @@
 from shekar.base import BaseTransform
+
 from .albert_pos import AlbertPOS
 
 POS_REGISTRY = {

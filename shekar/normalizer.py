@@ -1,13 +1,14 @@
-from typing import Iterable
-from shekar import Pipeline
+from collections.abc import Iterable
+
+from shekar.pipeline import Pipeline
 from shekar.preprocessing import (
-    PunctuationNormalizer,
     AlphabetNormalizer,
+    ArabicUnicodeNormalizer,
     DigitNormalizer,
-    SpacingNormalizer,
+    PunctuationNormalizer,
     RemoveDiacritics,
     RepeatedLetterNormalizer,
-    ArabicUnicodeNormalizer,
+    SpacingNormalizer,
     YaNormalizer,
 )
 

@@ -1,14 +1,16 @@
-from shekar.base import BaseTransform
-from shekar.tokenization import AlbertTokenizer, WordTokenizer
-from shekar.hub import Hub
 from pathlib import Path
-import onnxruntime
+
 import numpy as np
+import onnxruntime
+
+from shekar.base import BaseTransform
+from shekar.hub import Hub
+from shekar.tokenization import AlbertTokenizer, WordTokenizer
 from shekar.utils import get_onnx_providers
 
 
 class AlbertPOS(BaseTransform):
-    def __init__(self, model_path: str | Path = None):
+    def __init__(self, model_path: str | Path | None = None):
         super().__init__()
         resource_name = "albert_persian_pos_q8.onnx"
         if model_path is None or not Path(model_path).exists():

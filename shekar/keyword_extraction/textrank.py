@@ -1,8 +1,8 @@
 from collections import defaultdict
 from math import log
 
-from shekar import BaseTransform
-from shekar.preprocessing import RemoveStopWords, RemovePunctuations, RemoveDigits
+from shekar.base import BaseTransform
+from shekar.preprocessing import RemoveDigits, RemovePunctuations, RemoveStopWords
 from shekar.tokenization import SentenceTokenizer, WordTokenizer
 
 
@@ -106,7 +106,7 @@ class TextRank(BaseTransform):
                 ) * (1 + log(len(phrase_words)))
                 if phrase not in candidates or candidates[phrase] < phrase_score:
                     candidates[phrase] = phrase_score
-                i = j if j > i + 1 else i + 1
+                i = max(i + 1, j)
         return candidates
 
     def transform(self, X: str) -> list[str]:

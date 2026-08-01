@@ -1,6 +1,7 @@
 import pytest
-from shekar.morphology.inflector import Inflector
+
 from shekar import data
+from shekar.morphology.inflector import Inflector
 
 
 class TestInflector:

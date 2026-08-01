@@ -1,6 +1,7 @@
 import pytest
-from shekar.pos.albert_pos import AlbertPOS
+
 from shekar.hub import Hub
+from shekar.pos.albert_pos import AlbertPOS
 
 
 class TestAlbertPOS:

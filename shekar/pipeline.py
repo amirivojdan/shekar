@@ -1,7 +1,8 @@
-from .base import BaseTransform
-from typing import Iterable
+from collections.abc import Iterable
 from functools import wraps
 from inspect import signature
+
+from .base import BaseTransform
 
 
 class Pipeline(BaseTransform):
@@ -100,7 +101,7 @@ class Pipeline(BaseTransform):
             return generator()
 
         else:
-            raise ValueError("Input must be a string or a list of strings.")
+            raise TypeError("Input must be a string or a list of strings.")
 
     def __call__(self, X):
         return self.fit_transform(X)
@@ -129,9 +130,7 @@ class Pipeline(BaseTransform):
         return repr(self)
 
     def __repr__(self):
-        steps_repr = ", ".join(
-            f"({repr(name)}, {repr(step)})" for name, step in self.steps
-        )
+        steps_repr = ", ".join(f"({name!r}, {step!r})" for name, step in self.steps)
         return f"Pipeline(steps=[{steps_repr}])"
 
     def on_args(self, param_names):

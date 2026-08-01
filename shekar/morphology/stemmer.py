@@ -1,6 +1,7 @@
-from shekar.base import BaseTextTransform
-from shekar import data
 import re
+
+from shekar import data
+from shekar.base import BaseTextTransform
 
 
 class Stemmer(BaseTextTransform):

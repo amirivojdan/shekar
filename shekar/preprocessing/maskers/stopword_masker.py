@@ -1,7 +1,8 @@
-from typing import Iterable
+import re
+from collections.abc import Iterable
+
 from shekar import data
 from shekar.base import BaseTextTransform
-import re
 
 
 class StopWordMasker(BaseTextTransform):
@@ -38,7 +39,7 @@ class StopWordMasker(BaseTextTransform):
         "این یک متن نمونه است شما کمک می‌کند."
     """
 
-    def __init__(self, stopwords: Iterable[str] = None, mask_token: str = ""):
+    def __init__(self, stopwords: Iterable[str] | None = None, mask_token: str = ""):
         super().__init__()
 
         if stopwords is None:

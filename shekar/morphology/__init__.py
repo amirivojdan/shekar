@@ -1,6 +1,6 @@
 from .conjugator import Conjugator
 from .inflector import Inflector
-from .stemmer import Stemmer
 from .lemmatizer import Lemmatizer
+from .stemmer import Stemmer
 
-__all__ = ["Conjugator", "Inflector", "Stemmer", "Lemmatizer"]
+__all__ = ["Conjugator", "Inflector", "Lemmatizer", "Stemmer"]

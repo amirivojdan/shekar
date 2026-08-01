@@ -1,5 +1,6 @@
+from collections.abc import Iterable
+
 from shekar.base import BaseTransform
-from typing import Iterable
 
 
 class Flatten(BaseTransform):

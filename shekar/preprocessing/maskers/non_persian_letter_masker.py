@@ -1,6 +1,6 @@
-from functools import lru_cache
 import re
 import string
+from functools import lru_cache
 
 from shekar import data
 from shekar.base import BaseTextTransform

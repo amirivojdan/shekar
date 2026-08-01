@@ -1,6 +1,7 @@
-import pytest
-import numpy as np
 import pickle
+
+import numpy as np
+import pytest
 
 from shekar.embeddings.word_embedder import WordEmbedder
 

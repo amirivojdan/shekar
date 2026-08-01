@@ -1,16 +1,19 @@
 from __future__ import annotations
-import numpy as np
-from typing import Counter
+
 import os
-from shekar import data
+from collections import Counter
 from importlib import resources
+
+import numpy as np
+
+from shekar import data
 
 try:
     import arabic_reshaper
     import matplotlib
-    from wordcloud import WordCloud as wc
     from bidi import get_display
     from PIL import Image
+    from wordcloud import WordCloud as wc
 
 except ModuleNotFoundError as e:
     _WORDCLOUD_IMPORT_ERROR = e
@@ -106,7 +109,7 @@ class WordCloud:
             Image: The generated word cloud PIL image.
         """
         if not isinstance(frequencies, Counter):
-            raise ValueError(
+            raise TypeError(
                 "Input must be a dictionary of words and their frequencies."
             )
 

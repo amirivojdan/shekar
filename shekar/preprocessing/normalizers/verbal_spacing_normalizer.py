@@ -1,9 +1,8 @@
-from functools import partial
-from typing import Set
 import re
+from functools import partial
 
-from shekar.base import BaseTextTransform
 from shekar import data
+from shekar.base import BaseTextTransform
 from shekar.morphology.conjugator import get_conjugated_verbs
 
 
@@ -11,7 +10,7 @@ class VerbalSpacingNormalizer(BaseTextTransform):
     def __init__(self):
         super().__init__()
 
-        self.conjugated_verbs: Set[str] = get_conjugated_verbs()
+        self.conjugated_verbs: set[str] = get_conjugated_verbs()
         _punc_class = re.escape(data.punctuations)
 
         _verbal_suffix_alt = "|".join(
@@ -75,7 +74,7 @@ class VerbalSpacingNormalizer(BaseTextTransform):
         )
 
     def _prefix_spacing(
-        self, m: re.Match, vocab: Set[str], only_stem: bool = False
+        self, m: re.Match, vocab: set[str], only_stem: bool = False
     ) -> str:
         prefix = m.group("prefix")
         stem = m.group("stem")
@@ -92,7 +91,7 @@ class VerbalSpacingNormalizer(BaseTextTransform):
         return candidate if candidate in vocab else m.group(0)
 
     def _suffix_spacing(
-        self, m: re.Match, vocab: Set[str], only_stem: bool = False
+        self, m: re.Match, vocab: set[str], only_stem: bool = False
     ) -> str:
         stem = m.group("stem")
         suffix = m.group("suffix")

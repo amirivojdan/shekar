@@ -1,11 +1,11 @@
 import pytest
-from shekar.pipeline import Pipeline
 
+from shekar.pipeline import Pipeline
 from shekar.preprocessing import (
     EmojiRemover,
-    PunctuationRemover,
     HTMLTagRemover,
     NonPersianRemover,
+    PunctuationRemover,
 )
 
 
@@ -43,9 +43,7 @@ def test_pipeline_fit_transform_list(mock_pipeline):
 
 
 def test_pipeline_fit_transform_invalid_input(mock_pipeline):
-    with pytest.raises(
-        ValueError, match="Input must be a string or a list of strings."
-    ):
+    with pytest.raises(TypeError, match="Input must be a string or a list of strings."):
         mock_pipeline.fit_transform(123)
 
 

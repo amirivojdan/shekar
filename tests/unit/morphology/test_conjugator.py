@@ -1,4 +1,5 @@
 import pytest
+
 from shekar.morphology.conjugator import Conjugator
 
 
@@ -749,7 +750,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-        result = result = conjugator.past_perfect(
+        result = conjugator.past_perfect(
             "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=False
         )
         expected = [
@@ -773,7 +774,7 @@ class TestConjugator:
         ]
         assert result == expected
 
-        result = result = conjugator.past_perfect(
+        result = conjugator.past_perfect(
             "آمد", prefix="بر", compound_preverb="باز", negative=True, passive=True
         )
         expected = [

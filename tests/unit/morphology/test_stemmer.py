@@ -1,6 +1,7 @@
 import pytest
-from shekar.morphology.stemmer import Stemmer
+
 from shekar import data
+from shekar.morphology.stemmer import Stemmer
 
 
 @pytest.fixture

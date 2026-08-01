@@ -1,7 +1,8 @@
-from shekar.base import BaseTextTransform
-from .stemmer import Stemmer
 from shekar import data
+from shekar.base import BaseTextTransform
+
 from .conjugator import get_conjugated_verbs
+from .stemmer import Stemmer
 
 
 class Lemmatizer(BaseTextTransform):

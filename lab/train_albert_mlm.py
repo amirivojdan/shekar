@@ -1,4 +1,7 @@
 import os
+from itertools import chain
+
+from datasets import load_dataset
 from transformers import (
     AlbertTokenizer,
     AutoModelForMaskedLM,
@@ -7,7 +10,6 @@ from transformers import (
     TrainingArguments,
 )
 
-from datasets import load_dataset
 from shekar import Normalizer
 
 normalizer = Normalizer()
@@ -17,6 +19,7 @@ datasets = load_dataset("SLPL/naab")
 tokenizer = AlbertTokenizer.from_pretrained(
     "shekar-ai/albert-base-v2-persian-zwnj-naab-mlm", use_fast=True
 )
+
 
 def tokenize_function(examples):
     # Normalize the text using shekar normalizer
@@ -31,9 +34,12 @@ tokenized_datasets = datasets.map(
 
 block_size = tokenizer.model_max_length
 
+
 def group_texts(examples):
-    concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()}
-    total_length = len(concatenated_examples[list(examples.keys())[0]])
+    concatenated_examples = {
+        k: list(chain.from_iterable(examples[k])) for k in examples
+    }
+    total_length = len(concatenated_examples[next(iter(examples))])
 
     total_length = (total_length // block_size) * block_size
 

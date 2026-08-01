@@ -1,5 +1,5 @@
-from shekar.base import BaseTextTransform
 from shekar import data
+from shekar.base import BaseTextTransform
 
 
 class OrthographicSpacingNormalizer(BaseTextTransform):
@@ -42,8 +42,10 @@ class OrthographicSpacingNormalizer(BaseTextTransform):
             (r"\u200c{2,}", "\u200c"),
             # Remove ZWNJ at token edges (not between Persian chars/digits)
             (
-                rf"(?<![{_arabic_script}0-9]){data.ZWNJ}+|"
-                rf"{data.ZWNJ}+(?![{_arabic_script}0-9])",
+                (
+                    rf"(?<![{_arabic_script}0-9]){data.ZWNJ}+|"
+                    rf"{data.ZWNJ}+(?![{_arabic_script}0-9])"
+                ),
                 "",
             ),
             # Remove ZWNJ after non-left-joiner letters

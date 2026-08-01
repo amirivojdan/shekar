@@ -1,4 +1,5 @@
 import numpy as np
+
 from shekar.embeddings.albert_embedder import AlbertEmbedder
 
 

@@ -1,4 +1,5 @@
 from shekar.base import BaseTransform
+
 from .albert_sentiment_binary import AlbertBinarySentimentClassifier
 
 SENTIMENT_REGISTRY = {

@@ -2,8 +2,8 @@ from pathlib import Path
 
 from shekar.base import BaseTextTransform
 from shekar.hub import Hub
-from shekar.transliteration.byt5_encoder import ByT5Encoder
 from shekar.transliteration.byt5_decoder import ByT5Decoder
+from shekar.transliteration.byt5_encoder import ByT5Encoder
 
 
 class ByT5Transliterator(BaseTextTransform):

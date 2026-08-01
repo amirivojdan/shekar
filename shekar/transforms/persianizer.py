@@ -1,6 +1,7 @@
 from flashtext import KeywordProcessor
-from shekar.base import BaseTextTransform
+
 from shekar import data
+from shekar.base import BaseTextTransform
 
 
 class Persianizer(BaseTextTransform):

@@ -1,5 +1,7 @@
-import pytest
 import re
+
+import pytest
+
 from shekar.base import BaseTextTransform
 
 
@@ -25,7 +27,7 @@ class TestBaseTextTransformer:
 
     def test_transform_invalid_input(self, transformer):
         with pytest.raises(
-            ValueError, match="Input must be a string or a Iterable of strings."
+            TypeError, match="Input must be a string or a Iterable of strings."
         ):
             transformer.transform(123)
 

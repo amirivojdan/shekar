@@ -1,7 +1,8 @@
+import pytest
+
 from shekar.transforms import (
     NGramExtractor,
 )
-import pytest
 
 
 def test_ngram_extractor():

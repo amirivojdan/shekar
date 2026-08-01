@@ -1,4 +1,5 @@
 from shekar.base import BaseTransform
+
 from .rake import RAKE
 from .textrank import TextRank
 

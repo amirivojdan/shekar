@@ -1,4 +1,4 @@
-from shekar import BaseTextTransform
+from shekar.base import BaseTextTransform
 
 
 class RepeatedLetterNormalizer(BaseTextTransform):

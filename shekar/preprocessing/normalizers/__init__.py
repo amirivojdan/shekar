@@ -1,15 +1,14 @@
 from .alphabet_normalizer import AlphabetNormalizer
 from .arabic_unicode_normalizer import ArabicUnicodeNormalizer
 from .digit_normalizer import DigitNormalizer
-from .punctuation_normalizer import PunctuationNormalizer
-from .ya_normalizer import YaNormalizer
-from .repeated_letter_normalizer import RepeatedLetterNormalizer
-
-from .spacing_normalizer import SpacingNormalizer
 from .orthographic_spacing_normalizer import OrthographicSpacingNormalizer
-from .verbal_spacing_normalizer import VerbalSpacingNormalizer
+from .punctuation_normalizer import PunctuationNormalizer
 from .punctuation_spacing_normalizer import PunctuationSpacingNormalizer
+from .repeated_letter_normalizer import RepeatedLetterNormalizer
+from .spacing_normalizer import SpacingNormalizer
+from .verbal_spacing_normalizer import VerbalSpacingNormalizer
 from .word_spacing_normalizer import WordSpacingNormalizer
+from .ya_normalizer import YaNormalizer
 
 # aliases
 NormalizeDigits = DigitNormalizer
@@ -28,24 +27,23 @@ __all__ = [
     "AlphabetNormalizer",
     "ArabicUnicodeNormalizer",
     "DigitNormalizer",
-    "PunctuationNormalizer",
-    "YaNormalizer",
-    "RepeatedLetterNormalizer",
-    "SpacingNormalizer",
-    "OrthographicSpacingNormalizer",
-    "VerbalSpacingNormalizer",
-    "PunctuationSpacingNormalizer",
-    "WordSpacingNormalizer",
-    # aliases
-    "NormalizeDigits",
-    "NormalizePunctuations",
-    "NormalizeArabicUnicodes",
     "NormalizeAlphabets",
-    "NormalizeYas",
+    "NormalizeArabicUnicodes",
+    "NormalizeDigits",
+    "NormalizeOrthographicSpacings",
+    "NormalizePunctuationSpacings",
+    "NormalizePunctuations",
     "NormalizeRepeatedLetters",
     "NormalizeSpacings",
-    "NormalizeOrthographicSpacings",
     "NormalizeVerbalSpacings",
-    "NormalizePunctuationSpacings",
     "NormalizeWordSpacings",
+    "NormalizeYas",
+    "OrthographicSpacingNormalizer",
+    "PunctuationNormalizer",
+    "PunctuationSpacingNormalizer",
+    "RepeatedLetterNormalizer",
+    "SpacingNormalizer",
+    "VerbalSpacingNormalizer",
+    "WordSpacingNormalizer",
+    "YaNormalizer",
 ]

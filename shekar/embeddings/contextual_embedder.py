@@ -1,6 +1,7 @@
 import numpy as np
-from .base import BaseEmbedder
+
 from .albert_embedder import AlbertEmbedder
+from .base import BaseEmbedder
 
 CONTEXTUAL_EMBEDDING_REGISTRY = {
     "albert": AlbertEmbedder,

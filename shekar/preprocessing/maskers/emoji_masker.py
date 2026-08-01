@@ -58,20 +58,22 @@ class EmojiMasker(BaseTextTransform):
 
         self._emoji_mappings = [
             (
-                rf"(?:"
-                rf"(?:"
-                rf"[{_emoji_base}]"
-                rf"(?:[{_skin_tone_modifiers}])?"
-                rf"(?:{_VS16})?"
-                rf"(?:{_ZWJ}"
-                rf"[{_emoji_base}]"
-                rf"(?:[{_skin_tone_modifiers}])?"
-                rf"(?:{_VS16})?"
-                rf")*"
-                rf")"
-                rf"|"
-                rf"(?:[{_regional}]{{2}})"
-                rf")",
+                (
+                    rf"(?:"
+                    rf"(?:"
+                    rf"[{_emoji_base}]"
+                    rf"(?:[{_skin_tone_modifiers}])?"
+                    rf"(?:{_VS16})?"
+                    rf"(?:{_ZWJ}"
+                    rf"[{_emoji_base}]"
+                    rf"(?:[{_skin_tone_modifiers}])?"
+                    rf"(?:{_VS16})?"
+                    rf")*"
+                    rf")"
+                    rf"|"
+                    rf"(?:[{_regional}]{{2}})"
+                    rf")"
+                ),
                 self._mask_token,
             ),
         ]

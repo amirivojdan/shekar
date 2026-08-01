@@ -1,23 +1,23 @@
 import pytest
 
 from shekar.preprocessing import (
-    PunctuationNormalizer,
     AlphabetNormalizer,
-    DigitNormalizer,
-    EmojiMasker,
-    EmailMasker,
-    URLMasker,
-    DiacriticRemover,
-    NonPersianLetterMasker,
-    HTMLTagMasker,
-    RepeatedLetterNormalizer,
     ArabicUnicodeNormalizer,
-    StopWordRemover,
-    PunctuationRemover,
+    DiacriticRemover,
+    DigitNormalizer,
     DigitRemover,
-    MentionMasker,
+    EmailMasker,
+    EmojiMasker,
     HashtagMasker,
+    HTMLTagMasker,
+    MentionMasker,
+    NonPersianLetterMasker,
     OffensiveWordMasker,
+    PunctuationNormalizer,
+    PunctuationRemover,
+    RepeatedLetterNormalizer,
+    StopWordRemover,
+    URLMasker,
 )
 
 
@@ -327,7 +327,7 @@ def test_digit_remover():
 
     input_text = 12345
     expected_output = "Input must be a string or a Iterable of strings."
-    with pytest.raises(ValueError, match=expected_output):
+    with pytest.raises(TypeError, match=expected_output):
         digit_remover(input_text)
 
 

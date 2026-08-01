@@ -1,4 +1,5 @@
 import pytest
+
 from shekar.ner import NER
 from shekar.ner.albert_ner import AlbertNER
 

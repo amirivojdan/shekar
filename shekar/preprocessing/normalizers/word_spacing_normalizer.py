@@ -1,9 +1,10 @@
-from functools import partial
-from typing import Set
 import re
+from functools import partial
+
 from flashtext import KeywordProcessor
-from shekar.base import BaseTextTransform
+
 from shekar import data
+from shekar.base import BaseTextTransform
 
 
 class WordSpacingNormalizer(BaseTextTransform):
@@ -69,7 +70,7 @@ class WordSpacingNormalizer(BaseTextTransform):
         )
 
     def _prefix_spacing(
-        self, m: re.Match, vocab: Set[str], only_stem: bool = False
+        self, m: re.Match, vocab: set[str], only_stem: bool = False
     ) -> str:
         prefix = m.group("prefix")
         stem = m.group("stem")
@@ -84,7 +85,7 @@ class WordSpacingNormalizer(BaseTextTransform):
         return candidate if candidate in vocab else m.group(0)
 
     def _suffix_spacing(
-        self, m: re.Match, vocab: Set[str], only_stem: bool = False
+        self, m: re.Match, vocab: set[str], only_stem: bool = False
     ) -> str:
         stem = m.group("stem")
         suffix = m.group("suffix")

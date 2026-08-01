@@ -61,5 +61,5 @@ def test_correct_spacings():
 
     input_text = 13.4
     expected_output = "Input must be a string or a list of strings."
-    with pytest.raises(ValueError, match=expected_output):
+    with pytest.raises(TypeError, match=expected_output):
         spacing_normalizer(input_text)

@@ -1,4 +1,5 @@
 from shekar.base import BaseTransform
+
 from .informal_rule_based import RuleBasedInformalClassifier
 
 INFORMAL_REGISTRY = {

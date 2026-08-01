@@ -1,7 +1,8 @@
 from shekar.base import BaseTransform
-from .word_tokenizer import WordTokenizer
-from .sentence_tokenizer import SentenceTokenizer
+
 from .albert_tokenizer import AlbertTokenizer
+from .sentence_tokenizer import SentenceTokenizer
+from .word_tokenizer import WordTokenizer
 
 TOKENIZATION_REGISTRY = {
     "word": WordTokenizer,

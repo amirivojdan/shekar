@@ -1,4 +1,5 @@
 import pytest
+
 from shekar.keyword_extraction import KeywordExtractor
 from shekar.keyword_extraction.rake import RAKE
 

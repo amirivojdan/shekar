@@ -1,6 +1,6 @@
-from abc import ABC, abstractmethod
-from typing import Iterable, List
 import re
+from abc import ABC, abstractmethod
+from collections.abc import Iterable
 
 
 class BaseTransform(ABC):
@@ -74,7 +74,7 @@ class BaseTextTransform(BaseTransform):
         elif isinstance(X, Iterable):
             return (self._function(x) for x in X)
         else:
-            raise ValueError("Input must be a string or a Iterable of strings.")
+            raise TypeError("Input must be a string or a Iterable of strings.")
 
     def fit(self, X: Iterable[str] | str, y=None):
         return self
@@ -85,7 +85,7 @@ class BaseTextTransform(BaseTransform):
     @classmethod
     def _compile_patterns(
         cls, mappings: Iterable[tuple[str, str]], flags: int = re.UNICODE
-    ) -> List[tuple[re.Pattern, str]]:
+    ) -> list[tuple[re.Pattern, str]]:
         """
         Compiles a list of regex patterns and their corresponding replacement strings.
         This method takes an iterable of tuples, where each tuple contains a regex pattern

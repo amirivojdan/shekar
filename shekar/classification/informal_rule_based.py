@@ -1,7 +1,8 @@
 from flashtext import KeywordProcessor
+
+from shekar import data
 from shekar.base import BaseTransform
 from shekar.morphology.conjugator import get_informal_conjugated_verbs
-from shekar import data
 
 
 class RuleBasedInformalClassifier(BaseTransform):
@@ -14,7 +15,7 @@ class RuleBasedInformalClassifier(BaseTransform):
     def __init__(self, model_path=None, occurrence_threshold=1):
         super().__init__()
         self._kp = KeywordProcessor()
-        self._kp.non_word_boundaries |= set(chr(c) for c in range(0x0600, 0x0700))
+        self._kp.non_word_boundaries |= {chr(c) for c in range(0x0600, 0x0700)}
         self._kp.add_keywords_from_list(list(get_informal_conjugated_verbs().keys()))
         self._kp.add_keywords_from_list(list(data.informal_words.keys()))
         self.occurrence_threshold = occurrence_threshold

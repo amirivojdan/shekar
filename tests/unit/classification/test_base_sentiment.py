@@ -1,5 +1,6 @@
 import pytest
-from shekar.classification.base_sentiment import SentimentClassifier, SENTIMENT_REGISTRY
+
+from shekar.classification.base_sentiment import SENTIMENT_REGISTRY, SentimentClassifier
 
 
 class TestSentimentClassifier:

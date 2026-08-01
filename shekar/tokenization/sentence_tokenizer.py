@@ -1,6 +1,8 @@
 import re
-from typing import Iterable
-from shekar import data, BaseTextTransform
+from collections.abc import Iterable
+
+from shekar import data
+from shekar.base import BaseTextTransform
 
 
 class SentenceTokenizer(BaseTextTransform):

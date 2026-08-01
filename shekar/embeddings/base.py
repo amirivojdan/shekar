@@ -1,6 +1,8 @@
 from abc import abstractmethod
-from shekar.base import BaseTransform
+
 import numpy as np
+
+from shekar.base import BaseTransform
 
 
 class BaseEmbedder(BaseTransform):
@@ -37,7 +39,6 @@ class BaseEmbedder(BaseTransform):
         Returns:
             np.ndarray: Vector representation of the input text.
         """
-        pass
 
     def transform(self, X: str) -> np.ndarray:
         """Transform the input text into its embedded vector representation.

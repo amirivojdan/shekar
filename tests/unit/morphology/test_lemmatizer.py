@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import MagicMock
-from shekar.morphology.lemmatizer import Lemmatizer
-from shekar.morphology.conjugator import get_conjugated_verbs
+
+import pytest
+
 from shekar import data
+from shekar.morphology.conjugator import get_conjugated_verbs
+from shekar.morphology.lemmatizer import Lemmatizer
 
 
 @pytest.fixture

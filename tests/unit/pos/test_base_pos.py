@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from shekar.pos.albert_pos import AlbertPOS
-from shekar.pos.base import POSTagger, POS_REGISTRY
+from shekar.pos.base import POS_REGISTRY, POSTagger
 
 
 class TestPOSTagger:

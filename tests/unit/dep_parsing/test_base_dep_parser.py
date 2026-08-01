@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from shekar.dep_parsing.albert_dep_parser import AlbertDepParser
-from shekar.dep_parsing.base import DependencyParser, DEP_PARSER_REGISTRY
+from shekar.dep_parsing.base import DEP_PARSER_REGISTRY, DependencyParser
 
 
 class TestDependencyParser:

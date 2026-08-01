@@ -6,13 +6,15 @@ pytest.importorskip("arabic_reshaper")
 pytest.importorskip("bidi")
 pytest.importorskip("PIL")
 
-from shekar.visualization import WordCloud
-from PIL import Image
-from collections import Counter
-import numpy as np
 import os
+from collections import Counter
 from importlib import resources
+
+import numpy as np
+from PIL import Image
+
 from shekar import data
+from shekar.visualization import WordCloud
 
 
 @pytest.fixture
@@ -46,7 +48,7 @@ def test_wordcloud_generate_valid_frequencies(wordcloud_instance):
 
 
 def test_wordcloud_generate_invalid_frequencies(wordcloud_instance):
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         wordcloud_instance.generate({"word1": "invalid_frequency"})
 
 

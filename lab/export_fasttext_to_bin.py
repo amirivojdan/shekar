@@ -1,6 +1,7 @@
-from gensim.models import FastText
 import pickle
+
 import numpy as np
+from gensim.models import FastText
 
 model = FastText.load("fasttext_d300_w10_v250k_cbow_naab.model")
 
@@ -26,7 +27,7 @@ model_export = {
     "window": model.window,
     "model": "fasttext-" + ("cbow" if model.sg == 0 else "skipgram"),
     "epochs": model.epochs,
-    "dataset": "SLPL/naab"
+    "dataset": "SLPL/naab",
 }
 
 with open("fasttext_d300_w10_v250k_cbow_naab.bin", "wb") as f:
@@ -34,7 +35,9 @@ with open("fasttext_d300_w10_v250k_cbow_naab.bin", "wb") as f:
 
 with open("fasttext_d300_w10_v250k_cbow_naab.bin", "rb") as f:
     loaded_model_export = pickle.load(f)
-    new_embedding = loaded_model_export["embeddings"][np.where(loaded_model_export["words"] == "سلام")[0][0]]
+    new_embedding = loaded_model_export["embeddings"][
+        np.where(loaded_model_export["words"] == "سلام")[0][0]
+    ]
 
 if np.array_equal(embedding, new_embedding):
     print("The embeddings match!")

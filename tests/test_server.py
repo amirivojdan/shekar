@@ -2,6 +2,7 @@ import io
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 import shekar.server as server_module
 from shekar.server import ShekarHandler
 
@@ -286,7 +287,7 @@ class TestPostKeywords:
         with patch.object(
             server_module, "get_keyword_extractor", return_value=mock_extractor
         ) as mock_get:
-            status, body = _post(
+            status, _body = _post(
                 "/api/keywords", {"text": "پردازش زبان طبیعی", "model": "textrank"}
             )
 

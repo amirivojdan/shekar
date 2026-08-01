@@ -27,7 +27,7 @@ def test_tokenize_ascii(tokenizer):
 
 def test_tokenize_persian(tokenizer):
     ids = tokenizer.tokenize("ک")
-    expected = [b + tokenizer._byte_offset for b in "ک".encode("utf-8")]
+    expected = [b + tokenizer._byte_offset for b in "ک".encode()]
     assert ids[: len(expected)].tolist() == expected
 
 
@@ -62,5 +62,5 @@ def test_batch_tokenize_pads_shorter_sequence(tokenizer):
 
 
 def test_batch_tokenize_attention_mask(tokenizer):
-    input_ids, attn = tokenizer.batch_tokenize(["a", "abc"])
+    _input_ids, attn = tokenizer.batch_tokenize(["a", "abc"])
     assert int(attn[1, -1]) == 1

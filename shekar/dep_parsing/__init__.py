@@ -1,4 +1,4 @@
-from .base import DependencyParser
 from .albert_dep_parser import AlbertDepParser
+from .base import DependencyParser
 
-__all__ = ["DependencyParser", "AlbertDepParser"]
+__all__ = ["AlbertDepParser", "DependencyParser"]

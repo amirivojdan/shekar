@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import os
 import tempfile
 import time
@@ -7,7 +8,6 @@ from pathlib import Path
 
 from filelock import FileLock
 from tqdm import tqdm
-
 
 MODEL_HASHES = {
     "albert_persian_tokenizer.json": "79716aa7d8aeee80d362835da4f33e2b36b69fe65c257ead32c5ecd850e9ed17",
@@ -31,6 +31,8 @@ MIRRORS = [
 
 _DOWNLOAD_TIMEOUT = 10
 _BLOCK_SIZE = 65536
+
+logger = logging.getLogger(__name__)
 
 
 class TqdmUpTo(tqdm):
@@ -84,7 +86,8 @@ class Hub:
 
                 timings.append((latency, base_url))
 
-            except Exception:
+            except OSError as e:
+                logger.debug("Mirror %s is unreachable: %s", base_url, e)
                 continue
 
         return sorted(timings, key=lambda x: x[0])
@@ -122,26 +125,28 @@ class Hub:
             with opener.open(url, timeout=_DOWNLOAD_TIMEOUT) as response:
                 total_size = int(response.headers.get("Content-Length", 0) or 0)
 
-                with TqdmUpTo(
-                    unit="B",
-                    unit_scale=True,
-                    unit_divisor=1024,
-                    miniters=1,
-                    desc="Downloading model",
-                    bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
-                    total=total_size or None,
-                ) as t:
-                    with open(dest_path, "wb") as f:
-                        while True:
-                            block = response.read(_BLOCK_SIZE)
-                            if not block:
-                                break
-                            f.write(block)
-                            t.update(len(block))
+                with (
+                    TqdmUpTo(
+                        unit="B",
+                        unit_scale=True,
+                        unit_divisor=1024,
+                        miniters=1,
+                        desc="Downloading model",
+                        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
+                        total=total_size or None,
+                    ) as t,
+                    open(dest_path, "wb") as f,
+                ):
+                    while True:
+                        block = response.read(_BLOCK_SIZE)
+                        if not block:
+                            break
+                        f.write(block)
+                        t.update(len(block))
 
             return True
 
-        except Exception as e:
+        except OSError as e:
             print(f"Error downloading file from {url}: {e}")
             dest_path.unlink(missing_ok=True)
             return False

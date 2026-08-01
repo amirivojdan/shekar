@@ -1,8 +1,8 @@
-from shekar.base import BaseTransform
-from shekar.tokenization import WordTokenizer
-from shekar import Normalizer
-from shekar.morphology import Stemmer
 from shekar import data
+from shekar.base import BaseTransform
+from shekar.morphology import Stemmer
+from shekar.normalizer import Normalizer
+from shekar.tokenization import WordTokenizer
 
 
 class StatisticalSpellChecker(BaseTransform):
@@ -16,7 +16,7 @@ class StatisticalSpellChecker(BaseTransform):
     def __init__(
         self,
         n_edit=2,
-        words: dict = None,
+        words: dict | None = None,
     ):
         """
         Initialize the AutoCorrect instance.

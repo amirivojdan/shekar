@@ -1,8 +1,8 @@
 import csv
 from importlib import resources
+
 from . import files as data
-from . import fonts
-from . import masks
+from . import fonts, masks
 
 resources_root = resources.files(data)
 fonts_root = resources.files(fonts)
@@ -196,7 +196,7 @@ e_suffixes = [
 expanded_suffixes = []
 for suffix in suffixes:
     expanded_suffixes.append(suffix)
-    if suffix.endswith("ا") or suffix.endswith("آ"):
+    if suffix.endswith(("ا", "آ")):
         expanded_suffixes.append(suffix + "یی")
     # TODO: check if the suffix ends with e sound and POS is adjective to add "گی" otherwise add "ی"
     # elif suffix.endswith("ه"):

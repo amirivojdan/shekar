@@ -1,14 +1,17 @@
 from pathlib import Path
-import onnxruntime
+
 import numpy as np
+import onnxruntime
+
 from shekar.hub import Hub
-from .base import BaseEmbedder
 from shekar.tokenization import AlbertTokenizer
 from shekar.utils import get_onnx_providers
 
+from .base import BaseEmbedder
+
 
 class AlbertEmbedder(BaseEmbedder):
-    def __init__(self, model_path: str | Path = None):
+    def __init__(self, model_path: str | Path | None = None):
         super().__init__()
         resource_name = "albert_persian_mlm_embeddings.onnx"
         if model_path is None or not Path(model_path).exists():
@@ -26,7 +29,7 @@ class AlbertEmbedder(BaseEmbedder):
     def embed(self, phrase: str) -> np.ndarray:
         inputs = self.tokenizer(phrase)
 
-        logits, last_hidden_state = self.session.run(None, inputs)
+        _logits, last_hidden_state = self.session.run(None, inputs)
 
         mask = inputs["attention_mask"].astype(last_hidden_state.dtype)[:, :, None]
 

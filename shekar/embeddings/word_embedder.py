@@ -1,6 +1,7 @@
 import pickle
 from numbers import Integral
 from pathlib import Path
+from typing import Any, ClassVar
 
 import numpy as np
 
@@ -19,7 +20,7 @@ _OOV_STRATEGIES = frozenset({"zero", "none", "error"})
 class _RestrictedEmbeddingUnpickler(pickle.Unpickler):
     """Load legacy NumPy embedding dictionaries without arbitrary globals."""
 
-    _ALLOWED_GLOBALS = {
+    _ALLOWED_GLOBALS: ClassVar[dict[tuple[str, str], Any]] = {
         ("numpy", "dtype"): np.dtype,
         ("numpy", "ndarray"): np.ndarray,
         ("numpy._core.multiarray", "_reconstruct"): np._core.multiarray._reconstruct,

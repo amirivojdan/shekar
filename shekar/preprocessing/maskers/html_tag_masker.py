@@ -1,5 +1,6 @@
-from shekar.base import BaseTextTransform
 import html
+
+from shekar.base import BaseTextTransform
 
 
 class HTMLTagMasker(BaseTextTransform):

@@ -1,4 +1,5 @@
 import random
+
 from shekar.base import BaseTextTransform
 from shekar.data import ZWNJ
 

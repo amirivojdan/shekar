@@ -1,15 +1,15 @@
-from .email_masker import EmailMasker
-from .url_masker import URLMasker
 from .diacritic_masker import DiacriticMasker
-from .non_persian_letter_masker import NonPersianLetterMasker
+from .digit_masker import DigitMasker
+from .email_masker import EmailMasker
 from .emoji_masker import EmojiMasker
+from .hashtag_masker import HashtagMasker
+from .html_tag_masker import HTMLTagMasker
+from .mention_masker import MentionMasker
+from .non_persian_letter_masker import NonPersianLetterMasker
+from .offensive_word_masker import OffensiveWordMasker
 from .punctuation_masker import PunctuationMasker
 from .stopword_masker import StopWordMasker
-from .hashtag_masker import HashtagMasker
-from .mention_masker import MentionMasker
-from .digit_masker import DigitMasker
-from .html_tag_masker import HTMLTagMasker
-from .offensive_word_masker import OffensiveWordMasker
+from .url_masker import URLMasker
 
 # aliases
 DiacriticRemover = DiacriticMasker
@@ -57,55 +57,54 @@ MaskOffensiveWords = OffensiveWordMasker
 
 __all__ = [
     "DiacriticMasker",
-    "EmojiMasker",
-    "NonPersianLetterMasker",
-    "PunctuationMasker",
-    "StopWordMasker",
-    "HashtagMasker",
-    "MentionMasker",
-    "DigitMasker",
-    "RepeatedLetterMasker",
-    "HTMLTagMasker",
-    "EmailMasker",
-    "URLMasker",
-    "OffensiveWordMasker",
-    # aliases
     "DiacriticRemover",
-    "EmojiRemover",
-    "NonPersianRemover",
-    "PunctuationRemover",
-    "StopWordRemover",
-    "HashtagRemover",
-    "MentionRemover",
+    "DigitMasker",
     "DigitRemover",
-    "HTMLTagRemover",
+    "EmailMasker",
     "EmailRemover",
-    "URLRemover",
-    "OffensiveWordRemover",
-    # action-based aliases
-    "RemoveDiacritics",
-    "RemoveEmojis",
-    "RemoveNonPersianLetters",
-    "RemovePunctuations",
-    "RemoveStopWords",
-    "RemoveHashtags",
-    "RemoveMentions",
-    "RemoveDigits",
-    "RemoveHTMLTags",
-    "RemoveEmails",
-    "RemoveURLs",
-    "RemoveOffensiveWords",
+    "EmojiMasker",
+    "EmojiRemover",
+    "HTMLTagMasker",
+    "HTMLTagRemover",
+    "HashtagMasker",
+    "HashtagRemover",
+    "MaskDiacritics",
+    "MaskDigits",
     # Maskers
     "MaskEmails",
-    "MaskURLs",
     "MaskEmojis",
-    "MaskDigits",
-    "MaskPunctuations",
-    "MaskNonPersianLetters",
-    "MaskStopWords",
+    "MaskHTMLTags",
     "MaskHashtags",
     "MaskMentions",
-    "MaskDiacritics",
-    "MaskHTMLTags",
+    "MaskNonPersianLetters",
     "MaskOffensiveWords",
+    "MaskPunctuations",
+    "MaskStopWords",
+    "MaskURLs",
+    "MentionMasker",
+    "MentionRemover",
+    "NonPersianLetterMasker",
+    "NonPersianRemover",
+    "OffensiveWordMasker",
+    "OffensiveWordRemover",
+    "PunctuationMasker",
+    "PunctuationRemover",
+    # action-based aliases
+    "RemoveDiacritics",
+    "RemoveDigits",
+    "RemoveEmails",
+    "RemoveEmojis",
+    "RemoveHTMLTags",
+    "RemoveHashtags",
+    "RemoveMentions",
+    "RemoveNonPersianLetters",
+    "RemoveOffensiveWords",
+    "RemovePunctuations",
+    "RemoveStopWords",
+    "RemoveURLs",
+    "RepeatedLetterMasker",
+    "StopWordMasker",
+    "StopWordRemover",
+    "URLMasker",
+    "URLRemover",
 ]

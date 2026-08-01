@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import List
-from shekar import data
+
 from functools import lru_cache
+
+from shekar import data
 
 
 class Conjugator:
@@ -59,8 +60,8 @@ class Conjugator:
         return prefix
 
     def normalize_y(self, stem: str):
-        y_after = "ی" if (stem.endswith("آ") or stem.endswith("ا")) else ""
-        y_before = "ی" if (stem.startswith("آ") or stem.startswith("ا")) else ""
+        y_after = "ی" if (stem.endswith(("آ", "ا"))) else ""
+        y_before = "ی" if (stem.startswith(("آ", "ا"))) else ""
 
         # exceptions here
         if stem == "ایستاد" or stem == "ایست":
@@ -82,7 +83,7 @@ class Conjugator:
         negative: bool = False,
         passive: bool = False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the simple past or passive simple past tense conjugations for a given verb stem in Persian.
         Args:
@@ -106,7 +107,7 @@ class Conjugator:
 
         prefix = self.normalize_prefix(prefix)
         compound_preverb = self.normalize_preverb(compound_preverb)
-        y_after = y_before = ""
+        y_before = ""
 
         suffixes = (
             self._informal_past_personal_suffixes
@@ -117,7 +118,7 @@ class Conjugator:
         if not passive:
             # normalize stem in negative form آمد-> امد
             if negative:
-                y_before, y_after = self.normalize_y(past_stem)
+                y_before, _y_after = self.normalize_y(past_stem)
                 past_stem = self.normalize_stem(past_stem)
             return [
                 f"{compound_preverb}{prefix}{negation_prefix}{y_before}{past_stem}{suffix}"
@@ -138,7 +139,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the present perfect or passive present perfect tense conjugations for a given verb stem in Persian.
         Args:
@@ -165,11 +166,11 @@ class Conjugator:
 
         neg = "ن" if negative else ""
         auxiliary = "شده"
-        y_after = y_before = ""
+        y_before = ""
 
         if not passive:
             if negative:
-                y_before, y_after = self.normalize_y(past_stem)
+                y_before, _y_after = self.normalize_y(past_stem)
                 past_stem = self.normalize_stem(past_stem)
 
             if not informal:
@@ -208,7 +209,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the past continuous or passive past continuous tense conjugations for a given verb stem in Persian.
         Args:
@@ -266,7 +267,7 @@ class Conjugator:
         compound_preverb: str = "",
         negative=False,
         passive=False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the present perfect continuous or passive present perfect continuous tense conjugations for a given verb stem in Persian.
         Args:
@@ -313,7 +314,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal=False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the past perfect or passive past perfect tense conjugations for a given verb stem in Persian.
         Args:
@@ -340,11 +341,11 @@ class Conjugator:
 
         negation_prefix = "ن" if negative else ""
         auxiliary = "بود"
-        y_before = y_after = ""
+        y_before = ""
 
         if not passive:
             if negative:
-                y_before, y_after = self.normalize_y(past_stem)
+                y_before, _y_after = self.normalize_y(past_stem)
                 past_stem = self.normalize_stem(past_stem)
             if not informal:
                 return [
@@ -375,7 +376,7 @@ class Conjugator:
         compound_preverb: str = "",
         negative=False,
         passive=False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the past perfect of past perfect or passive past perfect of past perfect tense conjugations for a given verb stem in Persian.
         Args:
@@ -401,11 +402,11 @@ class Conjugator:
         negation_prefix = "ن" if negative else ""
         auxiliary = "بوده"
 
-        y_before = y_after = ""
+        y_before = ""
 
         if not passive:
             if negative:
-                y_before, y_after = self.normalize_y(past_stem)
+                y_before, _y_after = self.normalize_y(past_stem)
                 past_stem = self.normalize_stem(past_stem)
 
             return [
@@ -426,7 +427,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the past subjunctive or passive past subjunctive tense conjugations for a given verb stem in Persian.
         Args:
@@ -454,11 +455,11 @@ class Conjugator:
         negation_prefix = "ن" if negative else ""
         auxiliary = "باش"
 
-        y_before = y_after = ""
+        y_before = ""
 
         if not passive:
             if negative:
-                y_before, y_after = self.normalize_y(past_stem)
+                y_before, _y_after = self.normalize_y(past_stem)
                 past_stem = self.normalize_stem(past_stem)
 
             if not informal:
@@ -496,7 +497,7 @@ class Conjugator:
         compound_preverb: str = "",
         passive=False,
         informal=False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the past progressive or passive past progressive tense conjugations for a given verb stem in Persian.
         Args:
@@ -541,7 +542,7 @@ class Conjugator:
         prefix: str = "",
         compound_preverb: str = "",
         passive=False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the past perfect progressive or passive past perfect progressive tense conjugations for a given verb stem in Persian.
         Args:
@@ -582,7 +583,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the simple present or passive simple present tense conjugations for a given verb stem in Persian.
         Args:
@@ -656,7 +657,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the present indicative or passive present indicative tense conjugations for a given verb stem in Persian.
         Args:
@@ -684,7 +685,7 @@ class Conjugator:
         mi = "می‌"
 
         if not passive:
-            y_before, y_after = self.normalize_y(present_stem)
+            _y_before, y_after = self.normalize_y(present_stem)
             if not informal:
                 return [
                     f"{compound_preverb}{prefix}{negation_prefix}{mi}{present_stem}{y_after}{suffix}"
@@ -722,7 +723,7 @@ class Conjugator:
         negative=False,
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the present subjunctive or passive present subjunctive tense conjugations for a given verb stem in Persian.
         Args:
@@ -811,7 +812,7 @@ class Conjugator:
         compound_preverb: str = "",
         passive=False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the present progressive or passive present progressive tense conjugations for a given verb stem in Persian.
         Args:
@@ -872,7 +873,7 @@ class Conjugator:
         compound_preverb: str = "",
         negative=False,
         passive=False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the future simple or passive future simple tense conjugations for a given verb stem in Persian.
         Args:
@@ -922,7 +923,7 @@ class Conjugator:
         compound_preverb: str = "",
         negative: bool = False,
         informal: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates the imperative tense conjugations for a given verb stem in Persian.
 
@@ -978,12 +979,12 @@ class Conjugator:
 
     def conjugate(
         self,
-        past_stem: str = None,
-        present_stem: str = None,
-        informal_past_stem: str = None,
-        informal_present_stem: str = None,
+        past_stem: str | None = None,
+        present_stem: str | None = None,
+        informal_past_stem: str | None = None,
+        informal_present_stem: str | None = None,
         prefix: str = "",
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generates all conjugations for a given verb in all tenses.
 
