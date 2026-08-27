@@ -1725,10 +1725,12 @@ class Conjugator:
 def _build_conjugated_verbs() -> tuple[
     dict[str, tuple[str | None, str]],
     dict[str, tuple[str | None, str]],
+    dict[str, tuple[str | None, str]],
 ]:
     conjugator = Conjugator()
     all_forms: dict[str, tuple[str | None, str]] = {}
     informal_only: dict[str, tuple[str | None, str]] = {}
+    formal_only: dict[str, tuple[str | None, str]] = {}
 
     for (
         past_stem,
@@ -1753,17 +1755,21 @@ def _build_conjugated_verbs() -> tuple[
 
         key = (past_stem, present_stem)
         formal_set = set(formal_conjugations)
+        informal_set = set(informal_conjugations)
         for form in set(formal_conjugations + informal_conjugations):
             all_forms[form] = key
         for form in informal_conjugations:
             if form not in formal_set:
                 informal_only[form] = key
+        for form in formal_conjugations:
+            if form not in informal_set:
+                formal_only[form] = key
 
     for stem in ("هست", "نیست"):
         for form in conjugator.simple_present(past_stem=None, present_stem=stem):
             all_forms[form] = (None, stem)
 
-    return all_forms, informal_only
+    return all_forms, informal_only, formal_only
 
 
 @lru_cache(maxsize=1)
@@ -1774,3 +1780,8 @@ def get_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
 @lru_cache(maxsize=1)
 def get_informal_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
     return _build_conjugated_verbs()[1]
+
+
+@lru_cache(maxsize=1)
+def get_formal_conjugated_verbs() -> dict[str, tuple[str | None, str]]:
+    return _build_conjugated_verbs()[2]

@@ -1,6 +1,11 @@
 import pytest
 
-from shekar.morphology.conjugator import Conjugator
+from shekar.morphology.conjugator import (
+    Conjugator,
+    get_conjugated_verbs,
+    get_formal_conjugated_verbs,
+    get_informal_conjugated_verbs,
+)
 
 
 class TestConjugator:
@@ -2275,3 +2280,17 @@ class TestConjugator:
 
         for form in future_simple:
             assert form in full_result
+
+
+def test_conjugated_verb_collections():
+    all_forms = get_conjugated_verbs()
+    formal_only = get_formal_conjugated_verbs()
+    informal_only = get_informal_conjugated_verbs()
+
+    assert formal_only.keys() <= all_forms.keys()
+    assert informal_only.keys() <= all_forms.keys()
+
+    assert "خوانده‌ام" in formal_only
+    assert "خوانده‌ام" not in informal_only
+    assert "خوندم" in informal_only
+    assert "خوندم" not in formal_only
