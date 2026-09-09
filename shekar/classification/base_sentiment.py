@@ -15,7 +15,10 @@ class SentimentClassifier(BaseTransform):
         model_path (str, optional): Path to a custom model file. If None, the default model will be used.
     """
 
-    def __init__(self, model: str = "albert-binary", model_path=None):
+    supports_batching = True
+
+    def __init__(self, model: str = "albert-binary", model_path=None, *, batch_size=32):
+        self.batch_size = self._validate_batch_size(batch_size)
         model = model.lower()
         if model not in SENTIMENT_REGISTRY:
             raise ValueError(
@@ -23,6 +26,8 @@ class SentimentClassifier(BaseTransform):
             )
 
         self.model = SENTIMENT_REGISTRY[model](model_path=model_path)
+        if getattr(self.model, "supports_batching", False) is True:
+            self.model.batch_size = self.batch_size
 
     def transform(self, X: str) -> tuple:
         """Perform sentiment analysis on the input text.
@@ -38,4 +43,11 @@ class SentimentClassifier(BaseTransform):
             >>> model.transform("سریال قصه‌های مجید عالی بود!")
             ('positive', 0.9976541996002197)
         """
+        if not isinstance(X, str):
+            return self.transform_batch(X)
         return self.model.transform(X)
+
+    def _transform_batch(self, texts, batch_size):
+        if getattr(self.model, "supports_batching", False) is True:
+            return self.model.transform_batch(texts, batch_size=batch_size)
+        return [self.model.transform(text) for text in texts]

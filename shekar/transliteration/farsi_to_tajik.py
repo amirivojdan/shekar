@@ -8,6 +8,10 @@ class FarsiToTajik(ByT5Transliterator):
         decoder_path: str | None = None,
         num_beams: int = 1,
         max_new_tokens: int = 256,
+        *,
+        batch_size=32,
     ):
-        super().__init__(encoder_path, decoder_path, num_beams, max_new_tokens)
+        super().__init__(
+            encoder_path, decoder_path, num_beams, max_new_tokens, batch_size=batch_size
+        )
         self._direction = "fa2tg"

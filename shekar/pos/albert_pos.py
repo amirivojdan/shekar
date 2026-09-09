@@ -1,24 +1,25 @@
 from pathlib import Path
 
 import numpy as np
-import onnxruntime
 
 from shekar.base import BaseTransform
 from shekar.hub import Hub
 from shekar.tokenization import AlbertTokenizer, WordTokenizer
-from shekar.utils import get_onnx_providers
+from shekar.utils import create_onnx_session
 
 
 class AlbertPOS(BaseTransform):
-    def __init__(self, model_path: str | Path | None = None):
+    supports_batching = True
+
+    def __init__(self, model_path: str | Path | None = None, *, batch_size=32):
         super().__init__()
-        resource_name = "albert_persian_pos_q8.onnx"
+        self.batch_size = self._validate_batch_size(batch_size)
+        resource_name = "albert_persian_pos_batch_q8.onnx"
         if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
-        self.session = onnxruntime.InferenceSession(
-            model_path, providers=get_onnx_providers()
-        )
+        self.session = create_onnx_session(model_path)
+        self._session_batch_size(self.session, self.batch_size)
         self.tokenizer = AlbertTokenizer()
         self.word_tokenizer = WordTokenizer()
 
@@ -42,49 +43,59 @@ class AlbertPOS(BaseTransform):
             16: "_",
         }
 
-    def transform(self, text: str) -> list:
-        words = list(self.word_tokenizer(text))
-        tokens = []
-        word_ids = []
-        for word_index, word in enumerate(words):
-            encoded = self.tokenizer.tokenizer.encode(word, add_special_tokens=False)
-            tokens.extend(encoded.tokens)
-            word_ids.extend([word_index] * len(encoded.tokens))
+    def transform(self, text):
+        if not isinstance(text, str):
+            return self.transform_batch(text)
+        return self._transform_batch([text], self.batch_size)[0]
 
-        # Convert to IDs
-        input_ids = []
-        for token in tokens:
-            token_id = self.tokenizer.tokenizer.token_to_id(token)
-            if token_id is None:
-                token_id = self.tokenizer.pad_token_id
-            input_ids.append(token_id)
+    def _encode_words(self, words):
+        # Training used independently encoded words, without CLS/SEP tokens.
+        chunks, ids, alignment = [], [], []
+        limit = self.tokenizer.model_max_length
+        for index, word in enumerate(words):
+            pieces = self.tokenizer.sp.encode(word, out_type=int) or [
+                self.tokenizer.unk_token_id
+            ]
+            if len(pieces) > limit:
+                raise ValueError("A single word exceeds the POS model token limit.")
+            if ids and len(ids) + len(pieces) > limit:
+                chunks.append((ids, alignment))
+                ids, alignment = [], []
+            alignment.append((index, len(ids)))
+            ids.extend(pieces)
+        if ids:
+            chunks.append((ids, alignment))
+        return chunks
 
-        attention_mask = [1] * len(input_ids)
-        # Pad to max length (optional or if needed)
-        pad_len = self.tokenizer.model_max_length - len(input_ids)
-        input_ids += (
-            [self.tokenizer.pad_token_id] * pad_len
-        )  # Using self.tokenizer.pad_token_id as the padding token ID for ALBERT
-        attention_mask += [0] * pad_len
-
-        inputs = {
-            "input_ids": np.array([input_ids], dtype=np.int64),
-            "attention_mask": np.array([attention_mask], dtype=np.int64),
-        }
-
-        outputs = self.session.run(None, inputs)
-        logits = outputs[0]
-        logits = logits[0, : len(tokens), :]
-        tags_ids = np.argmax(logits, axis=-1)
-        tags = [self.id2tag[tag] for tag in tags_ids]
-
-        final_preds = []
-        match_words = []
-        previous_word_id = None
-        for word_id, pred_tag in zip(word_ids, tags):
-            if word_id != previous_word_id:
-                final_preds.append(pred_tag)
-                match_words.append(words[word_id])
-                previous_word_id = word_id
-
-        return list(zip(match_words, final_preds))
+    def _transform_batch(self, texts, batch_size):
+        size = self._session_batch_size(self.session, batch_size)
+        words_by_document = [list(self.word_tokenizer(text)) for text in texts]
+        results = [[] for _ in texts]
+        encoded, alignments, owners = [], [], []
+        for document, words in enumerate(words_by_document):
+            for ids, alignment in self._encode_words(words):
+                length = self.tokenizer.model_max_length
+                mask = [1] * len(ids) + [0] * (length - len(ids))
+                ids = ids + [self.tokenizer.pad_token_id] * (length - len(ids))
+                encoded.append(
+                    {
+                        "input_ids": np.array([ids], dtype=np.int64),
+                        "attention_mask": np.array([mask], dtype=np.int64),
+                    }
+                )
+                alignments.append(alignment)
+                owners.append(document)
+        for inputs, rows in AlbertTokenizer._encoded_batches(
+            encoded, size, self.tokenizer.pad_token_id, trim_padding=True
+        ):
+            tags = self.session.run(None, inputs)[0].argmax(axis=-1)
+            for row, (encoded_index, _, _) in enumerate(rows):
+                document = owners[encoded_index]
+                for word_index, position in alignments[encoded_index]:
+                    results[document].append(
+                        (
+                            words_by_document[document][word_index],
+                            self.id2tag[int(tags[row, position])],
+                        )
+                    )
+        return results

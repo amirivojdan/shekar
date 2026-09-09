@@ -1,24 +1,25 @@
 from pathlib import Path
 
 import numpy as np
-import onnxruntime
 
 from shekar.base import BaseTransform
 from shekar.hub import Hub
 from shekar.tokenization import AlbertTokenizer
-from shekar.utils import get_onnx_providers
+from shekar.utils import create_onnx_session
 
 
 class AlbertNER(BaseTransform):
-    def __init__(self, model_path: str | Path | None = None):
+    supports_batching = True
+
+    def __init__(self, model_path: str | Path | None = None, *, batch_size=32):
         super().__init__()
+        self.batch_size = self._validate_batch_size(batch_size)
         resource_name = "albert_persian_ner_q8.onnx"
         if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
-        self.session = onnxruntime.InferenceSession(
-            model_path, providers=get_onnx_providers()
-        )
+        self.session = create_onnx_session(model_path)
+        self._session_batch_size(self.session, self.batch_size)
         self.tokenizer = AlbertTokenizer(
             enable_padding=True,
             enable_truncation=True,
@@ -90,6 +91,8 @@ class AlbertNER(BaseTransform):
             entities: list produced by self._aggregate_entities over the full text
         """
 
+        if not isinstance(X, str):
+            return self.transform_batch(X)
         batched = self.tokenizer(X)  # dict with (num_chunks, L) arrays
         input_ids = batched["input_ids"]  # (B, L)
         attention_mask = batched["attention_mask"]  # (B, L)
@@ -97,8 +100,16 @@ class AlbertNER(BaseTransform):
         onnx_input_names = {i.name for i in self.session.get_inputs()}
         feed = {k: v for k, v in batched.items() if k in onnx_input_names}
 
-        outputs = self.session.run(None, feed)
-        logits = outputs[0]  # (B, L, num_tags)
+        size = self._session_batch_size(self.session, self.batch_size)
+        logits = np.concatenate(
+            [
+                self.session.run(
+                    None,
+                    {k: v[start : start + size] for k, v in feed.items()},
+                )[0]
+                for start in range(0, len(input_ids), size)
+            ]
+        )  # (B, L, num_tags)
         pred_ids = np.argmax(logits, axis=-1)  # (B, L)
 
         special_names = ["<pad>", "[PAD]", "[CLS]", "[SEP]", "<cls>", "<sep>"]
@@ -137,3 +148,39 @@ class AlbertNER(BaseTransform):
             tokens_all, np.asarray(tags_all, dtype=pred_ids.dtype)
         )
         return entities
+
+    def _transform_batch(self, texts, batch_size):
+        size = self._session_batch_size(self.session, batch_size)
+        tokens_by_document = [[] for _ in texts]
+        tags_by_document = [[] for _ in texts]
+        input_names = {item.name for item in self.session.get_inputs()}
+        special_ids = {
+            self.tokenizer.pad_token_id,
+            self.tokenizer.cls_token_id,
+            self.tokenizer.sep_token_id,
+        }
+        encoded = (self.tokenizer(text) for text in texts)
+        for inputs, owners in AlbertTokenizer._encoded_batches(
+            encoded, size, self.tokenizer.pad_token_id
+        ):
+            predictions = self.session.run(
+                None, {k: v for k, v in inputs.items() if k in input_names}
+            )[0].argmax(axis=-1)
+            for row, (document, chunk, _) in enumerate(owners):
+                positions = [
+                    i
+                    for i, token in enumerate(inputs["input_ids"][row])
+                    if inputs["attention_mask"][row, i]
+                    and int(token) not in special_ids
+                ]
+                if chunk:
+                    positions = positions[self.tokenizer.stride :]
+                tokens_by_document[document].extend(
+                    self.tokenizer.id_to_token(int(inputs["input_ids"][row, i]))
+                    for i in positions
+                )
+                tags_by_document[document].extend(predictions[row, positions].tolist())
+        return [
+            self._aggregate_entities(tokens, tags)
+            for tokens, tags in zip(tokens_by_document, tags_by_document)
+        ]

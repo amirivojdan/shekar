@@ -50,6 +50,9 @@ jobs:
         run: uv pip install pytest pytest-cov
 
       - name: Run Tests
+        env:
+          # Real-model CPU/CUDA integration tests are opt-in for local runs.
+          SHEKAR_BATCH_INTEGRATION: "off"
         run: uv run pytest --cov --cov-branch --cov-report=xml
       
       - name: Upload results to Codecov

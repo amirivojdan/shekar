@@ -24,3 +24,6 @@ site/
 
 htmlcov/
 .ruff_cache/
+
+# Local session artifact
+:memory:.ses

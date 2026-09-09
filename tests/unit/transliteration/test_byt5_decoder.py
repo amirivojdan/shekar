@@ -91,3 +91,66 @@ def test_beam_search_keeps_finished_and_active_scores_separate():
         decoder._tokenizer._eos_id not in input_ids
         for input_ids in decoder._session.input_history[1:]
     )
+
+
+class MultiDocumentSession:
+    """Expose cache/beam mixups through distinct per-document cache values."""
+
+    def __init__(self):
+        self.batch_sizes = []
+
+    def run(self, _, feed):
+        ids = feed["input_ids"][:, 0]
+        documents = feed["encoder_hidden_states"][:, 0, 0]
+        self.batch_sizes.append(len(ids))
+        past = feed["past_key_values.0.decoder.key"]
+        if past.shape[2]:
+            np.testing.assert_array_equal(past[:, 0, 0, 0], documents)
+            np.testing.assert_array_equal(
+                feed["past_key_values.0.encoder.key"][:, 0, 0, 0], documents
+            )
+        logits = np.full((len(ids), 1, 5), -30.0, dtype=np.float32)
+        for row, (token, document) in enumerate(zip(ids, documents)):
+            next_token = (
+                (2 if document == 10 else 3) if token == 0 else (4 if token == 3 else 1)
+            )
+            logits[row, 0, next_token] = 10.0
+        self_cache = np.broadcast_to(
+            documents[:, None, None, None], (len(ids), 1, past.shape[2] + 1, 1)
+        ).copy()
+        cross_cache = documents[:, None, None, None].copy()
+        return [logits, self_cache, cross_cache]
+
+
+def make_multi_document_decoder():
+    decoder = make_decoder()
+    decoder._session = MultiDocumentSession()
+    decoder._past_self_k = ["past_key_values.0.decoder.key"]
+    decoder._past_cross_k = ["past_key_values.0.encoder.key"]
+    decoder._present_self_k = ["present.0.decoder.key"]
+    decoder._present_cross_k = ["present.0.encoder.key"]
+    decoder._output_names = ["logits", "present.0.decoder.key", "present.0.encoder.key"]
+    # Reuse the same named cache for values; this fake model only needs one per kind.
+    decoder._past_self_v = decoder._past_self_k
+    decoder._past_cross_v = decoder._past_cross_k
+    decoder._present_self_v = decoder._present_self_k
+    decoder._present_cross_v = decoder._present_cross_k
+    decoder._num_layers = 1
+    return decoder
+
+
+@pytest.mark.parametrize("num_beams", [1, 2])
+def test_decode_batch_keeps_beams_caches_and_early_stopping_per_document(num_beams):
+    states = np.array([[[10.0]], [[20.0]]], dtype=np.float32)
+    masks = np.ones((2, 1), dtype=np.int64)
+    expected = [
+        make_multi_document_decoder().decode(
+            states[i : i + 1], masks[i : i + 1], num_beams, 4
+        )
+        for i in range(2)
+    ]
+    decoder = make_multi_document_decoder()
+    actual = decoder.decode_batch(states, masks, num_beams, 4)
+    assert actual == expected == [[2], [3, 4]]
+    assert max(decoder._session.batch_sizes) == 2 * num_beams
+    assert decoder._session.batch_sizes[-1] == num_beams

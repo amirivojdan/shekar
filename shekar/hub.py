@@ -14,6 +14,7 @@ MODEL_HASHES = {
     "albert_persian_sentiment_binary_q8.onnx": "377c322edc3c0de0c48bf3fd4420c7385158bd34492f5b157ea6978745c50e4a",
     "albert_persian_ner_q8.onnx": "a3d2b1d2c167abd01e6b663279d3f8c3bb1b3d0411f693515cd0b31a5a3d3e80",
     "albert_persian_pos_q8.onnx": "8b5a2761aae83911272763034e180345fe12b2cd45b6de0151db9fbf9d3d8b31",
+    "albert_persian_pos_batch_q8.onnx": "8a949c27decf28471f55f846d91dcadf1e8585a2a2ee691bc31db1f1ec96f657",
     "albert_persian_mlm_embeddings.onnx": "6b2d987ba409fd6957764742e30bfbbe385ab33c210caeb313aa9a2eb9afa51a",
     "fasttext_d100_w5_v100k_cbow_wiki.npz": "f175be9a95f7f65a82d8e8c7b155d1fd0a151dff902b32373f34865f34d0abe4",
     "fasttext_d300_w10_v250k_cbow_naab.npz": "b2782bd4586e24fef43bee71ff46694bbed9a1793f001c28fa0cbcf00a7a7b01",

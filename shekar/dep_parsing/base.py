@@ -8,15 +8,22 @@ DEP_PARSER_REGISTRY = {
 
 
 class DependencyParser(BaseTransform):
-    def __init__(self, model: str = "albert", model_path=None):
+    supports_batching = True
+
+    def __init__(self, model: str = "albert", model_path=None, *, batch_size=32):
+        self.batch_size = self._validate_batch_size(batch_size)
         model = model.lower()
         if model not in DEP_PARSER_REGISTRY:
             raise ValueError(
                 f"Unknown dependency parser model '{model}'. Available: {list(DEP_PARSER_REGISTRY.keys())}"
             )
         self.model = DEP_PARSER_REGISTRY[model](model_path=model_path)
+        if getattr(self.model, "supports_batching", False) is True:
+            self.model.batch_size = self.batch_size
 
     def transform(self, X: str) -> list:
+        if not isinstance(X, str):
+            return self.transform_batch(X)
         return self.model.transform(X)
 
     def print_tree(self, results: list[tuple[str, int, str]]):
@@ -43,3 +50,8 @@ class DependencyParser(BaseTransform):
                 _print_node(child, child_prefix, j == len(kids) - 1)
 
         _print_node(0, "", True)
+
+    def _transform_batch(self, texts, batch_size):
+        if getattr(self.model, "supports_batching", False) is True:
+            return self.model.transform_batch(texts, batch_size=batch_size)
+        return [self.model.transform(text) for text in texts]

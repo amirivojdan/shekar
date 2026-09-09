@@ -44,6 +44,35 @@ This works on **Windows**, **Linux**, and **macOS** (including Apple Silicon M1/
 $ pip install shekar && pip uninstall -y onnxruntime && pip install onnxruntime-gpu
 ```
 
+## Batch inference
+
+Pass an iterable of texts to batch-capable models. Existing single-text calls keep
+returning the same types; no separate batch mode is needed.
+
+```python
+from shekar import NER, POSTagger, ContextualEmbedder, Normalizer
+
+texts = ["علی در تهران زندگی می‌کند.", "من به خانه رفتم."]
+ner = NER(batch_size=32)
+
+entities = ner(texts)                 # One entity list per input text
+single_entities = ner(texts[0])       # Existing single-document API
+vectors = ContextualEmbedder(batch_size=16)(texts)  # Shape: (2, 768)
+tags = POSTagger(batch_size=16)(texts)
+
+pipeline = Normalizer() | ner
+results = list(pipeline(texts))       # Pipeline iterable results remain lazy
+
+# An optional per-call override does not change the instance configuration.
+small_batch = ner.transform_batch(texts, batch_size=4)
+```
+
+Batching is supported by NER, POS tagging, contextual embeddings, sentiment and
+logistic offensive-language classification, dependency parsing, and both
+transliteration directions. It works with the installed ONNX execution provider,
+including CUDA when available. It does not make every operator GPU-compatible;
+ONNX Runtime may assign unsupported operators to CPU.
+
 ## Web Interface
 
 Shekar includes a built-in web interface for interactively exploring its NLP capabilities (no coding required). Launch it with a single command:

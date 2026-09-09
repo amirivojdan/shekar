@@ -189,3 +189,41 @@ class AlbertTokenizer(BaseTransform):
             "attention_mask": np.asarray(attention_mask, dtype=np.int64),
             "token_type_ids": np.asarray(token_type_ids, dtype=np.int64),
         }
+
+    @classmethod
+    def _encoded_batches(
+        cls, encoded_documents, batch_size, pad_token_id=0, *, trim_padding=False
+    ):
+        """Yield (feed, [(document, chunk, original_length)]) without merging documents."""
+        rows, owners = [], []
+        for document, encoded in enumerate(encoded_documents):
+            for chunk in range(len(encoded["input_ids"])):
+                row = {name: value[chunk] for name, value in encoded.items()}
+                if trim_padding:
+                    valid = np.flatnonzero(row["attention_mask"])
+                    length = int(valid[-1]) + 1 if len(valid) else 1
+                    row = {name: value[:length] for name, value in row.items()}
+                rows.append(row)
+                owners.append((document, chunk, len(row["input_ids"])))
+                if len(rows) == batch_size:
+                    yield cls._pad_rows(rows, pad_token_id), owners
+                    rows, owners = [], []
+        if rows:
+            yield cls._pad_rows(rows, pad_token_id), owners
+
+    @staticmethod
+    def _pad_rows(rows, pad_token_id):
+        length = max(len(row["input_ids"]) for row in rows)
+        return {
+            name: np.stack(
+                [
+                    np.pad(
+                        row[name],
+                        (0, length - len(row[name])),
+                        constant_values=pad_token_id if name == "input_ids" else 0,
+                    )
+                    for row in rows
+                ]
+            )
+            for name in rows[0]
+        }

@@ -2,15 +2,16 @@ from pathlib import Path
 from typing import ClassVar
 
 import numpy as np
-import onnxruntime
 
 from shekar.base import BaseTransform
 from shekar.hub import Hub
 from shekar.tokenization import AlbertTokenizer, WordTokenizer
-from shekar.utils import get_onnx_providers
+from shekar.utils import create_onnx_session
 
 
 class AlbertDepParser(BaseTransform):
+    supports_batching = True
+
     dep_relations: ClassVar[list[str]] = [
         "acl",
         "advcl",
@@ -49,15 +50,15 @@ class AlbertDepParser(BaseTransform):
     ]
     id2deprel: ClassVar[dict[int, str]] = dict(enumerate(dep_relations))
 
-    def __init__(self, model_path: str | Path | None = None):
+    def __init__(self, model_path: str | Path | None = None, *, batch_size=32):
         super().__init__()
+        self.batch_size = self._validate_batch_size(batch_size)
         resource_name = "albert_persian_dep_parser_q8.onnx"
         if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
-        self.session = onnxruntime.InferenceSession(
-            model_path, providers=get_onnx_providers()
-        )
+        self.session = create_onnx_session(model_path)
+        self._session_batch_size(self.session, self.batch_size)
         self.tokenizer = AlbertTokenizer()
         self.word_tokenizer = WordTokenizer()
 
@@ -82,9 +83,10 @@ class AlbertDepParser(BaseTransform):
         all_ids.append(self.tokenizer.sep_token_id)
 
         if len(all_ids) > self.tokenizer.model_max_length:
-            all_ids = all_ids[: self.tokenizer.model_max_length - 1] + [
-                self.tokenizer.sep_token_id
-            ]
+            raise ValueError(
+                "Dependency parsing input exceeds the model token limit; "
+                "split the text into shorter sentences before parsing."
+            )
 
         attention_mask = [1] * len(all_ids)
         pad_len = self.tokenizer.model_max_length - len(all_ids)
@@ -97,35 +99,34 @@ class AlbertDepParser(BaseTransform):
             np.array([word_to_first_subtoken], dtype=np.int64),
         )
 
-    def transform(self, text: str) -> list[tuple[str, int, str]]:
-        """Parse a Persian text string.
+    def transform(self, text):
+        if not isinstance(text, str):
+            return self.transform_batch(text)
+        return self._transform_batch([text], self.batch_size)[0]
 
-        Returns:
-            list of (word, head, deprel) where head is 1-indexed (0 = ROOT).
-        """
-        words = list(self.word_tokenizer(text))
-        n = len(words)
-        if n == 0:
-            return []
-
-        input_ids, attention_mask, word_to_first_subtoken = self._build_inputs(words)
-
-        arc_logits, rel_logits = self.session.run(
-            None,
-            {
-                "input_ids": input_ids,
-                "attention_mask": attention_mask,
-                "word_to_first_subtoken": word_to_first_subtoken,
-            },
-        )
-        # arc_logits: (1, n+1, n+1)
-        # rel_logits: (1, n+1, n+1, num_deprels)
-
-        results = []
-        for i in range(n):
-            dep_pos = i + 1
-            pred_head = int(arc_logits[0, dep_pos, : n + 1].argmax())
-            pred_deprel = int(rel_logits[0, dep_pos, pred_head].argmax())
-            results.append((words[i], pred_head, self.id2deprel[pred_deprel]))
-
+    def _transform_batch(self, texts, batch_size):
+        size = self._session_batch_size(self.session, batch_size)
+        words = [list(self.word_tokenizer(text)) for text in texts]
+        results = [[] for _ in texts]
+        nonempty = [(i, self._build_inputs(ws)) for i, ws in enumerate(words) if ws]
+        for start in range(0, len(nonempty), size):
+            batch = nonempty[start : start + size]
+            count = max(len(words[i]) for i, _ in batch)
+            inputs = {
+                "input_ids": np.concatenate([arrays[0] for _, arrays in batch]),
+                "attention_mask": np.concatenate([arrays[1] for _, arrays in batch]),
+                "word_to_first_subtoken": np.concatenate(
+                    [
+                        np.pad(arrays[2], ((0, 0), (0, count - arrays[2].shape[1])))
+                        for _, arrays in batch
+                    ]
+                ),
+            }
+            arcs, relations = self.session.run(None, inputs)
+            for row, (document, _) in enumerate(batch):
+                n = len(words[document])
+                for i, word in enumerate(words[document]):
+                    head = int(arcs[row, i + 1, : n + 1].argmax())
+                    relation = int(relations[row, i + 1, head].argmax())
+                    results[document].append((word, head, self.id2deprel[relation]))
         return results

@@ -1,12 +1,11 @@
 from pathlib import Path
 
 import numpy as np
-import onnxruntime
 
 from shekar.base import BaseTransform
 from shekar.hub import Hub
 from shekar.tokenization import AlbertTokenizer
-from shekar.utils import get_onnx_providers
+from shekar.utils import create_onnx_session
 
 
 class AlbertBinarySentimentClassifier(BaseTransform):
@@ -16,15 +15,17 @@ class AlbertBinarySentimentClassifier(BaseTransform):
         model_path (str | Path, optional): Path to a custom model file. If None, the default model will be used.
     """
 
-    def __init__(self, model_path: str | Path | None = None):
+    supports_batching = True
+
+    def __init__(self, model_path: str | Path | None = None, *, batch_size=32):
         super().__init__()
+        self.batch_size = self._validate_batch_size(batch_size)
         resource_name = "albert_persian_sentiment_binary_q8.onnx"
         if model_path is None or not Path(model_path).exists():
             model_path = Hub.get_resource(file_name=resource_name)
 
-        self.session = onnxruntime.InferenceSession(
-            model_path, providers=get_onnx_providers()
-        )
+        self.session = create_onnx_session(model_path)
+        self._session_batch_size(self.session, self.batch_size)
         self.tokenizer = AlbertTokenizer(enable_truncation=True)
 
         self.id2tag = {0: "negative", 1: "positive"}
@@ -42,6 +43,8 @@ class AlbertBinarySentimentClassifier(BaseTransform):
             >>> model.transform("سریال قصه‌های مجید عالی بود!")
             ('positive', 0.9976541996002197)
         """
+        if not isinstance(X, str):
+            return self.transform_batch(X)
         batched = self.tokenizer(X)  # dict with (num_chunks, L) arrays
         input_ids = batched["input_ids"]  # (B, L)
         attention_mask = batched["attention_mask"]  # (B, L)
@@ -59,3 +62,22 @@ class AlbertBinarySentimentClassifier(BaseTransform):
         predicted_class_score = float(scores[0, predicted_class])
 
         return (self.id2tag[predicted_class], predicted_class_score)
+
+    def _transform_batch(self, texts, batch_size):
+        results = []
+        size = self._session_batch_size(self.session, batch_size)
+        encoded = (self.tokenizer(text) for text in texts)
+        for inputs, owners in AlbertTokenizer._encoded_batches(
+            encoded, size, self.tokenizer.pad_token_id
+        ):
+            logits = self.session.run(
+                None, {k: inputs[k] for k in ("input_ids", "attention_mask")}
+            )[0]
+            shifted = logits - logits.max(axis=-1, keepdims=True)
+            scores = np.exp(shifted)
+            scores /= scores.sum(axis=-1, keepdims=True)
+            for row, predicted in enumerate(logits.argmax(axis=-1)):
+                results.append(
+                    (self.id2tag[int(predicted)], float(scores[row, predicted]))
+                )
+        return results

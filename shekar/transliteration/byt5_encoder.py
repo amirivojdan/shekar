@@ -3,7 +3,7 @@ from pathlib import Path
 import onnxruntime as ort
 
 from shekar.transliteration.byt5_tokenizer import ByT5Tokenizer
-from shekar.utils import get_onnx_providers
+from shekar.utils import create_onnx_session
 
 
 class ByT5Encoder:
@@ -16,12 +16,13 @@ class ByT5Encoder:
         so = ort.SessionOptions()
         so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         so.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
-        return ort.InferenceSession(
-            str(path), sess_options=so, providers=get_onnx_providers()
-        )
+        return create_onnx_session(path, sess_options=so)
 
     def encode(self, text: str) -> tuple:
-        input_ids, attention_mask = self.tokenizer.batch_tokenize([text])
+        return self.encode_batch([text])
+
+    def encode_batch(self, texts) -> tuple:
+        input_ids, attention_mask = self.tokenizer.batch_tokenize(texts)
         hidden_states = self._session.run(
             ["last_hidden_state"],
             {"input_ids": input_ids, "attention_mask": attention_mask},

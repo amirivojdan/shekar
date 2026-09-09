@@ -5,7 +5,7 @@ import numpy as np
 import onnxruntime as ort
 
 from shekar.transliteration.byt5_tokenizer import ByT5Tokenizer
-from shekar.utils import get_onnx_providers
+from shekar.utils import create_onnx_session
 
 
 class ByT5Decoder:
@@ -70,9 +70,7 @@ class ByT5Decoder:
         so = ort.SessionOptions()
         so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         so.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
-        return ort.InferenceSession(
-            str(path), sess_options=so, providers=get_onnx_providers()
-        )
+        return create_onnx_session(path, sess_options=so)
 
     @staticmethod
     def _by_idx(names: list[str]) -> list[str]:
@@ -129,7 +127,7 @@ class ByT5Decoder:
         generated_length = max(len(sequence) - 1, 1)
         return float(score) / generated_length
 
-    def decode(
+    def _decode_steps(
         self,
         enc_out: np.ndarray,
         attention_mask: np.ndarray,
@@ -154,7 +152,7 @@ class ByT5Decoder:
         if self._has_use_cache_branch:
             first_feed["use_cache_branch"] = np.array([False], dtype=bool)
 
-        out0 = self._session.run(None, first_feed)
+        out0 = yield first_feed
         n2o = dict(zip(self._output_names, out0))
         logp = self._log_softmax(n2o["logits"][0, -1])
         vocab_size = logp.shape[0]
@@ -207,7 +205,7 @@ class ByT5Decoder:
             if self._has_use_cache_branch:
                 feed["use_cache_branch"] = np.array([True], dtype=bool)
 
-            outs = self._session.run(None, feed)
+            outs = yield feed
             n2o = dict(zip(self._output_names, outs))
             logits = n2o["logits"][:, -1, :]
             logp = self._log_softmax_2d(logits)
@@ -261,3 +259,47 @@ class ByT5Decoder:
             best_seq = best_seq[:-1]
 
         return best_seq
+
+    def decode(self, enc_out, attention_mask, num_beams=4, max_new_tokens=256):
+        """Decode one document, preserving the original beam-search policy."""
+        return self.decode_batch(enc_out, attention_mask, num_beams, max_new_tokens)[0]
+
+    def decode_batch(self, enc_out, attention_mask, num_beams=4, max_new_tokens=256):
+        """Batch ONNX calls while keeping each document's beam search independent."""
+        self.validate_generation_parameters(num_beams, max_new_tokens)
+        if enc_out.shape[:2] != attention_mask.shape:
+            raise ValueError(
+                "Encoder states and attention masks must have matching batch/sequence dimensions."
+            )
+        results = [None] * len(enc_out)
+        active = []
+        for document in range(len(enc_out)):
+            steps = self._decode_steps(
+                enc_out[document : document + 1],
+                attention_mask[document : document + 1],
+                num_beams,
+                max_new_tokens,
+            )
+            active.append((document, steps, next(steps)))
+        while active:
+            sizes = [feed["input_ids"].shape[0] for _, _, feed in active]
+            feed = {}
+            for name in active[0][2]:
+                values = [item[2][name] for item in active]
+                if name == "use_cache_branch":
+                    feed[name] = values[0]
+                else:
+                    feed[name] = np.concatenate(values, axis=0)
+            outputs = self._session.run(None, feed)
+            next_active = []
+            offset = 0
+            for (document, steps, _), size in zip(active, sizes):
+                row_outputs = [output[offset : offset + size] for output in outputs]
+                offset += size
+                try:
+                    next_feed = steps.send(row_outputs)
+                    next_active.append((document, steps, next_feed))
+                except StopIteration as finished:
+                    results[document] = finished.value
+            active = next_active
+        return results
