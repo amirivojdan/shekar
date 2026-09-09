@@ -56,12 +56,16 @@ class Pipeline(BaseTransform):
     def __init__(
         self, steps: Iterable[tuple[str, BaseTransform]] | Iterable[BaseTransform]
     ):
-        if isinstance(steps, Iterable) and all(
-            isinstance(step, BaseTransform) for step in steps
-        ):
+        if not isinstance(steps, Iterable):
+            raise TypeError(
+                "steps must be a list of tuples (name, transformer) or a list of transformers."
+            )
+        steps = list(steps)
+
+        if all(isinstance(step, BaseTransform) for step in steps):
             self.steps = [(step.__class__.__name__, step) for step in steps]
 
-        elif isinstance(steps, Iterable) and all(
+        elif all(
             isinstance(step, tuple)
             and len(step) == 2
             and isinstance(step[1], BaseTransform)
@@ -76,8 +80,10 @@ class Pipeline(BaseTransform):
             )
 
     def fit(self, X, y=None):
-        for name, step in self.steps:
-            X = step.fit(X, y)
+        for name, step in self.steps[:-1]:
+            X = step.fit_transform(X, y)
+        if self.steps:
+            self.steps[-1][1].fit(X, y)
         return self
 
     def transform(self, X):

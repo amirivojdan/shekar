@@ -1,5 +1,6 @@
 import pytest
 
+from shekar.base import BaseTransform
 from shekar.pipeline import Pipeline
 from shekar.preprocessing import (
     EmojiRemover,
@@ -21,6 +22,56 @@ def mock_pipeline():
 def test_pipeline_fit(mock_pipeline):
     result = mock_pipeline.fit("خدایا!خدایا،کویرم!")
     assert result == mock_pipeline
+
+
+@pytest.mark.parametrize("named", [False, True])
+def test_pipeline_generator_steps_are_reusable(named):
+    steps = [EmojiRemover(), PunctuationRemover()]
+    if named:
+        steps = [("emoji", steps[0]), ("punctuation", steps[1])]
+    pipeline = Pipeline(step for step in steps)
+
+    assert len(pipeline.steps) == 2
+    for _ in range(2):
+        assert pipeline("سلام!🌹") == "سلام"
+    assert (HTMLTagRemover() | pipeline)("<b>سلام!🌹</b>") == "سلام"
+    assert (pipeline | NonPersianRemover())("سلام!🌹abc") == "سلام"
+
+
+@pytest.mark.parametrize("steps", [123, [object()], [("invalid", object())]])
+def test_pipeline_rejects_invalid_steps(steps):
+    with pytest.raises(TypeError, match="steps must be"):
+        Pipeline(steps)
+
+
+def test_pipeline_fit_passes_transformed_data_to_later_steps():
+    class RecordingTransform(BaseTransform):
+        def fit(self, X, y=None):
+            self.fit_input = X
+            self.fit_target = y
+            self.transform_calls = 0
+            return self
+
+        def transform(self, X):
+            self.transform_calls += 1
+            return [value + 1 for value in X]
+
+    first, middle, last = (RecordingTransform() for _ in range(3))
+    pipeline = Pipeline([first, middle, last])
+    target = [0, 1]
+
+    assert pipeline.fit([1, 2], target) is pipeline
+    assert first.fit_input == [1, 2]
+    assert middle.fit_input == [2, 3]
+    assert last.fit_input == [3, 4]
+    assert all(step.fit_target is target for step in (first, middle, last))
+    assert [step.transform_calls for step in (first, middle, last)] == [1, 1, 0]
+
+
+def test_empty_pipeline_is_identity():
+    pipeline = Pipeline(iter([]))
+    assert pipeline.fit("سلام") is pipeline
+    assert pipeline.transform("سلام") == "سلام"
 
 
 def test_pipeline_transform(mock_pipeline):
