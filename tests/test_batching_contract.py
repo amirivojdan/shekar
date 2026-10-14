@@ -308,6 +308,7 @@ def test_ner_preserves_document_boundaries_and_removes_overlap(batch_size):
 
     class Tokenizer:
         pad_token_id, cls_token_id, sep_token_id, stride = 0, 90, 91, 1
+        unk_token_id = 99
 
         def __call__(self, text):
             ids = (

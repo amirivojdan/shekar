@@ -95,10 +95,13 @@ class AlbertNER(BaseTransform):
         tokens_by_document = [[] for _ in texts]
         tags_by_document = [[] for _ in texts]
         input_names = {item.name for item in self.session.get_inputs()}
+        # Positions excluded from entity text: special tokens, and <unk> pieces,
+        # which carry no recoverable surface form.
         special_ids = {
             self.tokenizer.pad_token_id,
             self.tokenizer.cls_token_id,
             self.tokenizer.sep_token_id,
+            self.tokenizer.unk_token_id,
         }
         encoded = (self.tokenizer(text) for text in texts)
         # Pad each batch only to its longest row instead of model_max_length.

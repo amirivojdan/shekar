@@ -132,3 +132,40 @@ def test_padding_does_not_implicitly_truncate():
 
     assert output["input_ids"].shape == (1, expected_body_length + 2)
     assert np.all(output["attention_mask"] == 1)
+
+
+def test_special_token_ids_match_training_vocabulary():
+    # The shipped models were trained with these tokens appended after the
+    # 32k SentencePiece vocabulary; id 0 is <unk>, not a special token.
+    tokenizer = AlbertTokenizer()
+    assert tokenizer.unk_token_id == 0
+    assert tokenizer.cls_token_id == 32000
+    assert tokenizer.sep_token_id == 32001
+    assert tokenizer.pad_token_id == 32002
+    assert tokenizer.mask_token_id == 32003
+
+
+def test_encoding_wraps_text_with_cls_and_sep():
+    tokenizer = AlbertTokenizer()
+    ids = tokenizer("سلام")["input_ids"][0].tolist()
+    assert ids == [32000, *tokenizer.sp.encode("سلام", out_type=int), 32001]
+    assert tokenizer.encode("سلام").ids == ids
+
+
+def test_padding_uses_pad_token_with_zero_mask():
+    tokenizer = AlbertTokenizer(enable_padding=True, model_max_length=8)
+    output = tokenizer("سلام")
+    assert output["input_ids"][0, -1] == tokenizer.pad_token_id
+    assert output["attention_mask"][0, -1] == 0
+
+
+def test_token_id_lookups_round_trip_special_tokens():
+    tokenizer = AlbertTokenizer()
+    for token in ("[CLS]", "[SEP]", "<pad>", "[MASK]", "<unk>"):
+        assert tokenizer.id_to_token(tokenizer.token_to_id(token)) == token
+
+
+def test_unknown_token_name_is_not_mapped_to_unk():
+    tokenizer = AlbertTokenizer()
+    assert tokenizer.token_to_id("<cls>") is None
+    assert tokenizer.token_to_id("not-a-piece-xyz") is None
