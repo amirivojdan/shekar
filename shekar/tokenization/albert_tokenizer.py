@@ -79,24 +79,29 @@ class AlbertTokenizer(BaseTransform):
         self.enable_truncation = enable_truncation
         self.return_overflowing_tokens = return_overflowing_tokens
 
-        # Special tokens
+        # Special tokens. [CLS]/[SEP]/<pad>/[MASK] are not pieces of the
+        # SentencePiece model: the models were trained with them added right
+        # after its vocabulary (ids 32000-32003 for the shipped 32k model).
+        # Looking them up by name would silently return the <unk> id.
+        self.unk_token = self.sp.id_to_piece(self.sp.unk_id())
+        self.cls_token = "[CLS]"
+        self.sep_token = "[SEP]"
         self.pad_token = "<pad>"
-        self.unk_token = "<unk>"
-        self.cls_token = "<cls>"
-        self.sep_token = "<sep>"
+        self.mask_token = "[MASK]"
 
-        self.pad_token_id = self._require_token(self.pad_token)
-        self.unk_token_id = self._require_token(self.unk_token)
-        self.cls_token_id = self._require_token(self.cls_token)
-        self.sep_token_id = self._require_token(self.sep_token)
-
-    def _require_token(self, token: str) -> int:
-        tid = self.sp.piece_to_id(token)
-        if tid < 0:
-            raise ValueError(
-                f"Required token missing from SentencePiece model: {token}"
-            )
-        return tid
+        vocab_size = self.sp.get_piece_size()
+        self.unk_token_id = self.sp.unk_id()
+        self.cls_token_id = vocab_size
+        self.sep_token_id = vocab_size + 1
+        self.pad_token_id = vocab_size + 2
+        self.mask_token_id = vocab_size + 3
+        self._added_tokens = {
+            self.cls_token: self.cls_token_id,
+            self.sep_token: self.sep_token_id,
+            self.pad_token: self.pad_token_id,
+            self.mask_token: self.mask_token_id,
+        }
+        self._added_ids = {idx: token for token, idx in self._added_tokens.items()}
 
     def encode(self, text: str, add_special_tokens: bool = True):
         # SentencePiece pieces (strings)
@@ -147,10 +152,18 @@ class AlbertTokenizer(BaseTransform):
         return ids + [self.pad_token_id] * pad_len
 
     def token_to_id(self, token: str) -> int | None:
+        if token in self._added_tokens:
+            return self._added_tokens[token]
         tid = self.sp.piece_to_id(token)
-        return tid if tid >= 0 else None
+        # SentencePiece maps unknown pieces to the <unk> id instead of failing.
+        if tid == self.unk_token_id and token != self.unk_token:
+            return None
+        return tid
 
     def id_to_token(self, idx: int) -> str:
+        idx = int(idx)
+        if idx in self._added_ids:
+            return self._added_ids[idx]
         return self.sp.id_to_piece(idx)
 
     @property

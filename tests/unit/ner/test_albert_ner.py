@@ -99,6 +99,7 @@ def _stitching_model(input_ids, attention_mask, stride):
         pad_token_id=0,
         cls_token_id=0,
         sep_token_id=0,
+        unk_token_id=0,
         stride=stride,
         id_to_token=lambda i: f"▁t{i}",
     )
