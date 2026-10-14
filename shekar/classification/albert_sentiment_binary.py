@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 
 from shekar.base import BaseTransform
-from shekar.hub import Hub
+from shekar.hub import resolve_model_path
 from shekar.tokenization import AlbertTokenizer
 from shekar.utils import create_onnx_session
 
@@ -21,8 +21,7 @@ class AlbertBinarySentimentClassifier(BaseTransform):
         super().__init__()
         self.batch_size = self._validate_batch_size(batch_size)
         resource_name = "albert_persian_sentiment_binary_q8.onnx"
-        if model_path is None or not Path(model_path).exists():
-            model_path = Hub.get_resource(file_name=resource_name)
+        model_path = resolve_model_path(model_path, resource_name)
 
         self.session = create_onnx_session(model_path)
         self._session_batch_size(self.session, self.batch_size)

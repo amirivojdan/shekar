@@ -5,7 +5,7 @@ from typing import Any, ClassVar
 
 import numpy as np
 
-from shekar.hub import Hub
+from shekar.hub import resolve_model_path
 
 from .base import BaseEmbedder
 
@@ -77,8 +77,7 @@ class WordEmbedder(BaseEmbedder):
             )
 
         resource_name = WORD_EMBEDDING_REGISTRY[model]
-        if model_path is None or not Path(model_path).exists():
-            model_path = Hub.get_resource(file_name=resource_name)
+        model_path = resolve_model_path(model_path, resource_name)
 
         model_data = self._load_model(Path(model_path))
         self.words = list(model_data["words"])

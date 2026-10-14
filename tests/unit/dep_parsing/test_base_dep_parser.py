@@ -25,11 +25,9 @@ class TestDependencyParser:
         parser = DependencyParser(model="AlBeRt")
         assert isinstance(parser.model, AlbertDepParser)
 
-    def test_init_with_custom_model_path(self):
-        custom_path = "some/nonexistent/path"
-        # Should fall back to Hub download without raising on init
-        parser = DependencyParser(model="albert", model_path=custom_path)
-        assert isinstance(parser.model, AlbertDepParser)
+    def test_init_with_missing_custom_model_path_raises(self):
+        with pytest.raises(FileNotFoundError, match="some/nonexistent/path"):
+            DependencyParser(model="albert", model_path="some/nonexistent/path")
 
     @patch.object(AlbertDepParser, "transform")
     def test_transform_delegates_to_model(self, mock_transform):

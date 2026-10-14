@@ -30,13 +30,10 @@ class TestSentimentClassifier:
         assert "Unknown sentiment model 'invalid-model'" in str(exc_info.value)
         assert "Available:" in str(exc_info.value)
 
-    def test_init_with_model_path(self):
-        """Test initialization with custom model path."""
-        classifier = SentimentClassifier(
-            model="albert-binary", model_path="/custom/path"
-        )
-        assert hasattr(classifier, "model")
-        assert classifier.model is not None
+    def test_init_with_missing_model_path_raises(self):
+        """A custom model path that does not exist is rejected."""
+        with pytest.raises(FileNotFoundError, match="/custom/path"):
+            SentimentClassifier(model="albert-binary", model_path="/custom/path")
 
     def test_transform_persian_positive_text(self):
         """Test sentiment analysis on Persian positive text."""

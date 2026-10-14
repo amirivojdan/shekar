@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from shekar.embeddings.albert_embedder import AlbertEmbedder
 
@@ -10,12 +11,9 @@ class TestAlbertEmbedder:
         assert embedder.tokenizer is not None
         assert embedder.vector_size == 768
 
-    def test_init_with_custom_path(self):
-        # This will fall back to Hub.get_resource since path doesn't exist
-        embedder = AlbertEmbedder(model_path="nonexistent_path.onnx")
-        assert embedder.session is not None
-        assert embedder.tokenizer is not None
-        assert embedder.vector_size == 768
+    def test_init_with_missing_custom_path_raises(self):
+        with pytest.raises(FileNotFoundError, match="nonexistent_path.onnx"):
+            AlbertEmbedder(model_path="nonexistent_path.onnx")
 
     def test_embed_single_word(self):
         embedder = AlbertEmbedder()

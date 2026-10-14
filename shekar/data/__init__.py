@@ -227,8 +227,9 @@ prefixes = [
 
 
 def load_verbs():
-    # Read the verbs from the CSV file
-    verbs = set()
+    # Read the verbs from the CSV file, preserving file order so that
+    # conjugated forms shared by several verbs resolve deterministically.
+    verbs = []
     with open(verbs_csv_path, "r", encoding="utf-8") as file:
         for line in file.read().splitlines():
             parts = line.strip().split(",")
@@ -236,7 +237,7 @@ def load_verbs():
             past_stem = parts[1]
             informal_present_stem = parts[2] if len(parts) > 2 else None
             informal_past_stem = parts[3] if len(parts) > 3 else None
-            verbs.add(
+            verbs.append(
                 (
                     past_stem,
                     present_stem,
@@ -244,7 +245,7 @@ def load_verbs():
                     informal_present_stem,
                 )
             )
-    return verbs
+    return tuple(dict.fromkeys(verbs))  # drop exact duplicates, keep order
 
 
 def read_words(path):

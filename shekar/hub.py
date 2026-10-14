@@ -240,6 +240,20 @@ class Hub:
         return model_path
 
 
+def resolve_model_path(model_path: str | Path | None, resource_name: str) -> Path:
+    """Return a user-supplied model file, or the default hub resource.
+
+    A path that is given but does not point to a file is an error rather
+    than a silent fallback to the default model.
+    """
+    if model_path is None:
+        return Hub.get_resource(file_name=resource_name)
+    path = Path(model_path).expanduser()
+    if not path.is_file():
+        raise FileNotFoundError(f"Model file not found: {path}")
+    return path
+
+
 if __name__ == "__main__":
     import sys
 

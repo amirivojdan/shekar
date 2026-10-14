@@ -125,7 +125,6 @@ __all__ = [
     "RemovePunctuations",
     "RemoveStopWords",
     "RemoveURLs",
-    "RepeatedLetterMasker",
     "RepeatedLetterNormalizer",
     "SpacingNormalizer",
     "StopWordMasker",

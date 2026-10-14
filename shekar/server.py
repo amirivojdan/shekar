@@ -18,10 +18,31 @@ import sys
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 DATA_DIR = Path(__file__).parent / "data"
 STATIC_DIR = DATA_DIR / "statics"
 HOST = "localhost"
+MAX_BODY_BYTES = 1_000_000
+
+
+def _resolve_static(url_path: str) -> Path | None:
+    """Map a URL path to a file inside the served folders, or None.
+
+    Only ``statics/`` and ``data/fonts/`` are served; resolving before the
+    containment check rejects ``..`` segments, encoded traversal and symlinks
+    that point outside those folders.
+    """
+    rel = unquote(url_path).lstrip("/") or "index.html"
+    if rel.startswith("fonts/"):
+        root, rel = DATA_DIR / "fonts", rel.removeprefix("fonts/")
+    else:
+        root = STATIC_DIR
+    root = root.resolve()
+    candidate = (root / rel).resolve()
+    if candidate.is_relative_to(root) and candidate.is_file():
+        return candidate
+    return None
 
 
 _normalizer = None
@@ -147,19 +168,11 @@ def get_tajik_to_farsi():
 
 class ShekarHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        path = self.path.split("?")[0]
-        if path == "/" or path == "/index.html":
-            self._serve_file(STATIC_DIR / "index.html", "text/html; charset=utf-8")
-        else:
-            # Try statics/ first, then fall back to data/ (e.g. for fonts/)
-            candidate = STATIC_DIR / path.lstrip("/")
-            if not candidate.is_file():
-                candidate = DATA_DIR / path.lstrip("/")
-            if candidate.is_file():
-                mime = self._mime(candidate.suffix)
-                self._serve_file(candidate, mime)
-            else:
-                self._send_json({"error": "Not found"}, status=404)
+        candidate = _resolve_static(urlsplit(self.path).path)
+        if candidate is None:
+            self._send_json({"error": "Not found"}, status=404)
+            return
+        self._serve_file(candidate, self._mime(candidate.suffix))
 
     def do_POST(self):
         routes = {
@@ -180,6 +193,12 @@ class ShekarHandler(BaseHTTPRequestHandler):
 
         body = self._read_json()
         if body is None:
+            return
+        if not isinstance(body, dict) or not isinstance(body.get("text", ""), str):
+            self._send_json(
+                {"error": "Body must be a JSON object with a string 'text'."},
+                status=400,
+            )
             return
         text = body.get("text", "").strip()
         if not text:
@@ -275,9 +294,16 @@ class ShekarHandler(BaseHTTPRequestHandler):
         self._send_json({"result": result, "elapsed_ms": round(elapsed * 1000, 1)})
 
     def _read_json(self):
-        length = int(self.headers.get("Content-Length", 0))
-        if length == 0:
+        try:
+            length = int(self.headers.get("Content-Length", 0) or 0)
+        except ValueError:
+            self._send_json({"error": "Invalid Content-Length"}, status=400)
+            return None
+        if length <= 0:
             self._send_json({"error": "Empty request body"}, status=400)
+            return None
+        if length > MAX_BODY_BYTES:
+            self._send_json({"error": "Request body too large"}, status=413)
             return None
         raw = self.rfile.read(length)
         try:
@@ -291,7 +317,6 @@ class ShekarHandler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(body)
 

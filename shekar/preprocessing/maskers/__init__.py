@@ -102,7 +102,6 @@ __all__ = [
     "RemovePunctuations",
     "RemoveStopWords",
     "RemoveURLs",
-    "RepeatedLetterMasker",
     "StopWordMasker",
     "StopWordRemover",
     "URLMasker",

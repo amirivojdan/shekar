@@ -20,9 +20,9 @@ class TestOffensiveLanguageClassifier:
         with pytest.raises(ValueError, match="Unknown model 'invalid'"):
             OffensiveLanguageClassifier(model="invalid")
 
-    def test_init_with_model_path(self):
-        classifier = OffensiveLanguageClassifier(model_path="/path/to/model")
-        assert classifier.model is not None
+    def test_init_with_missing_model_path_raises(self):
+        with pytest.raises(FileNotFoundError, match="/path/to/model"):
+            OffensiveLanguageClassifier(model_path="/path/to/model")
 
     def test_transform_persian_clean_text(self):
         classifier = OffensiveLanguageClassifier()

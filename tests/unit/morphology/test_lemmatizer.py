@@ -1,3 +1,6 @@
+import os
+import subprocess
+import sys
 from unittest.mock import MagicMock
 
 import pytest
@@ -85,3 +88,24 @@ def test_return_infinitive_past_stem_none(monkeypatch):
     conjugated_verbs = get_conjugated_verbs()
     monkeypatch.setitem(conjugated_verbs, "هستید", (None, "هست"))
     assert lemmatizer("هستید") == "هست"
+
+
+def test_conjugated_verbs_are_deterministic_across_hash_seeds():
+    # Forms shared by several verbs must resolve the same way in every process.
+    code = (
+        "import hashlib, json;"
+        "from shekar.morphology.conjugator import get_conjugated_verbs as g;"
+        "print(hashlib.md5(json.dumps(sorted(g().items()), ensure_ascii=False)"
+        ".encode()).hexdigest())"
+    )
+    outputs = {
+        subprocess.run(
+            [sys.executable, "-c", code],
+            env={**os.environ, "PYTHONHASHSEED": seed},
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        for seed in ("1", "2")
+    }
+    assert len(outputs) == 1

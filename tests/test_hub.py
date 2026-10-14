@@ -11,7 +11,7 @@ from unittest import mock
 
 import pytest
 
-from shekar.hub import MIRRORS, MODEL_HASHES, Hub, TqdmUpTo
+from shekar.hub import MIRRORS, MODEL_HASHES, Hub, TqdmUpTo, resolve_model_path
 
 
 def _fake_home(tmp_path: Path):
@@ -464,3 +464,37 @@ def test_tqdm_up_to_updates_and_sets_total():
     assert t.total == 200
     assert t.n - n_before == 30
     t.close()
+
+
+def test_resolve_model_path_none_uses_hub(monkeypatch, tmp_path: Path):
+    default = tmp_path / "default.onnx"
+    calls = []
+
+    def fake_get_resource(file_name):
+        calls.append(file_name)
+        return default
+
+    monkeypatch.setattr(Hub, "get_resource", staticmethod(fake_get_resource))
+    assert resolve_model_path(None, "model.onnx") == default
+    assert calls == ["model.onnx"]
+
+
+def test_resolve_model_path_returns_existing_file(monkeypatch, tmp_path: Path):
+    custom = tmp_path / "custom.onnx"
+    custom.write_bytes(b"model")
+    monkeypatch.setattr(
+        Hub, "get_resource", staticmethod(mock.Mock(side_effect=AssertionError))
+    )
+    assert resolve_model_path(str(custom), "model.onnx") == custom
+
+
+@pytest.mark.parametrize("name", ["missing.onnx", "a_directory"])
+def test_resolve_model_path_rejects_missing_or_non_file(
+    monkeypatch, tmp_path: Path, name
+):
+    (tmp_path / "a_directory").mkdir()
+    monkeypatch.setattr(
+        Hub, "get_resource", staticmethod(mock.Mock(side_effect=AssertionError))
+    )
+    with pytest.raises(FileNotFoundError):
+        resolve_model_path(tmp_path / name, "model.onnx")

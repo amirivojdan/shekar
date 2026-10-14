@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 
 from shekar.base import BaseTransform
 from shekar.classification.albert_sentiment_binary import (
@@ -26,11 +27,9 @@ class TestAlbertBinarySentimentClassifier:
         classifier = AlbertBinarySentimentClassifier(model_path=None)
         assert classifier.session is not None
 
-        # Test with non-existent path (should use default)
-        classifier = AlbertBinarySentimentClassifier(
-            model_path="non_existent_path.onnx"
-        )
-        assert classifier.session is not None
+        # A custom path that does not exist is an error, not a silent fallback
+        with pytest.raises(FileNotFoundError, match="non_existent_path.onnx"):
+            AlbertBinarySentimentClassifier(model_path="non_existent_path.onnx")
 
     def test_transform_returns_tuple(self):
         """Test that transform returns a tuple with label and score."""

@@ -371,6 +371,98 @@ class TestGetRoutes:
         status, _ = self._get("/fonts/test.ttf")
         assert status == 200
 
+    def _layout(self, tmp_path, monkeypatch):
+        data_dir = tmp_path / "data"
+        static_dir = data_dir / "statics"
+        static_dir.mkdir(parents=True)
+        (data_dir / "fonts").mkdir()
+        (data_dir / "fonts" / "font.ttf").write_bytes(b"\x00")
+        (data_dir / "files").mkdir()
+        (data_dir / "files" / "vocab.csv").write_text("secret", encoding="utf-8")
+        (tmp_path / "server.py").write_text("secret", encoding="utf-8")
+        monkeypatch.setattr(server_module, "STATIC_DIR", static_dir)
+        monkeypatch.setattr(server_module, "DATA_DIR", data_dir)
+        return static_dir
+
+    def test_query_string_is_ignored(self, tmp_path, monkeypatch):
+        static_dir = self._layout(tmp_path, monkeypatch)
+        (static_dir / "styles.css").write_text("body{}", encoding="utf-8")
+
+        status, _ = self._get("/styles.css?v=2")
+        assert status == 200
+
+    def test_fonts_are_served_from_data_dir(self, tmp_path, monkeypatch):
+        self._layout(tmp_path, monkeypatch)
+
+        status, body = self._get("/fonts/font.ttf")
+        assert status == 200
+        assert body == b"\x00"
+
+    def test_path_traversal_is_rejected(self, tmp_path, monkeypatch):
+        self._layout(tmp_path, monkeypatch)
+
+        for path in (
+            "/../../server.py",
+            "/%2e%2e/%2e%2e/server.py",
+            "/..%2f..%2fserver.py",
+            "/fonts/../files/vocab.csv",
+            "/fonts/../../server.py",
+        ):
+            status, body = self._get(path)
+            assert status == 404, path
+            assert b"secret" not in body
+
+    def test_non_font_data_files_are_not_served(self, tmp_path, monkeypatch):
+        self._layout(tmp_path, monkeypatch)
+
+        status, _ = self._get("/files/vocab.csv")
+        assert status == 404
+
+    def test_symlink_outside_root_is_rejected(self, tmp_path, monkeypatch):
+        import pytest
+
+        static_dir = self._layout(tmp_path, monkeypatch)
+        try:
+            (static_dir / "link.py").symlink_to(tmp_path / "server.py")
+        except OSError:
+            pytest.skip("symlinks are not supported on this platform")
+
+        status, _ = self._get("/link.py")
+        assert status == 404
+
+
+class TestRequestValidation:
+    def _raw_post(self, body: bytes, length: str | None = None):
+        handler = _make_handler("POST", "/api/normalizer", body)
+        if length is not None:
+            handler.headers["Content-Length"] = length
+        handler.do_POST()
+        return handler._status_code, _get_response_json(handler)
+
+    def test_non_object_body_returns_400(self):
+        status, body = self._raw_post(json.dumps(["text"]).encode("utf-8"))
+        assert status == 400
+        assert "error" in body
+
+    def test_non_string_text_returns_400(self):
+        status, body = self._raw_post(json.dumps({"text": 5}).encode("utf-8"))
+        assert status == 400
+        assert "error" in body
+
+    def test_invalid_content_length_returns_400(self):
+        status, _ = self._raw_post(b"{}", length="abc")
+        assert status == 400
+
+    def test_oversized_body_returns_413(self):
+        status, _ = self._raw_post(b"{}", length=str(server_module.MAX_BODY_BYTES + 1))
+        assert status == 413
+
+    def test_no_wildcard_cors_header(self):
+        handler = _make_handler("POST", "/api/normalizer", b"[]")
+        handler.do_POST()
+        sent = [call.args[0] for call in handler.send_header.call_args_list]
+        assert "Access-Control-Allow-Origin" not in sent
+
 
 class TestServeFile:
     def test_file_not_found_returns_404(self):

@@ -12,12 +12,9 @@ class TestPOSTagger:
         tagger = POSTagger(model="albert")
         assert isinstance(tagger.model, AlbertPOS)
 
-    def test_init_with_custom_model_path(self):
-        # Test initialization with a custom model path
-        custom_path = "custom/model/path"
-        tagger = POSTagger(model="albert", model_path=custom_path)
-        assert isinstance(tagger.model, AlbertPOS)
-        # We can't directly check the model_path without exposing it in the AlbertPOS class
+    def test_init_with_missing_custom_model_path_raises(self):
+        with pytest.raises(FileNotFoundError, match="custom/model/path"):
+            POSTagger(model="albert", model_path="custom/model/path")
 
     def test_init_with_invalid_model(self):
         # Test initialization with an invalid model name

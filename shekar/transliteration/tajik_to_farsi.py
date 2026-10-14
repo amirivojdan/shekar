@@ -7,7 +7,7 @@ class TajikToFarsi(ByT5Transliterator):
         encoder_path: str | None = None,
         decoder_path: str | None = None,
         num_beams: int = 1,
-        max_new_tokens: int = 256,
+        max_new_tokens: int | None = None,
         *,
         batch_size=32,
     ):

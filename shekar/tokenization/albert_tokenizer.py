@@ -5,7 +5,7 @@ import numpy as np
 import sentencepiece as spm
 
 from shekar.base import BaseTransform
-from shekar.hub import Hub
+from shekar.hub import resolve_model_path
 
 
 class _Encoding:
@@ -68,8 +68,7 @@ class AlbertTokenizer(BaseTransform):
 
         resource_name = "albert_persian_tokenizer.model"
 
-        if model_path is None or not Path(model_path).exists():
-            model_path = Hub.get_resource(file_name=resource_name)
+        model_path = resolve_model_path(model_path, resource_name)
 
         self.sp = spm.SentencePieceProcessor()
         self.sp.load(str(model_path))
