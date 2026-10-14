@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import numpy as np
-
 from shekar.base import BaseTransform
 from shekar.hub import resolve_model_path
 from shekar.tokenization import AlbertTokenizer
@@ -20,7 +18,6 @@ class AlbertNER(BaseTransform):
         self.session = create_onnx_session(model_path)
         self._session_batch_size(self.session, self.batch_size)
         self.tokenizer = AlbertTokenizer(
-            enable_padding=True,
             enable_truncation=True,
             return_overflowing_tokens=True,
         )
@@ -89,64 +86,9 @@ class AlbertNER(BaseTransform):
         Returns:
             entities: list produced by self._aggregate_entities over the full text
         """
-
         if not isinstance(X, str):
             return self.transform_batch(X)
-        batched = self.tokenizer(X)  # dict with (num_chunks, L) arrays
-        input_ids = batched["input_ids"]  # (B, L)
-        attention_mask = batched["attention_mask"]  # (B, L)
-
-        onnx_input_names = {i.name for i in self.session.get_inputs()}
-        feed = {k: v for k, v in batched.items() if k in onnx_input_names}
-
-        size = self._session_batch_size(self.session, self.batch_size)
-        logits = np.concatenate(
-            [
-                self.session.run(
-                    None,
-                    {k: v[start : start + size] for k, v in feed.items()},
-                )[0]
-                for start in range(0, len(input_ids), size)
-            ]
-        )  # (B, L, num_tags)
-        pred_ids = np.argmax(logits, axis=-1)  # (B, L)
-
-        special_names = ["<pad>", "[PAD]", "[CLS]", "[SEP]", "<cls>", "<sep>"]
-        special_ids = {self.tokenizer.tokenizer.token_to_id(n) for n in special_names}
-        special_ids = {i for i in special_ids if i is not None}
-
-        stride = getattr(self.tokenizer, "stride", 0)
-        B, L = input_ids.shape
-
-        tokens_all: list[str] = []
-        tags_all: list[int] = []
-
-        for b in range(B):
-            ids = input_ids[b]
-            mask = attention_mask[b].astype(bool)
-
-            valid_pos = [
-                i for i in range(L) if mask[i] and int(ids[i]) not in special_ids
-            ]
-
-            if b > 0 and stride > 0:
-                valid_pos = valid_pos[stride:]
-
-            if not valid_pos:
-                continue
-
-            toks = [
-                self.tokenizer.tokenizer.id_to_token(int(ids[i])) for i in valid_pos
-            ]
-            tags = pred_ids[b, valid_pos].tolist()
-
-            tokens_all.extend(toks)
-            tags_all.extend(tags)
-
-        entities = self._aggregate_entities(
-            tokens_all, np.asarray(tags_all, dtype=pred_ids.dtype)
-        )
-        return entities
+        return self._transform_batch([X], self.batch_size)[0]
 
     def _transform_batch(self, texts, batch_size):
         size = self._session_batch_size(self.session, batch_size)
@@ -159,8 +101,9 @@ class AlbertNER(BaseTransform):
             self.tokenizer.sep_token_id,
         }
         encoded = (self.tokenizer(text) for text in texts)
+        # Pad each batch only to its longest row instead of model_max_length.
         for inputs, owners in AlbertTokenizer._encoded_batches(
-            encoded, size, self.tokenizer.pad_token_id
+            encoded, size, self.tokenizer.pad_token_id, trim_padding=True
         ):
             predictions = self.session.run(
                 None, {k: v for k, v in inputs.items() if k in input_names}

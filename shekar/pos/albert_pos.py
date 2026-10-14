@@ -73,19 +73,17 @@ class AlbertPOS(BaseTransform):
         encoded, alignments, owners = [], [], []
         for document, words in enumerate(words_by_document):
             for ids, alignment in self._encode_words(words):
-                length = self.tokenizer.model_max_length
-                mask = [1] * len(ids) + [0] * (length - len(ids))
-                ids = ids + [self.tokenizer.pad_token_id] * (length - len(ids))
+                # Rows stay unpadded; _encoded_batches pads to the batch maximum.
                 encoded.append(
                     {
                         "input_ids": np.array([ids], dtype=np.int64),
-                        "attention_mask": np.array([mask], dtype=np.int64),
+                        "attention_mask": np.ones((1, len(ids)), dtype=np.int64),
                     }
                 )
                 alignments.append(alignment)
                 owners.append(document)
         for inputs, rows in AlbertTokenizer._encoded_batches(
-            encoded, size, self.tokenizer.pad_token_id, trim_padding=True
+            encoded, size, self.tokenizer.pad_token_id
         ):
             tags = self.session.run(None, inputs)[0].argmax(axis=-1)
             for row, (encoded_index, _, _) in enumerate(rows):

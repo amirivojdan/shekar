@@ -9,6 +9,11 @@ from shekar.tokenization import AlbertTokenizer, WordTokenizer
 from shekar.utils import create_onnx_session
 
 
+def _pad(array: np.ndarray, width: int, value: int = 0) -> np.ndarray:
+    """Right-pad a (1, n) array to (1, width)."""
+    return np.pad(array, ((0, 0), (0, width - array.shape[1])), constant_values=value)
+
+
 class AlbertDepParser(BaseTransform):
     supports_batching = True
 
@@ -62,7 +67,9 @@ class AlbertDepParser(BaseTransform):
         self.word_tokenizer = WordTokenizer()
 
     def _build_inputs(self, words: list[str]):
-        """Tokenize words and build ONNX-ready arrays.
+        """Tokenize words and build unpadded ONNX-ready arrays.
+
+        Padding is applied per batch in ``_transform_batch``.
 
         Returns:
             input_ids:              np.int64 (1, seq_len)
@@ -87,14 +94,9 @@ class AlbertDepParser(BaseTransform):
                 "split the text into shorter sentences before parsing."
             )
 
-        attention_mask = [1] * len(all_ids)
-        pad_len = self.tokenizer.model_max_length - len(all_ids)
-        all_ids += [self.tokenizer.pad_token_id] * pad_len
-        attention_mask += [0] * pad_len
-
         return (
             np.array([all_ids], dtype=np.int64),
-            np.array([attention_mask], dtype=np.int64),
+            np.ones((1, len(all_ids)), dtype=np.int64),
             np.array([word_to_first_subtoken], dtype=np.int64),
         )
 
@@ -110,15 +112,19 @@ class AlbertDepParser(BaseTransform):
         nonempty = [(i, self._build_inputs(ws)) for i, ws in enumerate(words) if ws]
         for start in range(0, len(nonempty), size):
             batch = nonempty[start : start + size]
+            # Pad only to the longest sequence in this batch.
+            length = max(arrays[0].shape[1] for _, arrays in batch)
             count = max(len(words[i]) for i, _ in batch)
+            pad_id = self.tokenizer.pad_token_id
             inputs = {
-                "input_ids": np.concatenate([arrays[0] for _, arrays in batch]),
-                "attention_mask": np.concatenate([arrays[1] for _, arrays in batch]),
+                "input_ids": np.concatenate(
+                    [_pad(arrays[0], length, pad_id) for _, arrays in batch]
+                ),
+                "attention_mask": np.concatenate(
+                    [_pad(arrays[1], length) for _, arrays in batch]
+                ),
                 "word_to_first_subtoken": np.concatenate(
-                    [
-                        np.pad(arrays[2], ((0, 0), (0, count - arrays[2].shape[1])))
-                        for _, arrays in batch
-                    ]
+                    [_pad(arrays[2], count) for _, arrays in batch]
                 ),
             }
             arcs, relations = self.session.run(None, inputs)
