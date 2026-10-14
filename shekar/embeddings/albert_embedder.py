@@ -20,7 +20,6 @@ class AlbertEmbedder(BaseEmbedder):
         self.session = create_onnx_session(model_path)
         self._session_batch_size(self.session, self.batch_size)
         self.tokenizer = AlbertTokenizer(
-            enable_padding=True,
             enable_truncation=True,
             return_overflowing_tokens=True,
         )

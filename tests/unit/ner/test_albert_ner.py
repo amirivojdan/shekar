@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import numpy as np
@@ -85,46 +86,64 @@ def test_aggregate_entities_trailing_entity(ner_model):
     assert result == [("تهران", "LOC")]
 
 
-# --- transform multi-batch branch coverage ---
+# --- chunk stitching (runs on a private instance; the shared fixture is untouched) ---
 
 
-def _make_transform_mocks(ner_model, B, L, stride, mask_rows=None):
-    """Helper: patch tokenizer/session on ner_model for transform tests."""
-    input_ids = np.arange(B * L, dtype=np.int64).reshape(B, L)
-    attention_mask = np.ones((B, L), dtype=np.int64)
-    if mask_rows:
-        for r in mask_rows:
-            attention_mask[r] = 0
-
-    mock_tok = MagicMock()
-    mock_tok.return_value = {"input_ids": input_ids, "attention_mask": attention_mask}
-    mock_tok.tokenizer.token_to_id.return_value = None  # no special ids
-    mock_tok.tokenizer.id_to_token.return_value = "▁و"  # non-entity word
-    mock_tok.stride = stride
-
-    logits = np.zeros((B, L, 11))
-    logits[:, :, 10] = 1.0  # all O tags
-
-    mock_sess = MagicMock()
-    mock_sess.get_inputs.return_value = [
-        MagicMock(name="input_ids"),
-        MagicMock(name="attention_mask"),
+def _stitching_model(input_ids, attention_mask, stride):
+    """AlbertNER with a fake tokenizer/session; returns (model, captured tokens)."""
+    model = AlbertNER.__new__(AlbertNER)
+    model.batch_size = 8
+    model.id2tag = {10: "O"}
+    model.tokenizer = MagicMock(
+        return_value={"input_ids": input_ids, "attention_mask": attention_mask},
+        pad_token_id=0,
+        cls_token_id=0,
+        sep_token_id=0,
+        stride=stride,
+        id_to_token=lambda i: f"▁t{i}",
+    )
+    model.session = MagicMock()
+    model.session.get_inputs.return_value = [
+        SimpleNamespace(name="input_ids", shape=["batch", "seq"]),
+        SimpleNamespace(name="attention_mask", shape=["batch", "seq"]),
     ]
-    mock_sess.run.return_value = [logits]
 
-    ner_model.tokenizer = mock_tok
-    ner_model.session = mock_sess
+    def run(_, feed):
+        logits = np.zeros((*feed["input_ids"].shape, 11))
+        logits[..., 10] = 1.0  # every position tagged "O"
+        return [logits]
+
+    model.session.run.side_effect = run
+    captured = []
+    model._aggregate_entities = lambda tokens, tags: captured.append(tokens) or []
+    return model, captured
 
 
-def test_transform_stride_trims_overlap(ner_model):
-    # line 117: b > 0 and stride > 0 → valid_pos = valid_pos[stride:]
-    _make_transform_mocks(ner_model, B=2, L=6, stride=2)
-    result = ner_model.transform("some text")
-    assert isinstance(result, list)
+def test_transform_stride_trims_overlap():
+    # Two overlapping chunks: the first `stride` real tokens of chunk 2 repeat
+    # the end of chunk 1 and must be dropped. Id 0 marks CLS/SEP/padding.
+    input_ids = np.array([[0, 1, 2, 3, 4, 0], [0, 3, 4, 5, 6, 0]])
+    model, captured = _stitching_model(input_ids, np.ones_like(input_ids), stride=2)
+    assert model.transform("some text") == []
+    assert captured == [["▁t1", "▁t2", "▁t3", "▁t4", "▁t5", "▁t6"]]
 
 
-def test_transform_empty_valid_pos_continues(ner_model):
-    # line 120: batch with all-zero mask → valid_pos empty → continue
-    _make_transform_mocks(ner_model, B=2, L=4, stride=0, mask_rows=[1])
-    result = ner_model.transform("some text")
-    assert isinstance(result, list)
+def test_transform_fully_masked_chunk_contributes_nothing():
+    input_ids = np.array([[0, 1, 2, 0], [0, 7, 8, 0]])
+    attention_mask = np.array([[1, 1, 1, 1], [0, 0, 0, 0]])
+    model, captured = _stitching_model(input_ids, attention_mask, stride=0)
+    assert model.transform("some text") == []
+    assert captured == [["▁t1", "▁t2"]]
+
+
+def test_inputs_are_padded_to_batch_maximum_not_model_limit(ner_model, monkeypatch):
+    widths = []
+    run = ner_model.session.run
+
+    def recording_run(names, feed):
+        widths.append(feed["input_ids"].shape[1])
+        return run(names, feed)
+
+    monkeypatch.setattr(ner_model.session, "run", recording_run)
+    ner_model.transform_batch(["علی به تهران رفت.", "سلام"], batch_size=2)
+    assert widths and max(widths) < ner_model.tokenizer.model_max_length

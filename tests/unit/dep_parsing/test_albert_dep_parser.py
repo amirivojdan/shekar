@@ -172,3 +172,24 @@ class TestAlbertDepParser:
                 assert deprel == "punct", (
                     f"Expected 'punct' for '{word}', got '{deprel}'"
                 )
+
+    def test_build_inputs_is_unpadded(self, parser):
+        input_ids, attention_mask, _ = parser._build_inputs(["علی", "رفت"])
+        assert input_ids.shape[1] < parser.tokenizer.model_max_length
+        assert attention_mask.all()
+
+    def test_batches_are_padded_to_longest_sentence(self, parser, monkeypatch):
+        widths = []
+        run = parser.session.run
+
+        def recording_run(names, feed):
+            widths.append(feed["input_ids"].shape)
+            assert feed["attention_mask"].shape == feed["input_ids"].shape
+            return run(names, feed)
+
+        monkeypatch.setattr(parser.session, "run", recording_run)
+        short, long = "علی رفت.", "علی دیروز با دوستانش به کتابخانه دانشگاه رفت."
+        batched = parser.transform_batch([short, long], batch_size=2)
+        longest = parser._build_inputs(list(parser.word_tokenizer(long)))[0].shape[1]
+        assert widths == [(2, longest)]
+        assert batched == [parser.transform(short), parser.transform(long)]
