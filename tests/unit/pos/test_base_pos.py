@@ -1,3 +1,5 @@
+import re
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -13,7 +15,9 @@ class TestPOSTagger:
         assert isinstance(tagger.model, AlbertPOS)
 
     def test_init_with_missing_custom_model_path_raises(self):
-        with pytest.raises(FileNotFoundError, match="custom/model/path"):
+        with pytest.raises(
+            FileNotFoundError, match=re.escape(str(Path("custom/model/path")))
+        ):
             POSTagger(model="albert", model_path="custom/model/path")
 
     def test_init_with_invalid_model(self):

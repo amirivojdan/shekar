@@ -1,3 +1,5 @@
+import re
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -26,7 +28,9 @@ class TestDependencyParser:
         assert isinstance(parser.model, AlbertDepParser)
 
     def test_init_with_missing_custom_model_path_raises(self):
-        with pytest.raises(FileNotFoundError, match="some/nonexistent/path"):
+        with pytest.raises(
+            FileNotFoundError, match=re.escape(str(Path("some/nonexistent/path")))
+        ):
             DependencyParser(model="albert", model_path="some/nonexistent/path")
 
     @patch.object(AlbertDepParser, "transform")

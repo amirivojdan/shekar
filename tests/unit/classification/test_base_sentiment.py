@@ -1,3 +1,6 @@
+import re
+from pathlib import Path
+
 import pytest
 
 from shekar.classification.base_sentiment import SENTIMENT_REGISTRY, SentimentClassifier
@@ -32,7 +35,9 @@ class TestSentimentClassifier:
 
     def test_init_with_missing_model_path_raises(self):
         """A custom model path that does not exist is rejected."""
-        with pytest.raises(FileNotFoundError, match="/custom/path"):
+        with pytest.raises(
+            FileNotFoundError, match=re.escape(str(Path("/custom/path")))
+        ):
             SentimentClassifier(model="albert-binary", model_path="/custom/path")
 
     def test_transform_persian_positive_text(self):

@@ -1,3 +1,6 @@
+import re
+from pathlib import Path
+
 import pytest
 
 from shekar.classification import OffensiveLanguageClassifier
@@ -21,7 +24,9 @@ class TestOffensiveLanguageClassifier:
             OffensiveLanguageClassifier(model="invalid")
 
     def test_init_with_missing_model_path_raises(self):
-        with pytest.raises(FileNotFoundError, match="/path/to/model"):
+        with pytest.raises(
+            FileNotFoundError, match=re.escape(str(Path("/path/to/model")))
+        ):
             OffensiveLanguageClassifier(model_path="/path/to/model")
 
     def test_transform_persian_clean_text(self):
