@@ -35,6 +35,7 @@ class StatisticalSpellChecker(BaseTransform):
         self.n_words = sum(words.values())
         self.words = {word: freq / self.n_words for word, freq in words.items()}
         self.n_edit = n_edit
+        self._index = None
 
     def _is_word_token(self, token: str) -> bool:
         """
@@ -84,30 +85,81 @@ class StatisticalSpellChecker(BaseTransform):
                 edits_n |= cls.generate_n_edits(edit, n=n - 1)
             return edits_n
 
+    def _deletion_index(self) -> dict[str, str | tuple[str, ...]]:
+        """
+        Map every vocabulary word with one Persian letter deleted back to the word.
+
+        Looking a string up here finds the known words one letter insertion away
+        from it, so those candidates never have to be generated. Built on first use.
+        """
+        if self._index is None:
+            index = {}
+            for word in self.words:
+                for i, ch in enumerate(word):
+                    if ch not in data.persian_letters:
+                        continue
+                    key = word[:i] + word[i + 1 :]
+                    entry = index.get(key)
+                    if entry is None:
+                        index[key] = word
+                    elif isinstance(entry, str):
+                        if entry != word:
+                            index[key] = (entry, word)
+                    elif word not in entry:
+                        index[key] = (*entry, word)
+            self._index = index
+        return self._index
+
+    def _known_1edits(self, word):
+        """Return the vocabulary words in ``generate_1edits(word)``."""
+        index = self._deletion_index()
+
+        def indexed(key):
+            entry = index.get(key, ())
+            return (entry,) if isinstance(entry, str) else entry
+
+        known = set()
+        for i in range(len(word)):
+            head, tail = word[:i], word[i + 1 :]
+            if head + tail in self.words:
+                known.add(head + tail)
+            # Replacing word[i]: known words that differ from it only at position i.
+            for candidate in indexed(head + tail):
+                if (
+                    len(candidate) == len(word)
+                    and candidate[:i] == head
+                    and candidate[i + 1 :] == tail
+                    and candidate[i] in data.persian_letters
+                ):
+                    known.add(candidate)
+        for i in range(len(word) - 1):
+            transposed = word[:i] + word[i + 1] + word[i] + word[i + 2 :]
+            if transposed in self.words:
+                known.add(transposed)
+        known.update(indexed(word))
+        return known
+
     def correct(self, word, n_best=5):
-        suggestions = []
-        if word in self.words:
-            suggestions.append((word, self.words[word]))
+        """
+        Rank known words by edit distance, then by frequency, then alphabetically.
 
+        Matches ranking each ``generate_n_edits(word, n)`` level in turn, without
+        generating the insertions and substitutions of the final level.
+        """
+        suggestions = [word] if word in self.words else []
+        seen = set(suggestions)
+        frontier = {word}
         for n in range(1, self.n_edit + 1):
-            suggestions += sorted(
-                [
-                    (w, self.words[w])
-                    for w in self.generate_n_edits(word, n=n)
-                    if w in self.words
-                ],
-                key=lambda x: x[1],
-                reverse=True,
-            )
+            # Later levels only rank below the suggestions already found.
+            if len(suggestions) >= n_best:
+                break
+            known = set().union(*map(self._known_1edits, frontier)) - seen
+            suggestions += sorted(known, key=lambda w: (-self.words[w], w))
+            seen |= known
+            if n < self.n_edit:
+                frontier = set().union(*map(self.generate_1edits, frontier))
 
-        seen = set()
-        unique_suggestions = []
-        for suggestion in suggestions:
-            if suggestion[0] not in seen:
-                unique_suggestions.append(suggestion[0])
-            seen.add(suggestion[0])
-
-        return unique_suggestions[:n_best]
+        return suggestions[:n_best]
 
     def suggest(self, word, n_best=5):
         """
@@ -121,7 +173,7 @@ class StatisticalSpellChecker(BaseTransform):
         corrected_tokens = []
         for token in tokens:
             # Only correct valid word tokens, skip all other tokens (punctuations, numbers, etc.)
-            if not self._is_word_token(token):
+            if not self._is_word_token(token) or token in self.words:
                 corrected_tokens.append(token)
                 continue
 

@@ -84,3 +84,54 @@ def test_correct_text_no_suggestions_keeps_original():
     # correct_text should still return a string (keeping the token as-is)
     corrected = checker.correct_text("ققققققققق")
     assert isinstance(corrected, str)
+
+
+def _reference_correct(checker, word, n_best=5):
+    """Rank candidates by generating every edit, as the original algorithm did."""
+    ranked = [word] if word in checker.words else []
+    for n in range(1, checker.n_edit + 1):
+        known = {w for w in checker.generate_n_edits(word, n) if w in checker.words}
+        ranked += sorted(known - set(ranked), key=lambda w: (-checker.words[w], w))
+    return ranked[:n_best]
+
+
+def test_correct_matches_exhaustive_edits_on_custom_vocab():
+    # Neighbours by deletion, insertion, substitution and transposition, at
+    # one and two edits, plus entries with characters outside the alphabet.
+    words = Counter(
+        {
+            "کتاب": 9,
+            "کتب": 7,
+            "کتابی": 7,
+            "کاتب": 5,
+            "کباب": 5,
+            "تکاب": 3,
+            "کتان": 3,
+            "کتابها": 2,
+            "قهوه خونه": 2,
+            "book": 1,
+            "ک": 1,
+        }
+    )
+    for n_edit in (1, 2):
+        checker = StatisticalSpellChecker(words=words, n_edit=n_edit)
+        for word in ["کتاب", "کتبا", "کاتاب", "تکب", "کبا", "قهوه خون", "boo", "", "ق"]:
+            for n_best in (1, 3, 20):
+                assert checker.correct(word, n_best) == _reference_correct(
+                    checker, word, n_best
+                ), (word, n_edit, n_best)
+
+
+def test_correct_matches_exhaustive_edits_on_default_vocab():
+    checker = StatisticalSpellChecker()
+    for word in ["درود", "سلاام", "کتبخانه", "دییروز", "پژنان", "ررفتیم", "زبنا"]:
+        assert checker.correct(word, n_best=20) == _reference_correct(
+            checker, word, n_best=20
+        ), word
+
+
+def test_correct_text_leaves_known_words_untouched():
+    words = Counter({"سلام": 5, "سلم": 50})
+    checker = StatisticalSpellChecker(words=words)
+    # "سلم" is a far more frequent neighbour, but "سلام" is already correct.
+    assert checker.correct_text("سلام") == "سلام"
