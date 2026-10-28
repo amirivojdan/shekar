@@ -196,6 +196,28 @@ class BaseTextTransform(BaseTransform):
         return compiled_patterns
 
     @classmethod
+    def _compile_word_pattern(
+        cls, words: Iterable[str], letters: str
+    ) -> re.Pattern | None:
+        """
+        Compile words into a single pattern matching any of them as a whole word,
+        that is, not directly preceded or followed by one of ``letters``.
+
+        Longer words are tried first, so a phrase wins over a word it contains.
+        Returns None when there are no words to match.
+        """
+        alternatives = sorted(
+            {word for word in words if word}, key=lambda w: (-len(w), w)
+        )
+        if not alternatives:
+            return None
+        letter_class = re.escape(letters)
+        alternation = "|".join(map(re.escape, alternatives))
+        return re.compile(
+            rf"(?<![{letter_class}])(?:{alternation})(?![{letter_class}])"
+        )
+
+    @classmethod
     def _map_patterns(
         cls, text: str, patterns: Iterable[tuple[re.Pattern, str]]
     ) -> str:

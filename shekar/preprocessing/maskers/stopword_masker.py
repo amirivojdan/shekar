@@ -1,4 +1,3 @@
-import re
 from collections.abc import Iterable
 
 from shekar import data
@@ -45,17 +44,9 @@ class StopWordMasker(BaseTextTransform):
         if stopwords is None:
             stopwords = data.stopwords
         self._mask_token = mask_token
-        self._word_mappings = []
-        for word in stopwords:
-            escaped_word = re.escape(word)
-            self._word_mappings.append(
-                (
-                    rf"(?<![{data.persian_letters}]){escaped_word}(?![{data.persian_letters}])",
-                    self._mask_token,
-                )
-            )
-
-        self._patterns = self._compile_patterns(self._word_mappings)
+        self._pattern = self._compile_word_pattern(stopwords, data.persian_letters)
 
     def _function(self, text: str) -> str:
-        return self._map_patterns(text, self._patterns).strip()
+        if self._pattern is not None:
+            text = self._pattern.sub(self._mask_token, text)
+        return text.strip()

@@ -364,3 +364,22 @@ def test_offensive_word_masker_default_words():
     offensive_word_masker = OffensiveWordMasker(words=["فحش"], mask_token="***")
     expected_outputs = ["*** نگو", "کلام زیبا بگو"]
     assert list(offensive_word_masker(input_texts)) == expected_outputs
+
+
+def test_offensive_word_masker_masks_whole_phrase_before_contained_word():
+    # The phrase wins over the shorter listed word inside it, whatever the list order.
+    for words in (["بد", "آدم بد"], ["آدم بد", "بد"]):
+        masker = OffensiveWordMasker(words=words, mask_token="***")
+        assert masker("او آدم بد است و بد گفت") == "او *** است و *** گفت"
+
+
+def test_offensive_word_masker_does_not_remask_mask_token():
+    masker = OffensiveWordMasker(words=["بوق", "زشت"], mask_token="[بوق]")
+    assert masker("حرف زشت نزن") == "حرف [بوق] نزن"
+
+
+def test_word_maskers_with_empty_word_list_keep_text():
+    assert OffensiveWordMasker(words=[], mask_token="***")(" متن عادی ") == "متن عادی"
+    assert StopWordRemover(stopwords=[""], mask_token="|")("درود بر ایران") == (
+        "درود بر ایران"
+    )
